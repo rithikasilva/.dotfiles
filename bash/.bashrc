@@ -63,15 +63,6 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -120,9 +111,6 @@ if ! shopt -oq posix; then
 fi
 
 
-# ."$HOME/.cargo/env"
-
-
 PS1='[ \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[34m\]\u\[\033[37m\]@\[\033[31m\]\h\[\033[00m\] ] \[\033[36m\]\w\[\033[00m\] \n \[\033[95m\]❯ \[\033[00m\]'
 
 
@@ -130,4 +118,5 @@ PS1='[ \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[34m\]\u\[\03
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
 
