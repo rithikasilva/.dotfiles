@@ -118,7 +118,9 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-. "$HOME/.cargo/env"
+
+
+# ."$HOME/.cargo/env"
 
 
 PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[38;5;214m\]\u::\h\[\033[00m\] \[\033[01;00m\]\w\[\033[00m\] \n \[\033[95m\]❯ \[\033[00m\]'
