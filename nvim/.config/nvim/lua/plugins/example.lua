@@ -263,13 +263,19 @@ return {
     end,
   },
 
-
   -- better commenting
   {
-    'numToStr/Comment.nvim',
+    "numToStr/Comment.nvim",
     opts = {
-        -- add any options here
+      -- add any options here
     },
     lazy = false,
+  },
+
+  {
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    opts = {--[[ things you want to change go here]]
+    },
   },
 }
