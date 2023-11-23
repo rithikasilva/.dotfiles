@@ -262,4 +262,14 @@ return {
       })
     end,
   },
+
+
+  -- better commenting
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+        -- add any options here
+    },
+    lazy = false,
+  },
 }
