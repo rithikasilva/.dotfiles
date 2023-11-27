@@ -1,6 +1,7 @@
 format = """
-$username\
-$hostname\
+\\[ $username\
+@\
+$hostname \\]\
 $directory\
 $git_branch\
 $git_state\
@@ -53,7 +54,7 @@ show_always = true
 
 [hostname]
 ssh_only = false
-format = ' @ [$hostname](bold blue) '
+format = '[$hostname](bold blue)'
 disabled = false
 
 
