@@ -13,6 +13,9 @@ $character"""
 
 [directory]
 style = "#ADD8E6"
+truncate_to_repo = false
+truncation_length = 16
+truncation_symbol = ".../"
 
 [character]
 success_symbol = "[❯](purple)"
