@@ -11,6 +11,9 @@ $line_break\
 $python\
 $character"""
 
+add_newline = false
+
+
 [directory]
 style = "#ADD8E6"
 truncate_to_repo = false
