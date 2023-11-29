@@ -1,7 +1,7 @@
 ## Programs
 - Neovim (>= 0.8)
 - tmux (3.2a)
-- Starship
+- [Starship](https://starship.rs/)
 
 ## Notes
 1. Requires nvim >= 0.8. Can use snap to install it where possible. `bob` is also a good option.I am basically just using default LazyVim.
