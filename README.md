@@ -1,11 +1,11 @@
 ## Programs
-- Neovim (>= 0.8)
-- tmux (3.2a)
+- Neovim (>= 0.9)
+- Tmux (3.2a)
 - [Starship](https://starship.rs/)
 
 ## Notes
-1. Requires nvim >= 0.8. Can use snap to install it where possible. `bob` is also a good option.I am basically just using default LazyVim.
-2. I use `Starship` since it offers some nice shell-agnostic features (like git info). Make sure to have `eval "$(starship init bash)"` to use it instead of the default bash stuff.
+1. Use [bob](https://github.com/MordechaiHadad/bob) to install NVIM 0.9.0 or higher. Remember to `export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"` otherwise running `nvim` won't work.
+2. I use `Starship` since it offers some nice shell-agnostic features (like git info). Make sure to have `eval "$(starship init bash)"` (or whatever line for the shell you are using) to use it instead of the default shell stuff. The install script (being worked on) is only for bash.
 
 
 ### Troubleshooting
