@@ -18,7 +18,7 @@ if os.system("stow starship") != 0:
 
 try:
     with open(Path.home() / ".bashrc", "a+") as f:
-        bash_eval = "eval $(starship init bash)"
+        bash_eval = 'eval "$(starship init bash)"'
         if bash_eval not in f.read():
             f.write(bash_eval)
 except Exception as e:
