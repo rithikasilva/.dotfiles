@@ -20,7 +20,7 @@ try:
         bash_eval = "eval $(starship init bash)"
         if bash_eval not in f.read():
             f.write(bash_eval)
-except as e:
+except Exception as e:
     print("Error with .bashrc Starship check/appending:")
     print(e)
 
