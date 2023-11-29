@@ -33,7 +33,7 @@ TMUX:
 '''
 try:
     tmux_version = float(subprocess.check_output(
-        ['tmux', '-V'], text=True).split(' ')[1])
+        ['tmux', '-V'], text=True).split(' ')[1].replace("a", ""))
     if tmux_version >= 3.0:
         if os.system("stow tmux") != 0:
             print("Couldn't apply tmux config")
