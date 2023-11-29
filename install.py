@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+import subprocess
 '''
 STARSHIP:
 - Install Starship:
@@ -31,6 +31,20 @@ TMUX:
 - Ensure TMUX is installed with the correct version
 - stow my config (and associated plugins)
 '''
+try:
+    tmux_version = float(subprocess.check_output(
+        ['tmux', '-V'], text=True).split(' ')[1])
+    if tmux_version >= 3.0:
+        if os.system("stow tmux") != 0:
+            print("Couldn't apply tmux config")
+    else:
+        print(f"tmux version is below 3.0: {tmux_version}")
+except (subprocess.CalledProcessError, FileNotFoundError):
+    if os.system("sudo apt install tmux") != 0:
+        print("Coudlnt' install tmux")
+    else:
+        if os.system("stow tmux") != 0:
+            print("Couldn't apply tmux config")
 
 '''
 NVIM:
