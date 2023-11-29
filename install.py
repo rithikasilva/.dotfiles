@@ -11,7 +11,7 @@ STARSHIP:
 if os.system("curl -sS https://starship.rs/install.sh | sh") != 0:
     print("Couldn't install Starship")
     exit()
-if os.system("stow ../starship") != 0:
+if os.system("stow starship") != 0:
     print("Couldn't apply Starship config")
     exit()
 
