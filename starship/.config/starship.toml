@@ -6,13 +6,11 @@ $directory\
 $git_branch\
 $git_state\
 $git_status\
-$cmd_duration\
 $line_break\
 $python\
 $character"""
 
 add_newline = false
-
 
 [directory]
 style = "#ADD8E6"
@@ -44,10 +42,6 @@ stashed = "≡"
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 style = "bright-black"
 
-[cmd_duration]
-format = "[$duration]($style) "
-style = "yellow"
-
 [python]
 format = "[$virtualenv]($style) "
 style = "bright-black"
@@ -57,11 +51,8 @@ style_user = '#FFC0CB'
 format = '[$user]($style)'
 show_always = true
 
-
 [hostname]
 ssh_only = false
 format = '[$hostname](bold blue)'
 disabled = false
-
-
 
