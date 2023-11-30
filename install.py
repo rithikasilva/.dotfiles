@@ -91,5 +91,5 @@ def install_nvim():
 setup()
 install_starship()
 install_tmux()
-install_nvim()
+# install_nvim()
 print("PLEASE RESTART SHELL")
