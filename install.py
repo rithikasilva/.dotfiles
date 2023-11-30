@@ -6,6 +6,7 @@ import subprocess
 def setup():
     os.system("sudo apt update")
     os.system("sudo apt install stow")
+    os.system("sudo apt install curl")
 
 
 '''
