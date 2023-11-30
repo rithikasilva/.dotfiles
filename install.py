@@ -75,7 +75,7 @@ NVIM:
 
 def install_nvim():
     os.system("curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")
-    os.system('. "$HOME/.cargo/env"')
+    os.system('. ~/.bashrc')
     os.system("cargo install bob-nvim")
     os.system("bob use 0.9.0")
     bob_path = 'export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"'
