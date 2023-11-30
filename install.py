@@ -64,8 +64,7 @@ def install_tmux():
 
 '''
 NVIM:
-- Ensure NVIM isn't already installed
-
+- Ensure NVIM isn't already installed, assumes rustup is installed
 - Install rustup
 - Remove NVIM if already installed and version < 0.8.0
 - Install NVIM using bob with version >= 0.8.0
@@ -74,8 +73,6 @@ NVIM:
 
 
 def install_nvim():
-    os.system("curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")
-    os.system('. ~/.bashrc')
     os.system("cargo install bob-nvim")
     os.system("bob use 0.9.0")
     bob_path = 'export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"'
@@ -95,3 +92,4 @@ setup()
 install_starship()
 install_tmux()
 install_nvim()
+print("PLEASE RESTART SHELL")
