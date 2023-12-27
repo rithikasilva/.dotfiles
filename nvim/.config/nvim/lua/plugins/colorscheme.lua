@@ -1,7 +1,22 @@
-return {
-  { "rebelot/kanagawa.nvim" },
-}
+-- return {
+--   { "ellisonleao/gruvbox.nvim" },
+--   {
+--     "LazyVim/LazyVim",
+--     opts = {
+--       colorscheme = "gruvbox",
+--     },
+--   },
+-- }
 
+-- return {
+--   { "aditya-azad/candle-grey" },
+--   {
+--     "LazyVim/LazyVim",
+--     opts = {
+--       colorscheme = "candle-grey",
+--     },
+--   },
+-- }
 -- return {
 --   { "shaunsingh/nord.nvim" },
 --
@@ -12,7 +27,17 @@ return {
 --     },
 --   },
 -- }
---
+return {
+  { "folke/tokyonight.nvim" },
+
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "tokyonight",
+    },
+  },
+}
+
 -- return {
 --   {
 --     "catppuccin/nvim",
