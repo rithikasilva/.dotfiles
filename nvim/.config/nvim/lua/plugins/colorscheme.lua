@@ -27,16 +27,46 @@
 --     },
 --   },
 -- }
+-- return {
+--   { "folke/tokyonight.nvim" },
+--
+--   {
+--     "LazyVim/LazyVim",
+--     opts = {
+--       colorscheme = "tokyonight",
+--     },
+--   },
+-- }
 return {
-  { "folke/tokyonight.nvim" },
+  { "rithikasilva/sequoia-monochrome.nvim" },
 
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "tokyonight",
+      colorscheme = "sequoia",
     },
   },
 }
+-- return {
+--   { "nikolvs/vim-sunbather" },
+--
+--   {
+--     "LazyVim/LazyVim",
+--     opts = {
+--       colorscheme = "sunbather",
+--     },
+--   },
+-- }
+-- return {
+--   { "Lokaltog/vim-monotone" },
+--
+--   {
+--     "LazyVim/LazyVim",
+--     opts = {
+--       colorscheme = "monotone",
+--     },
+--   },
+-- }
 
 -- return {
 --   {
