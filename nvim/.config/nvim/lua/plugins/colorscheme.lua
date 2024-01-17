@@ -27,26 +27,26 @@
 --     },
 --   },
 -- }
--- return {
---   { "folke/tokyonight.nvim" },
---
---   {
---     "LazyVim/LazyVim",
---     opts = {
---       colorscheme = "tokyonight",
---     },
---   },
--- }
 return {
-  { "rithikasilva/sequoia-monochrome.nvim" },
+  { "folke/tokyonight.nvim" },
 
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "sequoia",
+      colorscheme = "tokyonight",
     },
   },
 }
+-- return {
+--   { "rithikasilva/sequoia-monochrome.nvim" },
+--
+--   {
+--     "LazyVim/LazyVim",
+--     opts = {
+--       colorscheme = "sequoia",
+--     },
+--   },
+-- }
 -- return {
 --   { "nikolvs/vim-sunbather" },
 --
