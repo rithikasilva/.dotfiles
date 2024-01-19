@@ -12,6 +12,8 @@ After cloning the repo, navigate to the root of the repo and run `python3 instal
 
 Note that this will uninstall any existing installation of Neovim to avoiding conflicting with [bob](https://github.com/MordechaiHadad/bob) (my preffered choice of Neovim management).
 
+The install script is supposed to be idempotent.
+
 
 ### Troubleshooting
 - Neovim:

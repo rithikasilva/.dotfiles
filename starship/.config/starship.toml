@@ -3,19 +3,28 @@ format = """
 @\
 $hostname \\]\
 $directory\
+$python\
 $git_branch\
 $git_state\
 $git_status\
+$fill\
+$cmd_duration $jobs $time\
 $line_break\
-$python\
 $character"""
 
 add_newline = false
 
+
+[time]
+disabled = false
+
+[fill]
+symbol = " "
+
 [directory]
 style = "#ADD8E6"
 truncate_to_repo = false
-truncation_length = 16
+truncation_length = 4 
 truncation_symbol = ".../"
 
 [character]

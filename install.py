@@ -92,10 +92,17 @@ def tmux_by_default():
     return bashrc_insert_line('. "$HOME/.dotfiles/bash/.tmux_default"')
 
 
+def cargo_installs():
+    os.system("cargo install batcat")
+    os.system("cargo install skim")
+    os.system("cargo install ripgrep")
+
+
 setup()
 add_aliases()
 tmux_by_default()
 install_starship()
 install_tmux()
 install_nvim()
+cargo_installs()
 print("PLEASE RESTART SHELL")
