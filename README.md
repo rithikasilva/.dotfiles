@@ -1,25 +1,20 @@
-## Programs
-- Neovim (>= 0.9)
-- Tmux (3.2a)
-- [Starship](https://starship.rs/)
-
-## Notes
-1. Use [bob](https://github.com/MordechaiHadad/bob) to install NVIM 0.9.0 or higher. Remember to `export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"` otherwise running `nvim` won't work.
-2. I use `Starship` since it offers some nice shell-agnostic features (like git info). Make sure to have `eval "$(starship init bash)"` (or whatever line for the shell you are using) to use it instead of the default shell stuff. The install script (being worked on) is only for bash.
-
-
-
-
-## Install Script Requirements
-- NVIM is not already installed
-- Tmux is not already installed
+## Prerequisites
 - Python3 is installed.
 - rustup is installed.
-- A C compiler is necessary, just `sudo apt install build-essential`
+- A C compiler is installed.
+
+
+## Installing
+After cloning the repo, navigate to the root of the repo and run `python3 install.py`. This will install and setup:
+- Neovim (0.9.0) -> LazyVim
+- Tmux (3.2a)
+- Starship
+
+Note that this will uninstall any existing installation of Neovim to avoiding conflicting with [bob](https://github.com/MordechaiHadad/bob) (my preffered choice of Neovim management).
 
 
 ### Troubleshooting
-- Ensure all required dependencies are installed before setting up LazyVim.
-- `:checkhealth` is your best friend.
-- `:TSUpdate` is also your friend.
+- Neovim:
+  - `:checkhealth` is your best friend.
+  - `:TSUpdate` is also your friend.
 

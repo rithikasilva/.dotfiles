@@ -9,6 +9,18 @@ def setup():
     os.system("sudo apt install curl")
 
 
+def bashrc_insert_line(line):
+    try:
+        with open(Path.home() / ".bashrc", "r+") as f:
+            if line not in f.read():
+                f.write("\n" + line + "\n")
+    except Exception as e:
+        print(f"Error with adding {line} to .bashrc")
+        print(e)
+        return False
+    return True
+
+
 '''
 STARSHIP:
 - Install Starship:
@@ -26,16 +38,7 @@ def install_starship():
     if os.system("stow starship") != 0:
         print("Couldn't apply Starship config")
         return False
-    try:
-        with open(Path.home() / ".bashrc", "a+") as f:
-            bash_eval = 'eval "$(starship init bash)"'
-            if bash_eval not in f.read():
-                f.write(bash_eval)
-    except Exception as e:
-        print("Error with .bashrc Starship check/appending:")
-        print(e)
-        return False
-    return True
+    return bashrc_insert_line('eval "$(starship init bash)"')
 
 
 '''
@@ -73,23 +76,26 @@ NVIM:
 
 
 def install_nvim():
+    os.system("sudo apt remove neovim")
+    os.system("sudo snap remove nvim")
     os.system("cargo install bob-nvim")
     os.system("bob use 0.9.0")
-    bob_path = 'export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"'
-    try:
-        with open(Path.home() / ".bashrc", "a+") as f:
-            if bob_path not in f.read():
-                f.write(bob_path)
-    except Exception as e:
-        print("Error with installing bob-nvim:")
-        print(e)
-        return False
     os.system("stow nvim")
-    return True
+    return bashrc_insert_line('export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"')
+
+
+def add_aliases():
+    return bashrc_insert_line('. "$HOME/.dotfiles/bash/.bash_aliases"')
+
+
+def tmux_by_default():
+    return bashrc_insert_line('. "$HOME/.dotfiles/bash/.tmux_default"')
 
 
 setup()
+add_aliases()
+tmux_by_default()
 install_starship()
 install_tmux()
-# install_nvim()
+install_nvim()
 print("PLEASE RESTART SHELL")
