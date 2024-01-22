@@ -3,6 +3,11 @@ from pathlib import Path
 import subprocess
 
 
+RED = "\033[0;31m"
+END = "\033[0m"
+GREEN = "\033[0;32m"
+
+
 def setup():
     os.system("sudo apt update")
     os.system("sudo apt install stow")
@@ -93,7 +98,7 @@ def tmux_by_default():
 
 
 def cargo_installs():
-    os.system("cargo install batcat")
+    os.system("cargo install bat")
     os.system("cargo install skim")
     os.system("cargo install ripgrep")
 
@@ -105,4 +110,6 @@ install_starship()
 install_tmux()
 install_nvim()
 cargo_installs()
-print("PLEASE RESTART SHELL")
+
+
+print(GREEN + "\n\nPLEASE RESTART SHELL TO SEE CHANGES\n\n" + END)
