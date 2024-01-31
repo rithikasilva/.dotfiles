@@ -103,6 +103,11 @@ def cargo_installs():
     os.system("cargo install ripgrep")
 
 
+def grab_fonts():
+    os.system(
+        "wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip")
+
+
 setup()
 add_aliases()
 tmux_by_default()
@@ -110,6 +115,6 @@ install_starship()
 install_tmux()
 install_nvim()
 cargo_installs()
-
+grab_fonts()
 
 print(GREEN + "\n\nPLEASE RESTART SHELL TO SEE CHANGES\n\n" + END)
