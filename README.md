@@ -1,10 +1,12 @@
+## My Dotfiles for Fedora
+While Ubuntu has generally been my go-to Linux distro for a while now, Fedora just has better support for my current machine. Fedora on the G14 runs suprisingly well, and I thought it was about time to swap my Ubuntu dual boot to Fedora.
+
 ## Prerequisites
 - Python3 is installed.
 - rustup is installed.
 - A C compiler is installed.
 
 
-## Installing
 After cloning the repo, navigate to the root of the repo and run `python3 install.py`. This will install and setup:
 - Neovim (0.9.0) -> LazyVim
 - Tmux (3.2a)
