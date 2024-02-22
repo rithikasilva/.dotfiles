@@ -1,0 +1,52 @@
+#!/bin/bash
+
+usage() {
+    echo "Usage: $0 [-b] [-p]" 1>&2
+    echo "Options:" 1>&2
+    echo "  -b    Battery Profile" 1>&2
+    echo "  -p    Power Profile" 1>&2
+    exit 1
+}
+
+error() {
+    echo "Error: $1" >&2
+    exit 1
+}
+
+while getopts ":bp" opt; do
+    case ${opt} in
+        b)
+            ACTION="BATTERY"
+            ;;
+        p)
+            ACTION="POWER"
+            ;;
+        :)
+            error "Option -$OPTARG requires an argument."
+            ;;
+        \?)
+            error "Invalid option: -$OPTARG"
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+
+if [ -z "$ACTION" ]; then
+    usage
+fi
+
+case $ACTION in
+    BATTERY)
+        xrandr --output eDP-1 --mode 1920x1200 --rate 48
+        powerprofilesctl set power-saver
+        supergfxctl -m Integrated
+        echo "Profile: Battery"
+        ;;
+    POWER)
+        xrandr --output eDP-1 --mode 1920x1200 --rate 144
+        powerprofilesctl set balanced
+        supergfxctl -m Hybrid
+        echo "Profile: Power"
+        ;;
+esac
+
