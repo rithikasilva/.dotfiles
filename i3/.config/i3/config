@@ -241,5 +241,5 @@ bindsym $mod+m bar mode toggle
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec --no-startup-id picom --config $HOME/.config/picom/picom.conf -b 
-exec_always --no-startup-id feh --bg-fill ~/Documents/Wallpapers/Catppuccin/more-stars.jpg
+exec_always --no-startup-id feh --bg-fill ~/Documents/Wallpapers/katana.jpg
 
