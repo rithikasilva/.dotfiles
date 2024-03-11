@@ -6,9 +6,8 @@ polybar-msg cmd quit
 # Otherwise you can use the nuclear option:
 # killall -q polybar
 
-# Launch bar1 and bar2
 echo "---" | tee -a /tmp/polybar1.log
-polybar example 2>&1 | tee -a /tmp/polybar-example.log &
+polybar bar 2>&1 | tee -a /tmp/polybar-bar.log &
 disown
 
 echo "Bars launched..."

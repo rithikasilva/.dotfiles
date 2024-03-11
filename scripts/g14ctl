@@ -38,13 +38,15 @@ fi
 case $ACTION in
     BATTERY)
         xrandr --output eDP-1 --mode 1920x1200 --rate 48
-        powerprofilesctl set power-saver
+        # Auto CPU freq handles the power now
+        # powerprofilesctl set power-saver
         supergfxctl -m Integrated
         echo "Profile: Battery"
         ;;
     POWER)
         xrandr --output eDP-1 --mode 1920x1200 --rate 144
-        powerprofilesctl set balanced
+        # Auto CPU freq handles the power now
+        # powerprofilesctl set balanced
         supergfxctl -m Hybrid
         echo "Profile: Power"
         ;;
