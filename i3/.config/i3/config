@@ -227,11 +227,11 @@ client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
 client.background        $base
 
 
-default_border pixel 1
+
+default_border pixel 0
 gaps inner 15
 gaps outer 0
 gaps top 40
-# smart_gaps on
 
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
