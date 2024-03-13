@@ -230,6 +230,7 @@ client.background        $base
 default_border pixel 1
 gaps inner 15
 gaps outer 0
+gaps top 40
 # smart_gaps on
 
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
