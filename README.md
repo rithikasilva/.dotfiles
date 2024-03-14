@@ -23,7 +23,7 @@ The install script is supposed to be idempotent.
 - I don't know who made the wallpaper. If you know, let me know.
 
 ![background](background.png)
-![term](term.png)
+![term](dotfiles-main.png)
 
 ### Troubleshooting
 - Neovim:
