@@ -19,14 +19,15 @@ fi
 # Extract filename from the provided path
 FILE_NAME=$(basename "$1")
 
-# Create symlink
-if [ ! -e "$SYMLINK_LOCATION/$SYMLINK_NAME" ]; then
-    ln -s "$1" "$SYMLINK_LOCATION/$SYMLINK_NAME"
-    echo "Symlink created: $SYMLINK_LOCATION/$SYMLINK_NAME -> $1"
-else
-    echo "Error: Symlink '$SYMLINK_LOCATION/$SYMLINK_NAME' already exists."
-    exit 1
+# Check if symlink already exists
+if [ -e "$SYMLINK_LOCATION/$SYMLINK_NAME" ]; then
+    rm "$SYMLINK_LOCATION/$SYMLINK_NAME"
 fi
 
+# Create symlink
+ln -s "$1" "$SYMLINK_LOCATION/$SYMLINK_NAME"
+echo "Symlink created: $SYMLINK_LOCATION/$SYMLINK_NAME -> $1"
+
 exit 0
+
 
