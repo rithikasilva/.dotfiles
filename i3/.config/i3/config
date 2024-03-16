@@ -49,6 +49,7 @@ tiling_drag modifier titlebar
 
 # start a terminal
 bindsym $mod+Return exec alacritty
+# bindsym $mod+Return exec flatpak run org.wezfurlong.wezterm
 
 # kill focused window
 bindsym $mod+q kill
@@ -238,10 +239,10 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 
 bindsym $mod+m bar mode toggle
 
-
+# exec_always --no-startup-id dunst
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec --no-startup-id picom --config $HOME/.config/picom/picom.conf -b 
-exec_always --no-startup-id feh --bg-fill ~/Documents/Wallpapers/katana.jpg
+exec_always --no-startup-id feh --bg-fill ~/Documents/Wallpapers/wallpaper
 bindsym $mod+p exec scrot ~/Documents/Screenshots/
 
 

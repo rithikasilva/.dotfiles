@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Predefined location for symlink
+SYMLINK_LOCATION="/home/r1tz/Documents/Wallpapers/"
+SYMLINK_NAME="wallpaper"
+
+# Check if argument is provided
+if [ $# -eq 0 ]; then
+    echo "Error: No file path provided."
+    exit 1
+fi
+
+# Check if file exists
+if [ ! -f "$1" ]; then
+    echo "Error: File '$1' not found."
+    exit 1
+fi
+
+# Extract filename from the provided path
+FILE_NAME=$(basename "$1")
+
+# Create symlink
+if [ ! -e "$SYMLINK_LOCATION/$SYMLINK_NAME" ]; then
+    ln -s "$1" "$SYMLINK_LOCATION/$SYMLINK_NAME"
+    echo "Symlink created: $SYMLINK_LOCATION/$SYMLINK_NAME -> $1"
+else
+    echo "Error: Symlink '$SYMLINK_LOCATION/$SYMLINK_NAME' already exists."
+    exit 1
+fi
+
+exit 0
+

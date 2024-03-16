@@ -12,3 +12,4 @@ alias typhoon-mount="~/.dotfiles/scripts/typhoon_mount.sh"
 alias typhoon-umount="~/.dotfiles/scripts/typhoon_umount.sh"
 
 alias bat="batcat"
+
