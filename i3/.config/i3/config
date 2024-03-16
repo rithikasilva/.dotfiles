@@ -239,7 +239,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 
 bindsym $mod+m bar mode toggle
 
-# exec_always --no-startup-id dunst
+exec_always --no-startup-id dunst -conf $HOME/.config/dunst/dunstrc
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec --no-startup-id picom --config $HOME/.config/picom/picom.conf -b 
 exec_always --no-startup-id feh --bg-fill ~/Documents/Wallpapers/wallpaper
