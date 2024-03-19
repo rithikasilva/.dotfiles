@@ -6,14 +6,14 @@ offset = 828x5
 width = 265
 
 [urgency_low]
-background = "#1E1E2E"
+background = "#11111b"
 foreground = "#CDD6F4"
 
 [urgency_normal]
-background = "#1E1E2E"
+background = "#11111b"
 foreground = "#CDD6F4"
 
 [urgency_critical]
-background = "#1E1E2E"
+background = "#11111b"
 foreground = "#CDD6F4"
 frame_color = "#FAB387"
