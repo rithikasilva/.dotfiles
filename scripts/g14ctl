@@ -37,7 +37,7 @@ fi
 
 case $ACTION in
     BATTERY)
-        xrandr --output eDP-1 --mode 1920x1200 --rate 48
+        xrandr --output eDP-1 --mode 1920x1200 --rate 60
         # Auto CPU freq handles the power now
         # powerprofilesctl set power-saver
         supergfxctl -m Integrated
