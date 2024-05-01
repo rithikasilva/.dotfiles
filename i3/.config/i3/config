@@ -235,8 +235,15 @@ gaps inner 15
 gaps outer 0
 gaps top 40
 
+
+# Brightness up and down
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+
+# Keyboard Brightness
+bindsym XF86KbdBrightnessUp exec --no-startup-id asusctl -n
+
+
 
 bindsym $mod+m bar mode toggle
 
