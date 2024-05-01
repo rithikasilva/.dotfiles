@@ -1,4 +1,18 @@
-//@theme "/usr/share/rofi/themes/purple.rasi"
-//@theme "/home/r1tz/.local/share/rofi/themes/rounded-nord-dark.rasi"
-//@theme "/usr/share/rofi/themes/dmenu.rasi"
-@theme "/home/r1tz/.local/share/rofi/themes/spotlight-dark.rasi"
+configuration{
+    modi: "run,drun,window";
+    icon-theme: "Oranchelo";
+    show-icons: true;
+    terminal: "alacritty";
+    drun-display-format: "{icon} {name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: " 﩯  Window";
+    display-Network: " 󰤨  Network";
+    sidebar-mode: true;
+}
+
+@theme "catppuccin-mocha"
+
