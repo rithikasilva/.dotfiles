@@ -1,0 +1,162 @@
+* {
+	border: none;
+	font-family: "JetbrainsMono Nerd Font" ;
+	font-size: 15px;
+	min-height: 10px;
+}
+
+.modules-left {
+	margin-left: 14px;
+}
+
+.modules-right {
+	margin-right: 16px;
+}
+
+window#waybar {
+	background: transparent;
+}
+
+window#waybar.hidden {
+	opacity: 0.2;
+}
+
+#window {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	transition: none;
+    color: transparent;
+	background: transparent;
+}
+
+#network {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #161320;
+	background: #bd93f9;
+}
+
+#pulseaudio {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #1A1826;
+	background: #f38ba8;
+}
+
+#battery {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #161320;
+	background: #f5c2e7;
+}
+
+#workspaces {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #161320;
+	background: #b4befe;
+}
+
+
+#battery.charging, #battery.plugged {
+	color: #161320;
+    background-color: #B5E8E0;
+}
+
+#battery.critical:not(.charging) {
+    background-color: #B5E8E0;
+    color: #161320;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink {
+    to {
+        background-color: #BF616A;
+        color: #B5E8E0;
+    }
+}
+
+#backlight {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #161320;
+	background: #fab387;
+}
+#clock {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #161320;
+	background: #cba6f7;
+}
+
+#memory {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #161320;
+	background: #f9e2af;
+}
+#cpu {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #161320;
+	background: #89dceb;
+}
+
+#temperature {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #161320;
+	background: #94e2d5;
+}
+
+#temperature.gpu {
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #161320;
+	background: #a6e3a1;
+}
+
