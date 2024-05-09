@@ -238,4 +238,6 @@ output "*" background ~/Documents/Wallpapers/wallpaper fill
 bindsym $mod+p exec scrot ~/Documents/Screenshots/
 
 
+output eDP-2 mode 1920x1200@60.003Hz position 0,0
+
 
