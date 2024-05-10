@@ -1,8 +1,8 @@
 {
 	"layer": "top",
-	"modules-left": ["sway/workspaces", "cpu","temperature", "temperature#gpu", "memory"],
+	"modules-left": ["sway/workspaces"],
 	"modules-center": [],
-	"modules-right": ["backlight","pulseaudio","clock", "battery"],
+	"modules-right": ["cpu", "temperature", "temperature#gpu", "memory", "backlight","pulseaudio","clock", "battery"],
 	
 	"pulseaudio": {
 		"tooltip": false,
@@ -54,5 +54,5 @@
     },
 	"temperature#gpu": {
 		"thermal-zone": 1,
-    },
+    }
 }

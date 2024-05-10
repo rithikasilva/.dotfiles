@@ -228,6 +228,10 @@ default_border pixel 0
 gaps inner 15
 gaps outer 0
 
+# blur disable
+corner_radius 10
+
+
 bindsym $mod+m bar mode toggle
 
 exec_always --no-startup-id dunst -conf $HOME/.config/dunst/dunstrc
