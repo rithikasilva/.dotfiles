@@ -239,9 +239,11 @@ exec_always --no-startup-id dunst -conf $HOME/.config/dunst/dunstrc
 exec --no-startup-id picom --config $HOME/.config/picom/picom.conf -b
 output "*" background ~/Documents/Wallpapers/wallpaper fill
 # exec_always --no-startup-id feh --bg-fill ~/Documents/Wallpapers/wallpaper
-bindsym $mod+p exec scrot ~/Documents/Screenshots/
+bindsym $mod+p exec grimshot save area
 
 
 output eDP-2 mode 1920x1200@60.003Hz position 0,0
 
+# For chooser
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 

@@ -2,18 +2,21 @@
 frame_color = "#89B4FA"
 separator_color= frame
 frame_width = 0
-offset = 828x5
+offset = 828x-30
 width = 265
+padding = 8
+corner_radius = 10
+
 
 [urgency_low]
-background = "#11111b"
+background = "#1e1e2e"
 foreground = "#CDD6F4"
 
 [urgency_normal]
-background = "#11111b"
+background = "#1e1e2e"
 foreground = "#CDD6F4"
 
 [urgency_critical]
-background = "#11111b"
+background = "#1e1e2e"
 foreground = "#CDD6F4"
 frame_color = "#FAB387"
