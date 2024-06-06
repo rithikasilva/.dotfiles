@@ -14,5 +14,5 @@ configuration{
     sidebar-mode: true;
 }
 
-@theme "catppuccin-mocha"
 
+@theme "/home/r1tz/.local/share/rofi/themes/catppuccin-mocha.rasi"

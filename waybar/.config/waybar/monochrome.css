@@ -1,0 +1,164 @@
+* {
+	border: none;
+	font-family: "JetbrainsMono Nerd Font" ;
+	font-size: 15px;
+	min-height: 10px;
+}
+
+.modules-left {
+	margin-left: 14px;
+}
+
+.modules-right {
+	margin-right: 16px;
+}
+
+window#waybar {
+	background: transparent;
+}
+
+window#waybar.hidden {
+	opacity: 0.2;
+}
+
+#window {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	transition: none;
+	color: transparent;
+	background: transparent;
+}
+
+#network {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}
+
+#pulseaudio {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}
+
+#battery {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+	border-radius: 0 10px 10px 0;
+}
+
+#workspaces {
+	margin-top: 6px;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+	border-radius: 10px;
+}
+
+#workspaces button {
+	color: #E2E4ED;
+	min-width: 0;
+}
+
+#workspaces button.visible {
+	color: #E2E4ED;
+}
+
+
+#battery.charging, #battery.plugged {
+	color: #E2E4ED;
+	background-color: #0F1014;
+}
+
+#battery.critical:not(.charging) {
+    background-color: #B5E8E0;
+    color: #E2E4ED;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink {
+    to {
+        background-color: #BF616A;
+        color: #B5E8E0;
+    }
+}
+
+#backlight {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}
+#clock {
+	margin-top: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}
+
+#memory {
+	margin-top: 6px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}
+#cpu {
+	margin-top: 6px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+	border-radius: 10px 0 0 10px;
+}
+
+#temperature {
+	margin-top: 6px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}
+
+#temperature.gpu {
+	margin-top: 6px;
+	padding-left: 10px;
+	margin-bottom: 0px;
+	padding-right: 10px;
+	transition: none;
+	color: #E2E4ED;
+	background: #0F1014;
+}

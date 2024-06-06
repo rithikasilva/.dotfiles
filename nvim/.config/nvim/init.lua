@@ -132,6 +132,7 @@ require('lazy').setup({
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim', opts = {} },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  { "rithikasilva/sequoia-monochrome.nvim", name = "sequoia", priority = 1000 },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -678,7 +679,7 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 --
-vim.cmd 'colorscheme catppuccin-mocha'
+vim.cmd 'colorscheme catppuccin'
 vim.o.tabstop = 4
 
 

@@ -1,0 +1,30 @@
+{
+    "window.titleBarStyle": "custom",
+    "editor.minimap.enabled": false,
+    "git.confirmSync": false,
+    "workbench.reduceMotion": "off",
+    "window.customTitleBarVisibility": "auto",
+    "workbench.activityBar.location": "bottom",
+    "explorer.confirmDelete": false,
+    "explorer.compactFolders": false,
+    "explorer.confirmPasteNative": false,
+    "explorer.decorations.badges": false,
+    "explorer.confirmDragAndDrop": false,
+    "editor.language.colorizedBracketPairs": [
+
+    ],
+    "colorize.languages": [
+        "css",
+        "sass",
+        "scss",
+        "less",
+        "postcss",
+        "sss",
+        "stylus",
+        "xml",
+        "svg",
+        "json",
+        "python"
+    ],
+    "workbench.colorTheme": "Catppuccin Mocha",
+}
