@@ -1,4 +1,4 @@
-import = ["~/.config/alacritty/catppuccin-mocha.toml"]
+import = ["~/.config/alacritty/monoplus.toml"]
 
 [window]
 padding = {x = 5, y = 5}

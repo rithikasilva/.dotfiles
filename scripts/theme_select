@@ -1,0 +1,10 @@
+#! /bin/bash
+
+chosen=$(printf "Catppuccin\nMonoplus" | rofi -dmenu -i)
+
+
+case "$chosen" in
+    "Catppuccin") ~/.dotfiles/scripts/theme_catppuccin.sh ;;
+    "Monoplus") ~/.dotfiles/scripts/theme_monoplus.sh ;;
+esac
+

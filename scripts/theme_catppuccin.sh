@@ -16,12 +16,12 @@ sed -i 's|^@theme.*|@theme "/home/r1tz/.local/share/rofi/themes/catppuccin-mocha
 
 
 # Tmux
-
+# No changes required
 
 # Obsidian
+sed -i 's/"cssTheme": "[^"]*"/"cssTheme": "AnuPpuccin"/' ~/Documents/Vaults/Bastion/.obsidian/appearance.json
+reload_obsidian.sh
 
 
 # Firefox
-
-
 swaymsg reload

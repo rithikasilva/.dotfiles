@@ -12,13 +12,18 @@ sed -i "s/^vim.cmd 'colorscheme .*/vim.cmd 'colorscheme sequoia'/" ~/.dotfiles/n
 sed -i 's/"workbench.colorTheme".*/"workbench.colorTheme": "monoplus",/' ~/.dotfiles/Code/.config/Code/User/settings.json
 
 # Rofi
-sed -i 's|^@theme.*|@theme "/home/r1tz/.local/share/rofi/themes/rounded-gray-dark.rasi"|' ~/.dotfiles/rofi/.config/rofi/config.rasi
+sed -i 's|^@theme.*|@theme "/home/r1tz/.local/share/rofi/themes/monoplus.rasi"|' ~/.dotfiles/rofi/.config/rofi/config.rasi
 
 
 # Tmux
-
+# No changes required
 
 # Obsidian
+sed -i 's/"cssTheme": "[^"]*"/"cssTheme": "mono black (monochrome, charcoal)"/' ~/Documents/Vaults/Bastion/.obsidian/appearance.json
+reload_obsidian.sh
+
+
+
 # Firefox
 
 

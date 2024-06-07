@@ -1,0 +1,72 @@
+* {
+  emphasis:   bold #868690;
+  text:       #E2E4ED;
+  text-alt:   #868690;
+  bg:         #131317dd;
+
+  spacing: 0;
+  background-color: transparent;
+  text-color: @text;
+}
+
+window {
+  transparency: "real";
+  fullscreen: true;
+  background-color: @bg;
+}
+
+mainbox {
+  padding: 40% 30%;
+}
+
+inputbar {
+  margin: 0px 0px 0px 0px;
+  children: [prompt, textbox-prompt-colon, entry, case-indicator];
+}
+
+prompt {
+  text-color: @text;
+}
+
+textbox-prompt-colon {
+  expand: false;
+  str: ":";
+  text-color: @text-alt;
+}
+
+entry {
+  margin: 0px 0px;
+  text-color: @text;
+  placeholder: "";
+}
+
+listview {
+  border: 0px;
+  spacing: 5px;
+  dynamic: true;
+  scrollbar: false;
+}
+
+element {
+  padding: 5px;
+  border-radius: 3px;
+}
+
+element-text {
+  highlight: @emphasis;
+}
+
+element normal normal, element selected normal, element alternate normal {
+  text-color: @text;
+  background-color: transparent;
+}
+
+element normal urgent, element selected urgent, element alternate urgent {
+  text-color: @text;
+  background-color: transparent;
+}
+
+element normal active, element selected active, element alternate active {
+  text-color: @text;
+  background-color: transparent;
+}
