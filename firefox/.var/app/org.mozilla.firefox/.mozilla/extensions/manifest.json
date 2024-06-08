@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "version": "1.0",
+  "name": "Monoplus",
+  "theme": {
+    "images": {},
+    "properties": {},
+    "colors": {
+      "toolbar": "rgb(15, 16, 20)",
+      "toolbar_text": "rgb(226, 228, 237)",
+      "frame": "rgb(15, 16, 20)",
+      "tab_background_text": "rgb(255, 255, 255)",
+      "toolbar_field": "rgb(15, 16, 20)",
+      "toolbar_field_text": "rgb(226, 228, 237)",
+      "tab_line": "rgb(226, 228, 237)",
+      "popup": "rgb(15, 16, 20)",
+      "popup_text": "rgb(226, 228, 237)",
+      "tab_loading": "rgb(226, 228, 237)"
+    }
+  }
+}

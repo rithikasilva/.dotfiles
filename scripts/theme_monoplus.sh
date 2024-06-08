@@ -27,5 +27,8 @@ reload_obsidian.sh
 # Firefox
 
 
+# Wallpaper
+chbg ~/Documents/Wallpapers/Monochrome/planets.png
+
 
 swaymsg reload

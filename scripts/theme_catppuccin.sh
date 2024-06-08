@@ -22,6 +22,10 @@ sed -i 's|^@theme.*|@theme "/home/r1tz/.local/share/rofi/themes/catppuccin-mocha
 sed -i 's/"cssTheme": "[^"]*"/"cssTheme": "AnuPpuccin"/' ~/Documents/Vaults/Bastion/.obsidian/appearance.json
 reload_obsidian.sh
 
-
 # Firefox
+
+
+
+# Wallpaper
+chbg ~/Documents/Wallpapers/Catppuccin/evening-sky.png
 swaymsg reload

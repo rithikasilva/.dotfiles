@@ -4,7 +4,7 @@
     "git.confirmSync": false,
     "workbench.reduceMotion": "off",
     "window.customTitleBarVisibility": "auto",
-    "workbench.activityBar.location": "bottom",
+    "workbench.activityBar.location": "hidden",
     "explorer.confirmDelete": false,
     "explorer.compactFolders": false,
     "explorer.confirmPasteNative": false,

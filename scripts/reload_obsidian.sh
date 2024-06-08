@@ -4,8 +4,8 @@
 PREVIOUS_WINDOW_ID=$(swaymsg -t get_tree | jq '.. | select(.focused? == true) | .id' | head -n 1)
 
 # Focus the Obsidian window using swaymsg
-if swaymsg [instance='obsidian'] focus >/dev/null 2>&1; then
-    sleep 0.1
+if swaymsg [instance='obsidian'] focus; then
+    sleep 1
     # Press Ctrl+R
     wtype -M ctrl r -m ctrl
     echo "Reload command sent to Obsidian."
