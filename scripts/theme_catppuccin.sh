@@ -25,6 +25,10 @@ reload_obsidian.sh
 # Firefox
 
 
+# Dunst
+cd ~/.dotfiles/dunst/.config/dunst
+rm dunstrc && ln -s catppuccin dunstrc
+killall dunst
 
 # Wallpaper
 chbg ~/Documents/Wallpapers/Catppuccin/evening-sky.png

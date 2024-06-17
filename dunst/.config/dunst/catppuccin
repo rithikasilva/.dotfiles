@@ -1,0 +1,20 @@
+[global]
+separator_color= frame
+frame_width = 0
+offset = 828x-30
+width = 265
+padding = 8
+corner_radius = 10
+
+
+[urgency_low]
+background = "#1e1e2e"
+foreground = "#CDD6F4"
+
+[urgency_normal]
+background = "#1e1e2e"
+foreground = "#CDD6F4"
+
+[urgency_critical]
+background = "#1e1e2e"
+foreground = "#CDD6F4"

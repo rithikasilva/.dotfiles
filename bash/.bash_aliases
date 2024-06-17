@@ -13,6 +13,8 @@ alias typhoon-umount="~/.dotfiles/scripts/typhoon_umount.sh"
 
 alias bat="batcat"
 
+alias em="emacs -nw"
+
 function ntfy-maelstrom() {
 		curl -d "$1" maelstrom.tail561e2.ts.net/maelstrom
 }

@@ -17,5 +17,10 @@
       "popup_text": "rgb(226, 228, 237)",
       "tab_loading": "rgb(226, 228, 237)"
     }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "test@gmail.com"
+    }
   }
 }

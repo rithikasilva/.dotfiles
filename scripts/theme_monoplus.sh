@@ -23,9 +23,13 @@ sed -i 's/"cssTheme": "[^"]*"/"cssTheme": "mono black (monochrome, charcoal)"/' 
 reload_obsidian.sh
 
 
-
 # Firefox
 
+
+# Dunst
+cd ~/.dotfiles/dunst/.config/dunst
+rm dunstrc && ln -s monoplus dunstrc
+killall dunst
 
 # Wallpaper
 chbg ~/Documents/Wallpapers/Monochrome/planets.png

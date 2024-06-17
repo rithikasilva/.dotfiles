@@ -24,7 +24,8 @@
         "xml",
         "svg",
         "json",
-        "python"
+        "python",
+        "lua"
     ],
     "workbench.colorTheme": "monoplus",
 }
