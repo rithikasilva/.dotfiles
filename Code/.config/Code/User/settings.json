@@ -28,4 +28,5 @@
         "lua"
     ],
     "workbench.colorTheme": "monoplus",
+    "editor.lineNumbers": "relative",
 }
