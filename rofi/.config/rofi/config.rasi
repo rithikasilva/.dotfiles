@@ -17,4 +17,4 @@ configuration{
 
 //@theme "/home/r1tz/.local/share/rofi/themes/rounded-gray-dark.rasi"
 //@theme "/home/r1tz/.local/share/rofi/themes/catppuccin-mocha.rasi"
-@theme "/home/r1tz/.local/share/rofi/themes/monoplus.rasi"
+@theme "/home/r1tz/.local/share/rofi/themes/catppuccin-mocha.rasi"

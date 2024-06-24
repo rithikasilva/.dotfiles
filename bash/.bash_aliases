@@ -12,8 +12,12 @@ alias typhoon-mount="~/.dotfiles/scripts/typhoon_mount.sh"
 alias typhoon-umount="~/.dotfiles/scripts/typhoon_umount.sh"
 
 alias bat="batcat"
-
 alias em="emacs -nw"
+
+alias wezterm='flatpak run org.wezfurlong.wezterm'
+
+alias cd='z'
+
 
 function ntfy-maelstrom() {
 		curl -d "$1" maelstrom.tail561e2.ts.net/maelstrom

@@ -27,6 +27,6 @@
         "python",
         "lua"
     ],
-    "workbench.colorTheme": "monoplus",
+    "workbench.colorTheme": "Catppuccin Mocha",
     "editor.lineNumbers": "relative",
 }

@@ -20,15 +20,21 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+
 -- [[ Configure plugins ]]
 -- NOTE: Here is where you install your plugins.
---  You can configure plugins using the `config` key.
---
 --  You can also configure plugins after the setup call,
+--  You can configure plugins using the `config` key.
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
-
+  {
+    "kdheepak/lazygit.nvim",
+    -- optional for floating window border decoration
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+  },
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -48,7 +54,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -83,18 +89,10 @@ require('lazy').setup({
     },
   },
   {
-      "kdheepak/lazygit.nvim",
-        -- optional for floating window border decoration
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-        },
-    },
-
-  {
     'kyazdani42/nvim-tree.lua',
-    requires = 'kyazdani42/nvim-web-devicons', 
+    requires = 'kyazdani42/nvim-web-devicons',
     config = function()
-      require'nvim-tree'.setup {
+      require 'nvim-tree'.setup {
         disable_netrw       = true,
         hijack_netrw        = true,
         open_on_tab         = false,
@@ -105,11 +103,11 @@ require('lazy').setup({
           update_cwd  = false,
           ignore_list = {}
         },
-        system_open = {
+        system_open         = {
           cmd  = nil,
           args = {}
         },
-        view = {
+        view                = {
           width = 30,
           side = 'left',
         }
@@ -117,11 +115,68 @@ require('lazy').setup({
     end
   },
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-  { "ThePrimeagen/vim-be-good", name = "VimBeGood", priority = 1000 },
+  { 'folke/which-key.nvim',            opts = {} },
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+  },
+  { "ThePrimeagen/vim-be-good",        name = "VimBeGood", priority = 1000 },
   -- { "rithikasilva/sequoia-monochrome.nvim", name = "sequoia", priority = 1000 },
-  { "Hiroya-W/sequoia-moonlight.nvim", name = "sequoia", priority = 1000 },
+  { "Hiroya-W/sequoia-moonlight.nvim", name = "sequoia",   priority = 1000 },
+  { "rose-pine/neovim",                as = "rose-pine" },
+  { "petertriho/nvim-scrollbar" },
+  { "slugbyte/lackluster.nvim" },
+  { "shaunsingh/nord.nvim" },
+  {
+    "christoomey/vim-tmux-navigator",
+    cmd = {
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+      -- "TmuxNavigatePrevious",
+    },
+    keys = {
+      { "<c-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+      { "<c-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+      { "<c-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+      { "<c-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+      -- { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+    },
+  },
+  {
+    'stevearc/dressing.nvim',
+    opts = {},
+  },
+  {
+    "ziontee113/icon-picker.nvim",
+    config = function()
+      require("icon-picker").setup({ disable_legacy_commands = true })
+
+      local opts = { noremap = true, silent = true }
+
+      vim.keymap.set("n", "<Leader><Leader>i", "<cmd>IconPickerNormal<cr>", opts)
+      vim.keymap.set("n", "<Leader><Leader>y", "<cmd>IconPickerYank<cr>", opts) --> Yank the selected icon into register
+      vim.keymap.set("i", "<C-i>", "<cmd>IconPickerInsert<cr>", opts)
+    end
+  },
+  { "voldikss/vim-floaterm" },
+  {
+    'stevearc/aerial.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+  },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -528,7 +583,7 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -670,13 +725,42 @@ cmp.setup {
   },
 }
 
+
+require("scrollbar").setup({
+  handle = {
+    color = "#FFFFFF",
+  },
+  marks = {
+  }
+})
+
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 --
-vim.cmd 'colorscheme sequoia'
+
+require("catppuccin").setup({
+  transparent_background = true,
+})
+
+
+
+vim.cmd 'colorscheme catppuccin'
 vim.o.tabstop = 4
 vim.keymap.set("i", "jj", "<ESC>", { silent = true })
 vim.wo.relativenumber = true
+
+-- Window Navigation
+-- vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
+-- vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
+-- vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
+-- vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')
+
+vim.api.nvim_set_keymap('n', '<C-\\>', ':FloatermToggle<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<C-\\>', '<C-\\><C-n>:FloatermToggle<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<A-\\>', ':vsplit<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<A-->', ':split<CR>', { noremap = true, silent = true })
 
 
 -- Move current line up with Alt+j
@@ -689,5 +773,3 @@ vim.api.nvim_set_keymap('n', '<A-j>', ':m .+1<CR>==', { noremap = true, silent =
 vim.api.nvim_set_keymap('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
-
-

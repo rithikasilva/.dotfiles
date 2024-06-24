@@ -231,7 +231,6 @@ default_border pixel 0
 gaps inner 15
 gaps outer 0
 
-# blur disable
 corner_radius 10
 
 
