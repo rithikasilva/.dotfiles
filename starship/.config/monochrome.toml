@@ -56,7 +56,7 @@ format = "[$virtualenv]($style) "
 style = "bright-black"
 
 [username]
-# style_user = '#FFC0CB'
+style_user = '#FFC0CB'
 format = '[$user]($style)'
 show_always = true
 
