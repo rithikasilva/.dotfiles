@@ -178,7 +178,7 @@ bar {
 input type:touchpad {
         tap enabled
         natural_scroll enabled
-        scroll_factor 0.3
+        scroll_factor 0.5
 }
 
 
@@ -227,7 +227,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 bindsym XF86KbdBrightnessUp exec --no-startup-id asusctl -n
 
 
-default_border pixel 0
+default_border pixel 0 
 gaps inner 15
 gaps outer 0
 

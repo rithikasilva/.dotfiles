@@ -4,7 +4,6 @@
     "git.confirmSync": false,
     "workbench.reduceMotion": "off",
     "window.customTitleBarVisibility": "auto",
-    "workbench.activityBar.location": "hidden",
     "explorer.confirmDelete": false,
     "explorer.compactFolders": false,
     "explorer.confirmPasteNative": false,
@@ -29,4 +28,6 @@
     ],
     "workbench.colorTheme": "Catppuccin Mocha",
     "editor.lineNumbers": "relative",
+    "liveServer.settings.donotVerifyTags": true,
+    "liveServer.settings.donotShowInfoMsg": true,
 }

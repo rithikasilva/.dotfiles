@@ -6,7 +6,7 @@ rm style.css && ln -s catppuccin.css style.css
 sed -i '/import = \[/c\import = ["~/.config/alacritty/catppuccin-mocha.toml"]' ~/.dotfiles/alacritty/.config/alacritty/alacritty.toml
 
 # Nvim
-sed -i "s/^vim.cmd 'colorscheme .*/vim.cmd 'colorscheme catppuccin'/" ~/.dotfiles/nvim/.config/nvim/init.lua
+sed -i "s/^vim.cmd 'colorscheme .*/vim.cmd 'colorscheme catppuccin-mocha'/" ~/.dotfiles/nvim/.config/nvim/init.lua
 
 #VSCode
 sed -i 's/"workbench.colorTheme".*/"workbench.colorTheme": "Catppuccin Mocha",/' ~/.dotfiles/Code/.config/Code/User/settings.json
@@ -33,3 +33,9 @@ killall dunst
 # Wallpaper
 chbg ~/Documents/Wallpapers/Catppuccin/evening-sky.png
 swaymsg reload
+
+
+# Starhip
+cd ~/.dotfiles/starship/.config/
+rm starship.toml && ln -s mocha.toml starship.toml
+
