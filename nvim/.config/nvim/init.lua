@@ -556,7 +556,6 @@ require("catppuccin").setup({
   transparent_background = true,
 })
 
-
 vim.g.vimtex_view_method = "zathura"
 
 

@@ -1,4 +1,4 @@
-tmux/.tmux/plugins/*
-!tmux/.tmux/plugins/tpm
 nvim/.config/nvim/lazy-lock.json
 neofetch/.config/neofetch/ascii.txt
+tmux/.tmux/plugins/*
+!tmux/.tmux/plugins/tpm
