@@ -23,6 +23,45 @@ require('lazy').setup({
   require 'custom.plugins.completion',
   require 'custom.plugins.telescope',
   {
+    "vhyrro/luarocks.nvim",
+    priority = 1001, -- this plugin needs to run before anything else
+    opts = {
+      rocks = { "magick" },
+    },
+  },
+  {
+    "3rd/image.nvim",
+    dependencies = { "luarocks.nvim" },
+    config = function()
+      -- ...
+    end
+  },
+  {
+    "nvim-neorg/neorg",
+    lazy = false,
+    version = "*",
+    config = function()
+      require("neorg").setup {
+        load = {
+          ["core.defaults"] = {},
+          ["core.concealer"] = {},
+          ["core.dirman"] = {
+            config = {
+              workspaces = {
+                notes = "~/notes",
+              },
+              default_workspace = "notes",
+            },
+          },
+          ["core.export"] = {},
+        },
+      }
+
+      vim.wo.foldlevel = 99
+      vim.wo.conceallevel = 2
+    end,
+  },
+  {
     'kyazdani42/nvim-tree.lua',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function()
@@ -64,22 +103,25 @@ require('lazy').setup({
   },
   { "ThePrimeagen/vim-be-good", name = "VimBeGood", priority = 1000 },
   {
-    "christoomey/vim-tmux-navigator",
-    cmd = {
-      "TmuxNavigateLeft",
-      "TmuxNavigateDown",
-      "TmuxNavigateUp",
-      "TmuxNavigateRight",
-      "TmuxNavigatePrevious",
-    },
-    keys = {
-      { "<C-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
-      { "<C-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
-      { "<C-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
-      { "<C-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
-      { "<C-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
-    },
+    "mrjones2014/smart-splits.nvim"
   },
+  -- {
+  --   "christoomey/vim-tmux-navigator",
+  --   cmd = {
+  --     "TmuxNavigateLeft",
+  --     "TmuxNavigateDown",
+  --     "TmuxNavigateUp",
+  --     "TmuxNavigateRight",
+  --     "TmuxNavigatePrevious",
+  --   },
+  --   keys = {
+  --     { "<C-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+  --     { "<C-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+  --     { "<C-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+  --     { "<C-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+  --     { "<C-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+  --   },
+  -- },
   {
     'stevearc/dressing.nvim',
     opts = {},
@@ -309,7 +351,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'yaml'},
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'yaml' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
