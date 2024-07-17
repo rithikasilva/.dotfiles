@@ -1,6 +1,6 @@
 # Need to specify location since I use bob for nvim
 neovim-bin="/home/r1tz/.local/share/bob/nvim-bin/nvim"
-
+srgb=true
 
 [font]
 normal = ["JetBrainsMono Nerd Font"]

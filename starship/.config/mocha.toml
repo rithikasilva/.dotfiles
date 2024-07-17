@@ -36,6 +36,12 @@ vimcmd_symbol = "[❮](green)"
 truncation_length = 4
 style = "bold lavender"
 
+
+
+
+[git_status]
+style = "bold flamingo"
+
 [palettes.catppuccin_macchiato]
 rosewater = "#f4dbd6"
 flamingo = "#f0c6c6"

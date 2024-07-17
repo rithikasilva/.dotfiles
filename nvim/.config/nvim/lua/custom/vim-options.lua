@@ -17,11 +17,11 @@ vim.o.termguicolors = true
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-	vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = '*',
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+	group = highlight_group,
+	pattern = '*',
 })
 
 
@@ -42,18 +42,18 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
-  -- You can pass additional configuration to telescope to change theme, layout, etc.
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
-  })
+	-- You can pass additional configuration to telescope to change theme, layout, etc.
+	require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+		winblend = 10,
+		previewer = false,
+	})
 end, { desc = '[/] Fuzzily search in current buffer' })
 
 local function telescope_live_grep_open_files()
-  require('telescope.builtin').live_grep {
-    grep_open_files = true,
-    prompt_title = 'Live Grep in Open Files',
-  }
+	require('telescope.builtin').live_grep {
+		grep_open_files = true,
+		prompt_title = 'Live Grep in Open Files',
+	}
 end
 
 vim.keymap.set('n', '<leader>s/', telescope_live_grep_open_files, { desc = '[S]earch [/] in Open Files' })
@@ -61,9 +61,9 @@ vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc =
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 
 vim.keymap.set('n', '<leader>sf', function()
-  require('telescope.builtin').find_files({
-    find_command = { 'rg', '--files', '--hidden', '--glob', '!.git' }
-  })
+	require('telescope.builtin').find_files({
+		find_command = { 'rg', '--files', '--hidden', '--glob', '!.git' }
+	})
 end, { desc = '[S]earch [F]iles' })
 
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
@@ -112,3 +112,44 @@ vim.api.nvim_set_keymap('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, sile
 
 vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap('n', '<leader>tt', ':TSToggle highlight<CR>', { noremap = true, silent = true })
+
+
+
+-- Need to manually specify the colours for the termianl if using neovide
+if vim.g.neovide then
+	vim.g.terminal_color_0  = "#45475a"
+	vim.g.terminal_color_1  = "#f38ba8"
+	vim.g.terminal_color_2  = "#a6e3a1"
+	vim.g.terminal_color_3  = "#f9e2af"
+	vim.g.terminal_color_4  = "#89b4fa"
+	vim.g.terminal_color_5  = "#f5c2e7"
+	vim.g.terminal_color_6  = "#94e2d5"
+	vim.g.terminal_color_7  = "#bac2de"
+
+	vim.g.terminal_color_8  = "#585b70"
+	vim.g.terminal_color_9  = "#f38ba8"
+	vim.g.terminal_color_10 = "#a6e3a1"
+	vim.g.terminal_color_11 = "#f9e2af"
+	vim.g.terminal_color_12 = "#89b4fa"
+	vim.g.terminal_color_13 = "#f5c2e7"
+	vim.g.terminal_color_14 = "#94e2d5"
+	vim.g.terminal_color_15 = "#a6adc8"
+
+	vim.g.terminal_color_16 = "#fab387"
+	vim.g.terminal_color_17 = "#f5e0dc"
+
+
+	vim.g.neovide_scale_factor = 1.0
+	local change_scale_factor = function(delta)
+		vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+	end
+	vim.keymap.set("n", "<C-=>", function()
+		change_scale_factor(1.25)
+	end)
+	vim.keymap.set("n", "<C-->", function()
+		change_scale_factor(1 / 1.25)
+	end)
+
+	vim.g.neovide_transparency = 1.0
+end
