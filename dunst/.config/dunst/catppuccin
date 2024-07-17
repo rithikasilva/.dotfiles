@@ -1,7 +1,8 @@
 [global]
 separator_color= frame
-frame_width = 0
-offset = 828x-30
+frame_width = 2
+frame_color = "#b4befe"
+offset = 15x15
 width = 265
 padding = 8
 corner_radius = 10

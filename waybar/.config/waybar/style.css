@@ -1,1 +1,132 @@
-catppuccin.css
+* {
+	font-family: "IosevkaTerm Nerd Font", "Matieral Design Icons Desktop";
+	font-size: 13px;
+}
+
+#custom-title {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+
+window#waybar {
+	border: 2px solid #b4befe;
+	border-radius: 10px 10px 10px 10px;
+	background: #1e1e2e;
+}
+
+window#waybar.hidden {
+	opacity: 0.2;
+}
+
+#window {
+	margin-top: 6px;
+	transition: none;
+	color: transparent;
+	background: transparent;
+}
+
+#network {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#pulseaudio {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#battery {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#workspaces {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#workspaces button {
+	color: #cdd6f4;
+	min-width: 0;
+}
+
+#workspaces button.visible {
+	color: #ffffff;
+}
+
+
+#battery.charging,
+#battery.plugged {
+	color: #cdd6f4;
+}
+
+#battery.critical:not(.charging) {
+	background-color: #B5E8E0;
+	color: #cdd6f4;
+	animation-name: blink;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes blink {
+	to {
+		background-color: #BF616A;
+		color: #B5E8E0;
+	}
+}
+
+#backlight {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#clock {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#memory {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#cpu {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+	border-radius: 10px 0 0 10px;
+}
+
+#temperature {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}
+
+#temperature.gpu {
+	margin-top: 6px;
+	margin-bottom: 0px;
+	transition: none;
+	color: #cdd6f4;
+}

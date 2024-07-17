@@ -2,49 +2,26 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 config.leader = { key = 's', mods = 'CTRL', timeout_milliseconds = 1000 }
 
-local function is_vim(pane)
-  local process_name = string.gsub(pane:get_foreground_process_name(), '(.*[/\\])(.*)', '%2')
-  return process_name == 'nvim' or process_name == 'vim'
+local function is_inside_vim(pane)
+  return pane:get_user_vars().IS_NVIM == 'true'
 end
 
-local direction_keys = {
-  h = 'Left',
-  j = 'Down',
-  k = 'Up',
-  l = 'Right',
-}
+local function is_outside_vim(pane) return not is_inside_vim(pane) end
 
-local function split_nav(resize_or_move, key)
-  return {
-    key = key,
-    mods = resize_or_move == 'resize' and 'META' or 'CTRL',
-    action = wezterm.action_callback(function(win, pane)
-      if is_vim(pane) then
-        win:perform_action({
-          SendKey = { key = key, mods = resize_or_move == 'resize' and 'META' or 'CTRL' },
-        }, pane)
-      else
-        if resize_or_move == 'resize' then
-          win:perform_action({ AdjustPaneSize = { direction_keys[key], 3 } }, pane)
-        else
-          win:perform_action({ ActivatePaneDirection = direction_keys[key] }, pane)
-        end
-      end
-    end),
-  }
+local function bind_if(cond, key, mods, action)
+  local function callback(win, pane)
+    if cond(pane) then
+      win:perform_action(action, pane)
+    else
+      win:perform_action(wezterm.action.SendKey({ key = key, mods = mods }), pane)
+    end
+  end
+
+  return { key = key, mods = mods, action = wezterm.action_callback(callback) }
 end
-
 
 
 config.keys = {
-  split_nav('move', 'h'),
-  split_nav('move', 'j'),
-  split_nav('move', 'k'),
-  split_nav('move', 'l'),
-  split_nav('resize', 'h'),
-  split_nav('resize', 'j'),
-  split_nav('resize', 'k'),
-  split_nav('resize', 'l'),
   {
     mods   = "LEADER",
     key    = "-",
@@ -55,10 +32,14 @@ config.keys = {
     key    = "\\",
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' }
   },
-  { key = "h", mods = "CTRL", action = wezterm.action { ActivatePaneDirection = "Left" } },
-  { key = "j", mods = "CTRL", action = wezterm.action { ActivatePaneDirection = "Down" } },
-  { key = "k", mods = "CTRL", action = wezterm.action { ActivatePaneDirection = "Up" } },
-  { key = "l", mods = "CTRL", action = wezterm.action { ActivatePaneDirection = "Right" } },
+  bind_if(is_outside_vim, 'h', 'CTRL', wezterm.action.ActivatePaneDirection('Left')),
+  bind_if(is_outside_vim, 'l', 'CTRL', wezterm.action.ActivatePaneDirection('Right')),
+  bind_if(is_outside_vim, 'k', 'CTRL', wezterm.action.ActivatePaneDirection('Up')),
+  bind_if(is_outside_vim, 'j', 'CTRL', wezterm.action.ActivatePaneDirection('Down')),
+  -- { key = "h", mods = "CTRL", action = wezterm.action { EmitEvent = "move-left" } },
+  -- { key = "j", mods = "CTRL", action = wezterm.action { EmitEvent = "move-down" } },
+  -- { key = "k", mods = "CTRL", action = wezterm.action { EmitEvent = "move-up" } },
+  -- { key = "l", mods = "CTRL", action = wezterm.action { EmitEvent = "move-right" } },
   {
     key = 'z',
     mods = 'CTRL',

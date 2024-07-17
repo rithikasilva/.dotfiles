@@ -23,8 +23,10 @@ floating_modifier $mod
 # tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec --no-startup-id alacritty
-bindsym $mod+e exec --no-startup-id emacs
+bindsym $mod+Return exec --no-startup-id alacritty -e tmux 
+# bindsym $mod+e exec --no-startup-id emacs
+bindsym $mod+n exec ~/.cargo/bin/neovide
+# bindsym $mod+Return exec --no-startup-id flatpak run org.wezfurlong.wezterm
 # bindsym $mod+Return exec flatpak run org.wezfurlong.wezterm
 
 # kill focused window
@@ -76,9 +78,9 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-# bindsym $mod+s layout stacking
+bindsym $mod+s layout stacking
 # bindsym $mod+w layout tabbed
-# bindsym $mod+e layout toggle split
+bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 # bindsym $mod+Shift+space floating toggle
@@ -228,7 +230,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 bindsym XF86KbdBrightnessUp exec --no-startup-id asusctl -n
 
 
-default_border pixel 0 
+default_border pixel 2
 gaps inner 15
 gaps outer 0
 

@@ -1,0 +1,73 @@
+{
+	"layer": "top",
+	"position": "left",
+	"margin-left": 15,
+	"margin-top": 15,
+	"margin-bottom": 15,
+	"modules-left": ["sway/workspaces"],
+	"modules-center": ["custom/title"],
+	"modules-right": ["temperature", "temperature#gpu", "pulseaudio","clock", "battery"],
+	"pulseaudio": {
+		"tooltip": false,
+		"scroll-step": 5,
+		"format": "{icon}\n",
+		"format-muted": "MUTE\n",
+		"tooltip": true,
+		"tooltip-format": "{volume}%",
+		"format-icons": {
+			"default": ["󰕿", "󰖀", "󰕾"]
+		}
+	},
+	"custom/title": {
+	    "format": "\nT\nA\nC\nH\nY\nO\nN\n",
+	},
+	"network": {
+		"tooltip": false,
+		"format-wifi": "  {essid}",
+		"format-ethernet": ""
+	},
+	"backlight": {
+		"tooltip": false,
+		"format": "",
+		"tooltip": true,
+		"tooltip-format": "{}%",
+		"interval":1,
+	},
+    "battery": {
+		"bat": "BAT0",
+		"adaptor": "AC0",
+        "states": {
+            "good": 95,
+            "warning": 30,
+            "critical": 20
+        },
+        "format": "{capacity}\nDC\n",
+        "format-charging": "{capacity}\nCH\n",
+        "format-plugged": "{capacity}\nPG\n",
+	"tooltip": true,
+	"tooltip-format": "{capacity}% {time} {power}W",
+	"format-time": "{H}h{m}m",
+        "format-icons": ["󰁺", "󰁾", "󰁿", "󰂁", "󰁹"] 
+    },
+    "clock": {
+        "format": "󰣆\n{:%d\n%m\n%y\n\n󱑇\n%I\n%M\n%p\n}"
+    },
+    
+    "cpu": {
+        "interval": 15,
+        "format": " {}%",
+        "max-length": 10
+    },
+    "memory": {
+        "interval": 30,
+        "format": " {}%",
+        "max-length": 10
+    },
+    "temperature": {
+	"format": "\n{temperatureC}\n°C\n",
+    },
+   "temperature#gpu": {
+	"format": "{temperatureC}\n°C\n",
+	"thermal-zone": 1,
+    }
+}

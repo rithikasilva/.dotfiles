@@ -1,0 +1,8 @@
+# Need to specify location since I use bob for nvim
+neovim-bin="/home/r1tz/.local/share/bob/nvim-bin/nvim"
+
+
+[font]
+normal = ["JetBrainsMono Nerd Font"]
+size = 10
+
