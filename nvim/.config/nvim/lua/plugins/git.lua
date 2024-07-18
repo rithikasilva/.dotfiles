@@ -1,5 +1,11 @@
 return {
 	{
+		"kdheepak/lazygit.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+	},
+	{
 		'lewis6991/gitsigns.nvim',
 		opts = {
 			signs = {
@@ -67,5 +73,11 @@ return {
 				map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'select git hunk' })
 			end,
 		},
-	}
+	},
+	-- {
+	-- 	'tpope/vim-fugitive',
+	-- },
+	-- {
+	-- 	'tpope/vim-rhubarb',
+	-- },
 }
