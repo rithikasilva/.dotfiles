@@ -64,6 +64,30 @@ return {
 		},
 	},
 	{
+		"nvim-neorg/neorg",
+		lazy = false,
+		version = "*",
+		config = function()
+			require("neorg").setup {
+				load = {
+					["core.defaults"] = {},
+					["core.concealer"] = {},
+					["core.dirman"] = {
+						config = {
+							workspaces = {
+								notes = "~/notes",
+							},
+							default_workspace = "notes",
+						},
+					},
+				},
+			}
+
+			vim.wo.foldlevel = 99
+			vim.wo.conceallevel = 2
+		end,
+	},
+	{
 		"3rd/image.nvim",
 		dependencies = { "luarocks.nvim" },
 	},
@@ -74,6 +98,24 @@ return {
 			vim.g.vimtex_view_method = "zathura"
 		end
 	},
-
 	{ "ThePrimeagen/vim-be-good", name = "VimBeGood", priority = 1000 },
+	{
+		'cameron-wags/rainbow_csv.nvim',
+		config = true,
+		ft = {
+			'csv',
+			'tsv',
+			'csv_semicolon',
+			'csv_whitespace',
+			'csv_pipe',
+			'rfc_csv',
+			'rfc_semicolon'
+		},
+		cmd = {
+			'RainbowDelim',
+			'RainbowDelimSimple',
+			'RainbowDelimQuoted',
+			'RainbowMultiDelim'
+		}
+	},
 }
