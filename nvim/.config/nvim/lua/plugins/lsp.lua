@@ -1,3 +1,4 @@
+-- LSP Stuff. Most of this is directly copied from Kickstart.nvim
 return {
 	{
 		'neovim/nvim-lspconfig',

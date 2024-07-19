@@ -1,3 +1,4 @@
+-- Misc Settings
 vim.o.hlsearch = false
 vim.wo.number = true
 vim.o.mouse = 'a'
@@ -13,8 +14,7 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
+-- Highlight on yank -> From Kickstart.nvim
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
 	callback = function()
@@ -81,13 +81,12 @@ vim.opt.termguicolors = true
 
 
 vim.g.vimtex_view_method = "zathura"
-vim.cmd 'colorscheme catppuccin-mocha'
+
+
+
 vim.o.tabstop = 4
 vim.keymap.set("i", "jj", "<ESC>", { silent = true })
 vim.wo.relativenumber = true
-
--- vim.api.nvim_set_keymap('n', 'p', 'pgvy', { noremap = true, silent = true })
--- vim.api.nvim_set_keymap('n', 'd', '"_d', { noremap = true, silent = true })
 
 
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })

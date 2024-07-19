@@ -41,8 +41,8 @@
             "warning": 30,
             "critical": 20
         },
-        "format": "{capacity}\nDC\n",
-        "format-charging": "{capacity}\nCH\n",
+        "format": "{capacity}\n--\n",
+        "format-charging": "{capacity}\n++\n",
         "format-plugged": "{capacity}\nPG\n",
 	"tooltip": true,
 	"tooltip-format": "{capacity}% {time} {power}W",

@@ -28,4 +28,3 @@ require('lazy').setup({
 }, {})
 
 require("vim-options")
-
