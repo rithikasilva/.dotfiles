@@ -5,15 +5,5 @@
         "key": "ctrl+\\",
         "command": "workbench.action.focusActiveEditorGroup",
         "when": "terminalFocus"
-    },
-    {
-        "key": "j j",
-        "command": "extension.vim_escape",
-        "when": "editorTextFocus && vim.active && !inDebugRepl"
-    },
-    {
-        "key": "escape",
-        "command": "-extension.vim_escape",
-        "when": "editorTextFocus && vim.active && !inDebugRepl"
     }
 ]

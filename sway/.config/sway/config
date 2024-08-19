@@ -26,6 +26,7 @@ floating_modifier $mod
 bindsym $mod+Return exec --no-startup-id alacritty -e tmux 
 # bindsym $mod+e exec --no-startup-id emacs
 bindsym $mod+n exec ~/.cargo/bin/neovide
+bindsym $mod+a exec --no-startup-id anki
 # bindsym $mod+Return exec --no-startup-id flatpak run org.wezfurlong.wezterm
 # bindsym $mod+Return exec flatpak run org.wezfurlong.wezterm
 
@@ -89,7 +90,7 @@ bindsym $mod+Shift+space floating toggle
 # bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child

@@ -9,9 +9,7 @@
     "explorer.confirmPasteNative": false,
     "explorer.decorations.badges": false,
     "explorer.confirmDragAndDrop": false,
-    "editor.language.colorizedBracketPairs": [
-
-    ],
+    "editor.language.colorizedBracketPairs": [],
     "colorize.languages": [
         "css",
         "sass",
@@ -24,10 +22,55 @@
         "svg",
         "json",
         "python",
-        "lua"
+        "lua",
     ],
     "workbench.colorTheme": "Catppuccin Mocha",
     "editor.lineNumbers": "relative",
     "liveServer.settings.donotVerifyTags": true,
     "liveServer.settings.donotShowInfoMsg": true,
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": false,
+    "vim.hlsearch": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": [
+                "j",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<leader>",
+                "s",
+                "f"
+            ],
+            "commands": [
+                "workbench.action.quickOpen",
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
+                "<leader>"
+            ],
+            "commands": [
+                "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
+            ]
+        },
+    ],
+    "vim.leader": "<space>",
+    "vim.handleKeys": {
+        "<C-a>": false,
+        "<C-f>": false
+    },
+    "extensions.experimental.affinity": {
+        "vscodevim.vim": 1
+    }
 }
