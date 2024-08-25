@@ -64,6 +64,16 @@
                 "workbench.action.quickOpenPreviousRecentlyUsedEditorInGroup",
             ]
         },
+        {
+            "before": [
+                "ctrl",
+                "p"
+            ],
+            "commands": [
+                "workbench.action.terminal.focus"   
+            ]
+        }
+
     ],
     "vim.leader": "<space>",
     "vim.handleKeys": {
