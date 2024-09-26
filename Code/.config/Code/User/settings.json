@@ -23,6 +23,7 @@
         "json",
         "python",
         "lua",
+        "typescript",
     ],
     "workbench.colorTheme": "Catppuccin Mocha",
     "editor.lineNumbers": "relative",
@@ -85,5 +86,15 @@
     },
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "colorize.colorized_colors": [
+
+        "BROWSERS_COLORS",
+        "HEXA",
+        "RGB",
+        "HSL"
+    ],
+    "[astro]": {
+        "editor.defaultFormatter": "astro-build.astro-vscode"
     }
 }
