@@ -24,8 +24,4 @@ The install script is supposed to be idempotent.
 ![desktop](desktop.png)
 ![term](dotfiles-main.png)
 
-### Troubleshooting
-- Neovim:
-  - `:checkhealth` is your best friend.
-  - `:TSUpdate` is also your friend.
 
