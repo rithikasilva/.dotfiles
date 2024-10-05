@@ -48,7 +48,7 @@
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": [
-                "<leader>",
+            "<leader>",
                 "s",
                 "f"
             ],
@@ -96,5 +96,25 @@
     ],
     "[astro]": {
         "editor.defaultFormatter": "astro-build.astro-vscode"
-    }
+    },
+    "workbench.activityBar.location": "hidden",
+    "editor.scrollbar.horizontal": "hidden",
+    "breadcrumbs.enabled": false,
+    "workbench.tree.renderIndentGuides": "none",
+    "editor.guides.indentation": true,
+    "editor.cursorBlinking": "phase",
+    "editor.cursorSmoothCaretAnimation": "off",
+    "editor.renderLineHighlight": "none",
+    "editor.glyphMargin": false,
+    "workbench.layoutControl.type": "menu",
+    "workbench.layoutControl.enabled": false,
+    "window.title": " ",
+    "window.customMenuBarAltFocus": false,
+    "window.commandCenter": false,
+    "window.menuBarVisibility": "compact",
+    "workbench.editor.showTabs": "multiple",
+    "window.density.editorTabHeight": "compact",
+    "workbench.startupEditor": "none",
+    "terminal.integrated.hideOnStartup": "always",
+    "explorer.autoReveal": false
 }
