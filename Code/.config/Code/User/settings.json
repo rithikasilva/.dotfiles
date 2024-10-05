@@ -73,8 +73,7 @@
             "commands": [
                 "workbench.action.terminal.focus"   
             ]
-        }
-
+        },
     ],
     "vim.leader": "<space>",
     "vim.handleKeys": {
