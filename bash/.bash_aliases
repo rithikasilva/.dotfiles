@@ -20,6 +20,8 @@ alias wezterm='flatpak run org.wezfurlong.wezterm'
 alias cd='z'
 
 
+alias restart_wifi='systemctl restart NetworkManager.service'
+
 function ntfy-maelstrom() {
 		curl -d "$1" maelstrom.tail561e2.ts.net/maelstrom
 }
