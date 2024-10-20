@@ -33,12 +33,13 @@
 (setq doom-theme 'catppuccin)
 (setq catppuccin-flavor 'mocha)
 (setq confirm-kill-emacs nil)
+(setq confirm-kill-processes nil)
+(setq tab-always-indent 'complete)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 (setq-default evil-escape-key-sequence "jj")
-
 
 ;; IF you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -50,7 +51,7 @@
 ;;
 ;;   (after! PACKAGE
 ;;     (setq x y))
-;;
+
 ;; The exceptions to this rule:
 ;;
 ;;   - Setting file/directory variables (like `org-directory')
@@ -67,9 +68,16 @@
 ;;   this file. Emacs searches the `load-path' when you load packages with
 ;;   `require' or `use-package'.
 ;; - `map!' for binding new keys
-;;
-;;
-;;
+(global-tree-sitter-mode)
+(use-package! tree-sitter
+  :hook (prog-mode . tree-sitter-mode)
+  :hook (tree-sitter-mode . tree-sitter-hl-mode))
+
+(use-package! tree-sitter-langs
+  :after tree-sitter)
+
+
+
 ;; To get information about any of these functions/macros, move the cursor over
 ;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
 ;; This will open documentation for it, including demos of how they are used.
@@ -78,3 +86,12 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+(after! lsp-clangd
+  (setq lsp-clients-clangd-args
+        '("-j=3"
+          "--background-index"
+          "--clang-tidy"
+          "--completion-style=detailed"
+          "--header-insertion=never"
+          "--header-insertion-decorators=0"))
+  (set-lsp-priority! 'clangd 2))
