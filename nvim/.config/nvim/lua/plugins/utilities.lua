@@ -1,13 +1,5 @@
 return {
 	{
-		"eoh-bse/minintro.nvim",
-		config = true,
-		lazy = false,
-		opts = {
-			color = "#b4befe"
-		}
-	},
-	{
 		'tpope/vim-sleuth',
 	},
 	{
@@ -15,12 +7,20 @@ return {
 		dependencies = { "nvim-telescope/telescope.nvim" },
 	},
 	{
+		'MeanderingProgrammer/render-markdown.nvim',
+		dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
+		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+		---@module 'render-markdown'
+		---@type render.md.UserConfig
+		opts = {},
+	},
+	{
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
-	{ 'numToStr/Comment.nvim', opts = {} },
 	{ "voldikss/vim-floaterm" },
 	{
 		"christoomey/vim-tmux-navigator",
@@ -55,14 +55,71 @@ return {
 	},
 	{
 		'nvim-lualine/lualine.nvim',
-		opts = {
-			options = {
-				icons_enabled = false,
-				theme = 'auto',
-				component_separators = '|',
-				section_separators = '',
-			},
-		},
+		config = function()
+			local palette = require("catppuccin.palettes.init").get_palette()
+			require('lualine').setup({
+				options = {
+					theme = "catppuccin",
+					section_separators = '',
+					component_separators = '',
+				},
+				sections = {
+					lualine_a = {
+						{
+							"filename",
+							path = 1,
+							separator = { left = '', right = '' },
+							color = { bg = palette.pink, fg = palette.base, gui = "bold" },
+							padding = 0,
+							shorting_target = 0,
+						},
+					},
+					lualine_b = {},
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = {},
+					lualine_z = {
+						{
+							"%l/%L,%c",
+							color = { bg = palette.mantle, fg = palette.text },
+							padding = 1,
+						},
+						{
+							"filetype",
+							color = { bg = palette.mantle, fg = palette.text },
+							padding = 0,
+						},
+					},
+				},
+				inactive_sections = {
+					lualine_a = {
+						{
+							'filename',
+							path = 1,
+							color = { fg = palette.surface1 },
+							padding = 1,
+							shorting_target = 0,
+						},
+					},
+					lualine_b = {},
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = {},
+					lualine_z = {
+						{
+							"%l/%L,%c",
+							color = { bg = palette.mantle, fg = palette.surface1 },
+							padding = 1,
+						},
+						{
+							"filetype",
+							color = { bg = palette.mantle, fg = palette.surface1 },
+							padding = 0,
+						},
+					},
+				},
+			})
+		end,
 	},
 	{
 		"vhyrro/luarocks.nvim",
@@ -107,11 +164,6 @@ return {
 		end
 	},
 	{ "ThePrimeagen/vim-be-good", name = "VimBeGood", priority = 1000 },
-	-- {
-	-- 	"m4xshen/hardtime.nvim",
-	-- 	dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
-	-- 	opts = {}
-	-- },
 	{
 		'cameron-wags/rainbow_csv.nvim',
 		config = true,
