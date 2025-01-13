@@ -96,9 +96,7 @@
     "[astro]": {
         "editor.defaultFormatter": "astro-build.astro-vscode"
     },
-    "workbench.activityBar.location": "hidden",
     "editor.scrollbar.horizontal": "hidden",
-    "breadcrumbs.enabled": false,
     "workbench.tree.renderIndentGuides": "none",
     "editor.guides.indentation": true,
     "editor.cursorBlinking": "phase",
@@ -116,5 +114,8 @@
     "workbench.startupEditor": "none",
     "terminal.integrated.hideOnStartup": "always",
     "explorer.autoReveal": false,
-    "C_Cpp.default.cppStandard": "c++23"
+    "C_Cpp.default.cppStandard": "c++23",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }

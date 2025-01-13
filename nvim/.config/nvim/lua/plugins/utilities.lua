@@ -22,23 +22,23 @@ return {
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
 	{ "voldikss/vim-floaterm" },
-	{
-		"christoomey/vim-tmux-navigator",
-		cmd = {
-			"TmuxNavigateLeft",
-			"TmuxNavigateDown",
-			"TmuxNavigateUp",
-			"TmuxNavigateRight",
-			"TmuxNavigatePrevious",
-		},
-		keys = {
-			{ "<C-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
-			{ "<C-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
-			{ "<C-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
-			{ "<C-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
-			{ "<C-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
-		},
-	},
+	-- {
+	-- 	"christoomey/vim-tmux-navigator",
+	-- 	cmd = {
+	-- 		"TmuxNavigateLeft",
+	-- 		"TmuxNavigateDown",
+	-- 		"TmuxNavigateUp",
+	-- 		"TmuxNavigateRight",
+	-- 		"TmuxNavigatePrevious",
+	-- 	},
+	-- 	keys = {
+	-- 		{ "<C-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+	-- 		{ "<C-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+	-- 		{ "<C-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+	-- 		{ "<C-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+	-- 		{ "<C-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+	-- 	},
+	-- },
 	{
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
@@ -183,4 +183,5 @@ return {
 			'RainbowMultiDelim'
 		}
 	},
+	{ 'mrjones2014/smart-splits.nvim' },
 }
