@@ -24,6 +24,7 @@ bindsym $mod+Return exec --no-startup-id alacritty
 
 # For main vault
 bindsym $mod+b exec --no-startup-id xdg-open obsidian://open?vault=Bastion
+bindsym $mod+m exec --no-startup-id /var/lib/snapd/snap/bin/morgen
 
 # For blog
 bindsym $mod+Shift+b exec --no-startup-id xdg-open obsidian://open?vault=content
@@ -231,7 +232,7 @@ gaps outer 0
 corner_radius 10
 
 
-bindsym $mod+m bar mode toggle
+# bindsym $mod+m bar mode toggle
 
 exec_always --no-startup-id dunst -conf $HOME/.config/dunst/dunstrc
 # exec_always --no-startup-id $HOME/.config/polybar/launch.sh
