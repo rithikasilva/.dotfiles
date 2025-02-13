@@ -12,6 +12,7 @@ def setup():
     os.system("sudo dnf update")
     os.system("sudo dnf install stow")
     os.system("sudo dnf install curl")
+    os.system("curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")
 
 
 def bashrc_insert_line(line):
@@ -24,6 +25,47 @@ def bashrc_insert_line(line):
         print(e)
         return False
     return True
+
+
+'''
+SwayFX
+'''
+def install_swayfx():
+    os.system("sudo dnf copr enable alebastr/swayfx")
+    os.system("sudo dnf install swayfx")
+    os.system("stow sway")
+
+
+def install_vscode():
+    os.system("sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc")
+    os.system('echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null')
+    os.system("sudo dnf check-update")
+    os.system("sudo dnf install code")
+    os.system("stow Code")
+
+
+
+def install_dunst():
+    os.system("sudo dnf install dunst")
+    os.system("stow dunst")
+
+
+def install_lazygit():
+    os.system("sudo ")
+    os.system("sudo dnf copr enable atim/lazygit -y")
+    os.system("sudo dnf install lazygit")
+    os.system("sudo stow lazygit")
+
+
+
+
+'''
+Alacritty:
+- Requires rust installed
+'''
+def install_alacritty():
+    os.system("cargo install alacritty")
+    os.system("stow alacritty")
 
 
 '''
@@ -41,9 +83,7 @@ def install_starship():
         print("Couldn't install Starship")
         return False
     if os.system("stow starship") != 0:
-        print("Couldn't apply Starship config")
-        return False
-    return bashrc_insert_line('eval "$(starship init bash)"')
+        print("Couldn't apply Starshp config")
 
 
 '''
@@ -91,15 +131,27 @@ def install_nvim():
     return bashrc_insert_line('export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"')
 
 
+def install_rofi():
+    os.system("sudo dnf install rofi")
+    os.system("stow rofi")
 
-def install_i3():
-    os.system("sudo dnf install i3")
-    os.system("stow i3")
+def install_waybar():
+    os.system("sudo dnf install waybar")
+    os.system("stow waybar")
 
-def install_polybar():
-    os.system("sudo dnf install polybar")
-    os.system("stow polybar")
 
+def install_wlogout():
+    os.system("sudo dnf install wlogout")
+    os.system("stow wlogout")
+
+# def install_i3():
+#     os.system("sudo dnf install i3")
+#     os.system("stow i3")
+#
+# def install_polybar():
+#     os.system("sudo dnf install polybar")
+#     os.system("stow polybar")
+#
 
 
 def add_scripts_to_path():
@@ -123,21 +175,30 @@ def grab_fonts():
 setup()
 add_aliases()
 add_scripts_to_path()
+cargo_installs()
+grab_fonts()
 
-install_tmux()
-tmux_by_default()
 
-install_i3()
+install_alacritty()
+install_dunst()
 
-install_polybar()
+install_lazygit()
+
+install_nvim()
+
+install_rofi()
 
 install_starship()
 
-install_nvim()
+install_swayfx()
+
+install_tmux()
+
+install_waybar()
+
+install_wlogout()
+
 cargo_installs()
 
-
-
-grab_fonts()
 
 print(GREEN + "\n\nPLEASE RESTART SHELL TO SEE CHANGES\n\n" + END)
