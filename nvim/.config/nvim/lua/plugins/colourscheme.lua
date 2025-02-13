@@ -35,15 +35,4 @@ return {
       vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = mocha.subtext0 })
     end,
   },
-  { "slugbyte/lackluster.nvim" },
-  { "rose-pine/neovim",                as = "rose-pine" },
-  { "Hiroya-W/sequoia-moonlight.nvim", name = "sequoia", priority = 1000 },
-  {
-    "folke/tokyonight.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  },
-  { "rebelot/kanagawa.nvim" },
-  { "Yazeed1s/oh-lucy.nvim" },
 }

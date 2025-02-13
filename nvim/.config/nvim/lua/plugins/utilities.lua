@@ -1,8 +1,5 @@
 return {
 	{
-		'tpope/vim-sleuth',
-	},
-	{
 		"jvgrootveld/telescope-zoxide",
 		dependencies = { "nvim-telescope/telescope.nvim" },
 	},
@@ -13,23 +10,23 @@ return {
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
 	{ "voldikss/vim-floaterm" },
-	-- {
-	-- 	"christoomey/vim-tmux-navigator",
-	-- 	cmd = {
-	-- 		"TmuxNavigateLeft",
-	-- 		"TmuxNavigateDown",
-	-- 		"TmuxNavigateUp",
-	-- 		"TmuxNavigateRight",
-	-- 		"TmuxNavigatePrevious",
-	-- 	},
-	-- 	keys = {
-	-- 		{ "<C-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
-	-- 		{ "<C-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
-	-- 		{ "<C-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
-	-- 		{ "<C-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
-	-- 		{ "<C-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
-	-- 	},
-	-- },
+	{
+		"christoomey/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
+			"TmuxNavigatePrevious",
+		},
+		keys = {
+			{ "<C-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<C-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<C-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<C-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+			{ "<C-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+		},
+	},
 	{
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
@@ -154,7 +151,6 @@ return {
 			vim.g.vimtex_view_method = "zathura"
 		end
 	},
-	{ "ThePrimeagen/vim-be-good", name = "VimBeGood", priority = 1000 },
 	{
 		'cameron-wags/rainbow_csv.nvim',
 		config = true,
@@ -174,5 +170,43 @@ return {
 			'RainbowMultiDelim'
 		}
 	},
-	{ 'mrjones2014/smart-splits.nvim' },
+	{
+		'kyazdani42/nvim-tree.lua',
+		requires = 'kyazdani42/nvim-web-devicons',
+		config = function()
+			require 'nvim-tree'.setup {
+				disable_netrw       = true,
+				hijack_netrw        = true,
+				open_on_tab         = false,
+				hijack_cursor       = false,
+				update_cwd          = false,
+				update_focused_file = {
+					enable      = false,
+					update_cwd  = false,
+					ignore_list = {}
+				},
+				system_open         = {
+					cmd  = nil,
+					args = {}
+				},
+				view                = {
+					width = 30,
+					side = 'left',
+				}
+			}
+		end
+	},
+	{
+		"benlubas/molten-nvim",
+		version = "^1.0.0",
+		build = ":UpdateRemotePlugins",
+		init = function()
+			vim.g.molten_output_win_max_height = 12
+		end,
+	},
+	{
+		'goerz/jupytext.nvim',
+		version = '0.2.0',
+		opts = {}, -- see Options
+	}
 }

@@ -15,7 +15,7 @@ return {
 				{ "<leader>r_", hidden = true },
 				{ "<leader>s",  group = "[S]earch" },
 				{ "<leader>s_", hidden = true },
-				{ "<leader>t",  group = "[T]oggle" },
+				{ "<leader>t",  group = "[T]ask" },
 				{ "<leader>t_", hidden = true },
 				{ "<leader>w",  group = "[W]orkspace" },
 				{ "<leader>w_", hidden = true },

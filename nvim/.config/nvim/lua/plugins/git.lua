@@ -4,6 +4,9 @@ return {
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
+		config = function()
+			vim.keymap.set('n', '<leader>gg', ':LazyGit<CR>', { silent = true })
+		end,
 	},
 	{
 		'lewis6991/gitsigns.nvim',
@@ -74,10 +77,4 @@ return {
 			end,
 		},
 	},
-	-- {
-	-- 	'tpope/vim-fugitive',
-	-- },
-	-- {
-	-- 	'tpope/vim-rhubarb',
-	-- },
 }

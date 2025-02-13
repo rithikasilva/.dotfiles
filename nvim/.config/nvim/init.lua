@@ -24,7 +24,8 @@ require('lazy').setup({
   require 'plugins.telescope',
   require 'plugins.utilities',
   require 'plugins.which-key',
-  require 'plugins.nvim-tree',
 }, {})
 
+require("tasks")
 require("vim-options")
+

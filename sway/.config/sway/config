@@ -24,7 +24,6 @@ bindsym $mod+Return exec --no-startup-id alacritty
 
 # For main vault
 bindsym $mod+b exec --no-startup-id xdg-open obsidian://open?vault=Bastion
-bindsym $mod+m exec --no-startup-id /var/lib/snapd/snap/bin/morgen
 
 # For blog
 bindsym $mod+Shift+b exec --no-startup-id xdg-open obsidian://open?vault=content
@@ -38,6 +37,7 @@ bindsym $mod+q kill
 # bindsym $mod+d exec --no-startup-id dmenu_run
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Space exec ~/.cargo/bin/neovide
+bindsym $mod+e exec --no-startup-id emacs
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -80,7 +80,7 @@ bindsym $mod+f fullscreen toggle
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+# bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 # bindsym $mod+Shift+space floating toggle

@@ -24,9 +24,7 @@ return {
 				},
 			}
 			require('telescope').load_extension("zoxide")
-
 			pcall(require('telescope').load_extension, 'fzf')
-
 
 			local function find_git_root()
 				local current_file = vim.api.nvim_buf_get_name(0)
