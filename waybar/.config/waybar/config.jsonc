@@ -1,10 +1,10 @@
 {
 	"layer": "top",
 	"position": "bottom",
-	"width": 1890,
+	"width": 1920,
 	"margin-left": 0,
 	"margin-top": 0,
-	"margin-bottom": 10,
+	"margin-bottom": 0,
 	"modules-left": ["sway/workspaces"],
 	"modules-center": ["custom/title"],
 	"modules-right": ["temperature", "temperature#gpu", "pulseaudio","clock", "battery"],
