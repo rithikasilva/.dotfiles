@@ -1,0 +1,76 @@
+#!/bin/bash
+
+PROJECT_FILE="$HOME/.project_dirs"
+
+# Function to add the current directory to the project file
+add_project() {
+    local current_dir="$(pwd)"
+    touch "$PROJECT_FILE"
+
+    if ! grep -Fxq "$current_dir" "$PROJECT_FILE"; then
+        echo "$current_dir" >> "$PROJECT_FILE"
+        echo "Added: $current_dir"
+    else
+        echo "Already exists: $current_dir"
+    fi
+}
+
+# Function to switch to a tmux session
+switch_to() {
+    if [[ -z $TMUX ]]; then
+        tmux attach-session -t "$1"
+    else
+        tmux switch-client -t "$1"
+    fi
+}
+
+# Function to check if a tmux session exists
+has_session() {
+    tmux list-sessions | grep -iq "^$1:"
+}
+
+# Function to hydrate a tmux session with sessionizer
+hydrate() {
+    DEFAULT_CONFIG="$HOME/.dotfiles/scripts/dev-env/.tmux-sessionizer"
+    if [[ -f "$2/.tmux-sessionizer" ]]; then
+        tmux send-keys -t "$1" "source $2/.tmux-sessionizer" C-m
+    elif [[ -f $DEFAULT_CONFIG ]]; then
+        tmux send-keys -t "$1" "source $DEFAULT_CONFIG" C-m
+	fi
+}
+
+# Function to start the tmux environment
+start_env() {
+    if [[ ! -s "$PROJECT_FILE" ]]; then
+        echo "No projects found. Use the script with -a to add a project first."
+        exit 1
+    fi
+
+    selected=$(cat "$PROJECT_FILE" | fzf --height=40% --reverse --prompt="Select a project: ")
+    if [[ -z "$selected" ]]; then
+        exit 0
+    fi
+
+    selected_name=$(basename "$selected" | tr '.' '_')
+    tmux_running=$(pgrep tmux)
+
+    if [[ -z "$TMUX" ]] && [[ -z "$tmux_running" ]]; then
+        tmux new-session -s "$selected_name" -c "$selected"
+        hydrate "$selected_name" "$selected"
+        exit 0
+    fi
+
+    if ! has_session "$selected_name"; then
+        tmux new-session -ds "$selected_name" -c "$selected"
+        hydrate "$selected_name" "$selected"
+    fi
+
+    switch_to "$selected_name"
+}
+
+# Main logic to process the arguments
+if [[ "$1" == "-a" ]]; then
+    add_project
+else
+    start_env
+fi
