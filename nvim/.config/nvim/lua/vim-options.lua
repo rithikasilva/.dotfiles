@@ -80,6 +80,12 @@ vim.keymap.set("n", "<leader>z", require("telescope").extensions.zoxide.list, {d
 vim.opt.termguicolors = true
 
 
+vim.opt.fillchars = {
+    stl = "─",
+    stlnc = "─",
+}
+vim.opt.cmdheight = 0
+
 vim.g.vimtex_view_method = "zathura"
 vim.g.vimtex_view_compiler_method="latexrun"
 vim.g.text_concel='abdmg'
@@ -111,6 +117,7 @@ vim.api.nvim_set_keymap('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { noremap = true, s
 vim.api.nvim_set_keymap('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 
 
+vim.cmd [[highlight NvimTreeNormal guibg=NONE]]
 vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
 

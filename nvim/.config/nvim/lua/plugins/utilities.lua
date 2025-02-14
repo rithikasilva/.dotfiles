@@ -1,5 +1,8 @@
 return {
 	{
+		'tpope/vim-sleuth',
+	},
+	{
 		"jvgrootveld/telescope-zoxide",
 		dependencies = { "nvim-telescope/telescope.nvim" },
 	},
@@ -45,64 +48,57 @@ return {
 		'nvim-lualine/lualine.nvim',
 		config = function()
 			local palette = require("catppuccin.palettes.init").get_palette()
+			local custom_catppuccin = require("lualine.themes.catppuccin")
+			custom_catppuccin.normal.c.bg = 'none' -- Deal with the background on dashes
 			require('lualine').setup({
 				options = {
-					theme = "catppuccin",
+					theme = custom_catppuccin,
 					section_separators = '',
 					component_separators = '',
+					globalstatus = true,
+					always_divide_middle = true,
 				},
 				sections = {
 					lualine_a = {
 						{
-							"filename",
-							path = 1,
-							separator = { left = '', right = '' },
-							color = { bg = palette.pink, fg = palette.base, gui = "bold" },
+							'branch',
+							icon = '',
+							color = { bg = 'none', fg = palette.text },
 							padding = 0,
-							shorting_target = 0,
 						},
 					},
-					lualine_b = {},
-					lualine_c = {},
-					lualine_x = {},
-					lualine_y = {},
+					lualine_b = {
+						{
+							color = { bg = 'none' },
+							padding = 0,
+						},
+					},
+					lualine_c = {
+						"%=",
+						{
+							function()
+								return vim.fn.expand('%:t') .. " "
+							end,
+							color = { bg = 'none', fg = palette.text },
+							padding = 0,
+						},
+					},
+					lualine_x = {
+						{
+							color = { bg = 'none' },
+							padding = 0,
+						}
+					},
+					lualine_y = {
+						{
+							padding = 0,
+						}
+					},
 					lualine_z = {
 						{
-							"%l/%L,%c",
-							color = { bg = palette.mantle, fg = palette.text },
-							padding = 1,
-						},
-						{
-							"filetype",
-							color = { bg = palette.mantle, fg = palette.text },
-							padding = 0,
-						},
-					},
-				},
-				inactive_sections = {
-					lualine_a = {
-						{
-							'filename',
-							path = 1,
-							color = { fg = palette.surface1 },
-							padding = 1,
-							shorting_target = 0,
-						},
-					},
-					lualine_b = {},
-					lualine_c = {},
-					lualine_x = {},
-					lualine_y = {},
-					lualine_z = {
-						{
-							"%l/%L,%c",
-							color = { bg = palette.mantle, fg = palette.surface1 },
-							padding = 1,
-						},
-						{
-							"filetype",
-							color = { bg = palette.mantle, fg = palette.surface1 },
-							padding = 0,
+							"progress",
+							color = { bg = 'none', fg = palette.text },
+							padding = { left = 1, right = 0 },
 						},
 					},
 				},
@@ -150,7 +146,7 @@ return {
 		'kyazdani42/nvim-tree.lua',
 		requires = 'kyazdani42/nvim-web-devicons',
 		config = function()
-			require 'nvim-tree'.setup {
+			require("nvim-tree").setup {
 				disable_netrw       = true,
 				hijack_netrw        = true,
 				open_on_tab         = false,
@@ -168,7 +164,7 @@ return {
 				view                = {
 					width = 30,
 					side = 'left',
-				}
+				},
 			}
 		end
 	},
