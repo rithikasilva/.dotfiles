@@ -103,13 +103,8 @@ window#waybar.hidden {
 	border-radius: 10px 0 0 10px;
 }
 
-#temperature {
-	margin-right: 15px;
-	transition: none;
-	color: #cdd6f4;
-}
 
-#temperature.gpu {
+#custom-gpu_dgpu, #custom-gpu_igpu {
 	margin-right: 15px;
 	transition: none;
 	color: #cdd6f4;

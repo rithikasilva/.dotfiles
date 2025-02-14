@@ -7,7 +7,7 @@
 	"margin-bottom": 0,
 	"modules-left": ["sway/workspaces"],
 	"modules-center": ["custom/title"],
-	"modules-right": ["temperature", "temperature#gpu", "pulseaudio","clock", "battery"],
+	"modules-right": ["custom/gpu_igpu", "custom/gpu_dgpu", "pulseaudio","clock", "battery"],
 	"pulseaudio": {
 		"tooltip": false,
 		"scroll-step": 5,
@@ -64,11 +64,14 @@
         "format": " {}%",
         "max-length": 10
     },
-    "temperature": {
-	"format": "{temperatureC}°C",
-    },
-   "temperature#gpu": {
-	"format": "{temperatureC}°C",
-	"thermal-zone": 1,
-    }
+	"custom/gpu_dgpu": {
+			"exec": "sensors | awk '/amdgpu-pci-0300/,/junction/ {if (/junction/) {gsub(/[+°C]/, \"\", $2); print $2}}'",
+			"interval": 2,
+			"format": "{}°C"
+	},
+	"custom/gpu_igpu": {
+			"exec": "sensors | awk '/amdgpu-pci-0700/,/edge/ {if (/edge/) {gsub(/[+°C]/, \"\", $2); print $2}}'",
+			"interval": 2,
+			"format": "{}°C"
+	},
 }
