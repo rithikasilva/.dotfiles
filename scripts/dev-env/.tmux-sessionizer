@@ -1,3 +1,3 @@
 tmux send-keys "nvim ." C-m
-tmux new-window -n "scratch"
-tmux select-window -t 1
+tmux split-window -h -c "#{pane_current_path}" 
+tmux select-pane -t 1
