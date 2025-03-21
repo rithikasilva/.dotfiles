@@ -45,37 +45,79 @@ return {
 			end
 
 
-
 			require('mason').setup()
 			require('mason-lspconfig').setup()
+			require('neodev').setup()
+
 			local servers = {
 				lua_ls = {
-					Lua = {
-						workspace = { checkThirdParty = false },
-						telemetry = { enable = false },
+					settings = {
+						Lua = {
+							workspace = { checkThirdParty = false },
+							telemetry = { enable = false },
+						},
+					},
+				},
+				ltex = {
+					settings = {
+						ltex = {
+							dictionary = {
+								["en-US"] = { "Neovim", "neovim", "Rithika", "Silva" },
+							},
+						},
 					},
 				},
 			}
-			require('neodev').setup()
 
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 			capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 			local mason_lspconfig = require 'mason-lspconfig'
+
 			mason_lspconfig.setup {
 				ensure_installed = vim.tbl_keys(servers),
 			}
 
 			mason_lspconfig.setup_handlers {
 				function(server_name)
-					require('lspconfig')[server_name].setup {
+					local opts = {
 						capabilities = capabilities,
 						on_attach = on_attach,
-						settings = servers[server_name],
-						filetypes = (servers[server_name] or {}).filetypes,
 					}
+
+					-- Merge server-specific settings if available
+					if servers[server_name] then
+						for k, v in pairs(servers[server_name]) do
+							opts[k] = v
+						end
+					end
+
+					require('lspconfig')[server_name].setup(opts)
 				end,
 			}
 		end,
 	},
+	{
+		'nvimdev/guard.nvim',
+		dependencies = {
+			'nvimdev/guard-collection'
+		},
+		config = function()
+			local ft = require('guard.filetype')
+			ft('python'):fmt({
+				cmd = 'black',
+				args = { '--line-length', '100', '-' },
+				stdin = true,
+			})
+
+			-- Can't use require for this plugin		
+			vim.g.guard_config = {
+				fmt_on_save = false,
+				lsp_as_default_formatter = false,
+			}
+
+			-- Associated keybinding
+			vim.api.nvim_set_keymap('n', '<leader>ff', ':Guard fmt<CR>', { noremap = true, silent = true })
+		end,
+	}
 }

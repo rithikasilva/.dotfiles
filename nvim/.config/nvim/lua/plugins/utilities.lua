@@ -12,7 +12,13 @@ return {
 		ft = { "markdown" },
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
-	{ "voldikss/vim-floaterm" },
+	{
+		"voldikss/vim-floaterm",
+		config = function()
+			vim.keymap.set('n', '<C-p>', ':FloatermToggle<CR>', { noremap = true, silent = true })
+			vim.keymap.set('t', '<C-p>', '<C-\\><C-n>:FloatermToggle<CR>', { noremap = true, silent = true })
+		end,
+	},
 	{
 		"christoomey/vim-tmux-navigator",
 		cmd = {
@@ -121,6 +127,7 @@ return {
 		lazy = false,
 		init = function()
 			vim.g.vimtex_view_method = "zathura"
+			vim.g.vimtex_view_compiler_method = "latexrun"
 		end
 	},
 	{
@@ -166,19 +173,27 @@ return {
 					side = 'left',
 				},
 			}
+
+			vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 		end
 	},
 	{
-		"benlubas/molten-nvim",
-		version = "^1.0.0",
-		build = ":UpdateRemotePlugins",
-		init = function()
-			vim.g.molten_output_win_max_height = 12
+		"allaman/emoji.nvim",
+		version = "1.0.0",
+		ft = "markdown",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp",
+			"nvim-telescope/telescope.nvim",
+			"ibhagwan/fzf-lua",
+		},
+		opts = {
+			enable_cmp_integration = true,
+		},
+		config = function(_, opts)
+			require("emoji").setup(opts)
+			local ts = require('telescope').load_extension 'emoji'
+			vim.keymap.set('n', '<leader>se', ts.emoji, { desc = '[S]earch [E]moji' })
 		end,
-	},
-	{
-		'goerz/jupytext.nvim',
-		version = '0.2.0',
-		opts = {},
 	}
 }

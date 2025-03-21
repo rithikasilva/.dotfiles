@@ -26,6 +26,5 @@ require('lazy').setup({
   require 'plugins.which-key',
 }, {})
 
-require("tasks")
 require("vim-options")
 
