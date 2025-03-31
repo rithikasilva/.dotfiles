@@ -117,5 +117,8 @@
     "C_Cpp.default.cppStandard": "c++23",
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }
