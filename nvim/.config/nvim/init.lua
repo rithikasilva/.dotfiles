@@ -20,7 +20,7 @@ require('lazy').setup({
   require 'plugins.lsp',
   require 'plugins.git',
   require 'plugins.cmp',
-  require 'plugins.treesitter',
+  require 'plugins.snacks',
   require 'plugins.utilities',
   require 'plugins.which-key',
 }, {})
