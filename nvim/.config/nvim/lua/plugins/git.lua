@@ -1,15 +1,5 @@
 return {
 	{
-		-- Preferred TUI git
-		"kdheepak/lazygit.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
-		config = function()
-			vim.keymap.set('n', '<leader>gg', ':LazyGit<CR>', { silent = true })
-		end,
-	},
-	{
 		-- Signs on the left bar of what is been changed
 		'lewis6991/gitsigns.nvim',
 		opts = {

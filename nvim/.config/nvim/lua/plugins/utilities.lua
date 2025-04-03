@@ -4,11 +4,6 @@ return {
 		'tpope/vim-sleuth',
 	},
 	{
-		-- Plugin to make using Neovide nicer
-		"jvgrootveld/telescope-zoxide",
-		dependencies = { "nvim-telescope/telescope.nvim" },
-	},
-	{
 		-- Preview markdown when I'm not using Obsidian
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
@@ -42,21 +37,50 @@ return {
 		},
 	},
 	{
-		-- Displays the indendation guides
-		'lukas-reineke/indent-blankline.nvim',
-		main = 'ibl',
-		opts = {},
-	},
-	{
 		-- Automatic bracket pairing
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
 		config = true
 	},
 	{
-		-- Essentially an older snacks.nvim, I'll update this later
-		'stevearc/dressing.nvim',
-		opts = {},
+		'folke/snacks.nvim',
+		keys = {
+			-- Note that closing is just q by default
+			{ "<C-n>",            function() Snacks.explorer() end,                     desc = "File Tree" },
+			{ "<leader>gg",       function() Snacks.lazygit() end,                      desc = "Lazygit" },
+			{ "<leader>sf",       function() Snacks.picker.files() end,                 desc = "Search Files" },
+			{ "<leader>sh",       function() Snacks.picker.help() end,                  desc = "Search Help" },
+			{ "<leader>sg",       function() Snacks.picker.grep() end,                  desc = "Search Grep" },
+			{ "<leader>sr",       function() Snacks.picker.resume() end,                desc = "Search Resume" },
+			{ "<leader><leader>", function() Snacks.picker.buffers() end,               desc = "Open Buffer" },
+			{ "<leader>z",        function() Snacks.picker.zoxide() end,                desc = "Zoxide Open Project" },
+			{ "<leader>ss",       function() Snacks.picker.spelling() end,              desc = "Spell Suggest" },
+			-- Lsp things
+			{ "gd",               function() Snacks.picker.lsp_definitions() end,       desc = "Goto Definition" },
+			{ "gD",               function() Snacks.picker.lsp_declarations() end,      desc = "Goto Declaration" },
+			{ "gr",               function() Snacks.picker.lsp_references() end,        desc = "Goto References" },
+			{ "gI",               function() Snacks.picker.lsp_implementations() end,   desc = "Goto Implementation" },
+			{ "D",                function() Snacks.picker.lsp_definitions() end,       desc = "Type Definitions" },
+			{ "ds",               function() Snacks.picker.lsp_symbols() end,           desc = "LSP Symbols" },
+			{ "ws",               function() Snacks.picker.lsp_workspace_symbols() end, desc = "LSP Workspace Symbols" },
+		},
+		opts = {
+			inputs = { enabled = true },
+			lazygit = {
+				enabled = true,
+				configure = true,
+				os = { editPreset = "nvim-remote" }
+			},
+			indent = { enabled = true },
+			explorer = {
+				enabled = true,
+				replace_netrw = true,
+			},
+			picker = {
+				enabled = true,
+			},
+		},
+
 	},
 	{
 		-- Lualine
@@ -163,35 +187,6 @@ return {
 		}
 	},
 	{
-		-- For when a file tree is occasionally useful
-		'kyazdani42/nvim-tree.lua',
-		requires = 'kyazdani42/nvim-web-devicons',
-		config = function()
-			require("nvim-tree").setup {
-				disable_netrw       = true,
-				hijack_netrw        = true,
-				open_on_tab         = false,
-				hijack_cursor       = false,
-				update_cwd          = false,
-				update_focused_file = {
-					enable      = false,
-					update_cwd  = false,
-					ignore_list = {}
-				},
-				system_open         = {
-					cmd  = nil,
-					args = {}
-				},
-				view                = {
-					width = 30,
-					side = 'left',
-				},
-			}
-
-			vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
-		end
-	},
-	{
 		-- I use emojis in blog posts
 		"allaman/emoji.nvim",
 		version = "1.0.0",
@@ -199,16 +194,12 @@ return {
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"hrsh7th/nvim-cmp",
-			"nvim-telescope/telescope.nvim",
-			"ibhagwan/fzf-lua",
 		},
 		opts = {
 			enable_cmp_integration = true,
 		},
 		config = function(_, opts)
 			require("emoji").setup(opts)
-			local ts = require('telescope').load_extension 'emoji'
-			vim.keymap.set('n', '<leader>se', ts.emoji, { desc = '[S]earch [E]moji' })
 		end,
 	}
 }

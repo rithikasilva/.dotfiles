@@ -21,7 +21,6 @@ require('lazy').setup({
   require 'plugins.git',
   require 'plugins.cmp',
   require 'plugins.treesitter',
-  require 'plugins.telescope',
   require 'plugins.utilities',
   require 'plugins.which-key',
 }, {})

@@ -75,10 +75,6 @@ vim.keymap.set('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = t
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 
 
-vim.cmd [[highlight NvimTreeNormal guibg=NONE]]
-vim.api.nvim_set_keymap('n', '<C-n>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
-
-
 -- Need to manually specify the colours for the termianl if using neovide
 if vim.g.neovide then
 	vim.g.terminal_color_0  = "#45475a"
