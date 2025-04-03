@@ -6,6 +6,7 @@ return {
 			{ 'williamboman/mason.nvim', config = true },
 			'williamboman/mason-lspconfig.nvim',
 			{
+				-- For displaying lsp messages in bottom-right pop-up
 				'j-hui/fidget.nvim',
 				opts = {
 					notification = { window = { winblend = 0 } },
@@ -103,6 +104,7 @@ return {
 		end,
 	},
 	{
+		-- Formatter, mostly just use this for black
 		'nvimdev/guard.nvim',
 		dependencies = {
 			'nvimdev/guard-collection'

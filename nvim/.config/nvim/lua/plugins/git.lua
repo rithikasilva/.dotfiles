@@ -1,5 +1,6 @@
 return {
 	{
+		-- Preferred TUI git
 		"kdheepak/lazygit.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -9,6 +10,7 @@ return {
 		end,
 	},
 	{
+		-- Signs on the left bar of what is been changed
 		'lewis6991/gitsigns.nvim',
 		opts = {
 			signs = {

@@ -1,3 +1,4 @@
+-- Everything related to telescope
 return {
 	{
 		'nvim-telescope/telescope.nvim',

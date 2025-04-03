@@ -1,5 +1,6 @@
 return {
 	{
+		-- Which-key config
 		'folke/which-key.nvim',
 		config = function()
 			require('which-key').add {

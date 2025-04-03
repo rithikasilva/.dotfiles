@@ -1,18 +1,22 @@
 return {
 	{
+		-- Shiftwidth and expandtab settings
 		'tpope/vim-sleuth',
 	},
 	{
+		-- Plugin to make using Neovide nicer
 		"jvgrootveld/telescope-zoxide",
 		dependencies = { "nvim-telescope/telescope.nvim" },
 	},
 	{
+		-- Preview markdown when I'm not using Obsidian
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
 	{
+		-- Sometimes it's more convient to use this over tmux or nvim term
 		"voldikss/vim-floaterm",
 		config = function()
 			vim.keymap.set('n', '<C-p>', ':FloatermToggle<CR>', { noremap = true, silent = true })
@@ -20,6 +24,7 @@ return {
 		end,
 	},
 	{
+		-- Convient tmux + nvim flow
 		"christoomey/vim-tmux-navigator",
 		cmd = {
 			"TmuxNavigateLeft",
@@ -37,20 +42,24 @@ return {
 		},
 	},
 	{
+		-- Displays the indendation guides
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
 		opts = {},
 	},
 	{
+		-- Automatic bracket pairing
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
 		config = true
 	},
 	{
+		-- Essentially an older snacks.nvim, I'll update this later
 		'stevearc/dressing.nvim',
 		opts = {},
 	},
 	{
+		-- Lualine
 		'nvim-lualine/lualine.nvim',
 		config = function()
 			local palette = require("catppuccin.palettes.init").get_palette()
@@ -112,6 +121,7 @@ return {
 		end,
 	},
 	{
+		-- Dependency for images
 		"vhyrro/luarocks.nvim",
 		priority = 1001,
 		opts = {
@@ -119,10 +129,12 @@ return {
 		},
 	},
 	{
+		-- Images
 		"3rd/image.nvim",
 		dependencies = { "luarocks.nvim" },
 	},
 	{
+		-- Be able to compile and display conviently
 		"lervag/vimtex",
 		lazy = false,
 		init = function()
@@ -131,6 +143,7 @@ return {
 		end
 	},
 	{
+		-- Better CSV preview
 		'cameron-wags/rainbow_csv.nvim',
 		config = true,
 		ft = {
@@ -150,6 +163,7 @@ return {
 		}
 	},
 	{
+		-- For when a file tree is occasionally useful
 		'kyazdani42/nvim-tree.lua',
 		requires = 'kyazdani42/nvim-web-devicons',
 		config = function()
@@ -178,6 +192,7 @@ return {
 		end
 	},
 	{
+		-- I use emojis in blog posts
 		"allaman/emoji.nvim",
 		version = "1.0.0",
 		ft = "markdown",
