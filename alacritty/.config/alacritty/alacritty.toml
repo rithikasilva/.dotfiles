@@ -1,6 +1,6 @@
 [window]
 padding = {x = 5, y = 5}
-# opacity = 0.8
+opacity = 0.93
 
 [env]
 TERM = "xterm-256color"

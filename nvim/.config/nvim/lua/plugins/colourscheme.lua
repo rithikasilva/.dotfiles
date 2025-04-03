@@ -5,8 +5,10 @@ return {
     priority = 1000,
     config = function()
       require("catppuccin").setup({
+        transparent_background = true,
         integrations = {
           ts_rainbow = true,
+          fidget = true,
         },
         color_overrides = {
           macchiato = {
@@ -27,7 +29,6 @@ return {
         },
       })
       vim.cmd.colorscheme("catppuccin-mocha")
-
 
       local mocha = require("catppuccin.palettes").get_palette "mocha"
       vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = mocha.subtext0 })
