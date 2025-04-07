@@ -17,12 +17,13 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   require 'plugins.colourscheme',
+  require 'plugins.snacks',
   require 'plugins.lsp',
   require 'plugins.git',
   require 'plugins.cmp',
-  require 'plugins.snacks',
   require 'plugins.utilities',
   require 'plugins.which-key',
+  require 'plugins.treesitter'
 }, {})
 
 require("vim-options")
