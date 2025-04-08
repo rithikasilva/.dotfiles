@@ -1,6 +1,8 @@
 return {
 	{
 		'folke/snacks.nvim',
+		priority = 1000,
+		lazy = false,
 		keys = {
 			-- Note that closing is just q by default
 			{ "<C-n>",            function() Snacks.explorer() end,                     desc = "File Tree" },
