@@ -101,11 +101,34 @@ return {
 		},
 		config = function()
 			local ft = require('guard.filetype')
+
 			ft('python'):fmt({
 				cmd = 'black',
 				args = { '--line-length', '100', '-' },
 				stdin = true,
 			})
+
+			-- I don't mind default, work has specifications
+			local function clang_format_cmd()
+				local cwd = vim.fn.getcwd()
+				local config_exits = vim.fn.globpath(cwd, ".clang-format") ~= ""
+
+				if config_exits then
+					return {
+						cmd = "clang-format",
+						args = {"-style=file"},
+						stin = true,
+					}
+				else
+					return {
+						cmd = "clang-format",
+						stdin = true,
+					}
+				end
+			end
+
+			-- Need to edit this when dealing with a specific format file
+			ft('c,cpp,json'):fmt(clang_format_cmd)
 
 			-- Can't use require for this plugin		
 			vim.g.guard_config = {
