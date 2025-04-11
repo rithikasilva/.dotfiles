@@ -6,6 +6,9 @@ alias tmux='tmux -2'
 alias nv='nvim'
 alias em='emacsclient -c -a -nw""'
 
+
+alias ts='tmux-sessionizer'
+
 alias r6silva-mount="~/.dotfiles/scripts/r6silva_mount.sh"
 alias r6silva-umount="~/.dotfiles/scripts/r6silva_umount.sh"
 

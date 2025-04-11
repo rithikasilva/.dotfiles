@@ -68,9 +68,21 @@ start_env() {
     switch_to "$selected_name"
 }
 
-# Main logic to process the arguments
-if [[ "$1" == "-a" ]]; then
-    add_project
-else
-    start_env
-fi
+list_sessions() {
+    echo "Active tmux sessions:"
+    tmux list-sessions 2>/dev/null || echo "No active sessions."
+}
+
+
+case "$1" in
+    -a)
+        add_project
+        ;;
+    -l)
+        list_sessions
+        ;;
+    *)
+        start_env
+        ;;
+esac
+
