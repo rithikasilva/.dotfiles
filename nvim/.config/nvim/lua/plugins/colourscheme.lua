@@ -6,7 +6,7 @@ return {
     priority = 1000,
     config = function()
       require("catppuccin").setup({
-        transparent_background = true,
+        -- transparent_background = true,
         integrations = {
           ts_rainbow = true,
           fidget = true,
@@ -22,7 +22,6 @@ return {
             surface2 = "#705867",
             surface1 = "#5A4551",
             surface0 = "#44313B",
-
             base = "#352939",
             mantle = "#211924",
             crust = "#1a1016",

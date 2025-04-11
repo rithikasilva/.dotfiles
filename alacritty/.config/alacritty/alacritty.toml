@@ -11,3 +11,4 @@ normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
 
 [general]
 import = ["~/.config/alacritty/catppuccin-mocha.toml"]
+
