@@ -36,6 +36,8 @@ vimcmd_symbol = "[❮](green)"
 truncation_length = 4
 style = "bold lavender"
 
+[python]
+symbol = ""
 
 
 
