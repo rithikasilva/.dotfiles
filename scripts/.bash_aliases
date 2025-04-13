@@ -5,7 +5,7 @@ alias l='ls -CF'
 alias tmux='tmux -2'
 alias nv='nvim'
 alias em='emacsclient -c -a -nw""'
-
+alias ya='yazi'
 
 alias ts='tmux-sessionizer'
 

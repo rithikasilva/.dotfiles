@@ -41,14 +41,24 @@ hydrate() {
 
 # Function to start the tmux environment
 start_env() {
+    local match="$1"
+
     if [[ ! -s "$PROJECT_FILE" ]]; then
         echo "No projects found. Use the script with -a to add a project first."
         exit 1
     fi
 
-    selected=$(cat "$PROJECT_FILE" | fzf --height=40% --reverse --prompt="Select a project: ")
+    local selected
+
+    if [[ -z "$match" ]]; then
+        selected=$(cat "$PROJECT_FILE" | fzf --height=40% --reverse --prompt="Select a project: ")
+    else
+        selected=$(grep -i "$match" "$PROJECT_FILE" | head -n 1)
+    fi
+
     if [[ -z "$selected" ]]; then
-        exit 0
+        echo "No match found for '$match'"
+        exit 1
     fi
 
     selected_name=$(basename "$selected" | tr '.' '_')
@@ -73,7 +83,6 @@ list_sessions() {
     tmux list-sessions 2>/dev/null || echo "No active sessions."
 }
 
-
 case "$1" in
     -a)
         add_project
@@ -82,7 +91,6 @@ case "$1" in
         list_sessions
         ;;
     *)
-        start_env
+        start_env "$1"
         ;;
 esac
-
