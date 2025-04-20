@@ -7,12 +7,19 @@ vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
+
+vim.opt.smartindent = false
+vim.opt.autoindent = false
+vim.opt.cindent = false
+
 vim.wo.signcolumn = 'yes'
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.o.tabstop = 4
+
+vim.api.nvim_set_hl(0, "StatusLine", {bg = "none"})
 vim.opt.fillchars = {
 	stl = "─",
 	stlnc = "─",
@@ -73,4 +80,8 @@ vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true
 vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { noremap = true, silent = true })
 vim.keymap.set('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = true })
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+
+
+-- Markdown Preview
+vim.keymap.set('n', '<leader>mt', ':MarkdownPreviewToggle<CR>', { desc = 'Toggle Markdown Preview' })
 

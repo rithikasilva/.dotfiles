@@ -48,7 +48,7 @@ return {
 		config = function()
 			local palette = require("catppuccin.palettes.init").get_palette()
 			local custom_catppuccin = require("lualine.themes.catppuccin")
-			custom_catppuccin.normal.c.bg = 'none' -- Deal with the background on dashes
+			-- Note, background being not set is done in vim-options
 			require('lualine').setup({
 				options = {
 					theme = custom_catppuccin,
@@ -90,6 +90,7 @@ return {
 					},
 					lualine_y = {
 						{
+							color = { bg = 'none' },
 							padding = 0,
 						}
 					},

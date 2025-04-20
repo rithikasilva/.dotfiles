@@ -57,8 +57,9 @@ return {
 				ltex = {
 					settings = {
 						ltex = {
+							language = "en-CA",
 							dictionary = {
-								["en-US"] = { "Neovim", "neovim", "Rithika", "Silva" },
+								["en-CA"] = { "Neovim", "neovim", "Rithika", "Silva" },
 							},
 						},
 					},
@@ -116,12 +117,15 @@ return {
 				if config_exits then
 					return {
 						cmd = "clang-format",
-						args = {"-style=file"},
+						args = { "-style=file" },
 						stin = true,
 					}
 				else
 					return {
 						cmd = "clang-format",
+						args = {
+							"-style={BasedOnStyle: LLVM, IndentWidth: 2, TabWidth: 2, UseTab: ForIndentation}"
+						},
 						stdin = true,
 					}
 				end
@@ -129,6 +133,12 @@ return {
 
 			-- Need to edit this when dealing with a specific format file
 			ft('c,cpp,json'):fmt(clang_format_cmd)
+
+			ft('rust'):fmt({
+				cmd = 'rustfmt',
+				stdin = true,
+			})
+
 
 			-- Can't use require for this plugin		
 			vim.g.guard_config = {
