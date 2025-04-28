@@ -1,5 +1,14 @@
 return {
 	{
+		'chomosuke/typst-preview.nvim',
+		lazy = false,
+		version = '1.*',
+		opts = {},
+		config = function()
+			vim.keymap.set('n', '<leader>tt', ':TypstPreviewToggle<CR>', { noremap = true, silent = true })
+		end,
+	},
+	{
 		-- Shiftwidth and expandtab settings
 		'tpope/vim-sleuth',
 	},

@@ -18,6 +18,9 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 vim.o.tabstop = 4
+-- To center while
+vim.o.scrolloff = 4
+
 
 vim.api.nvim_set_hl(0, "StatusLine", {bg = "none"})
 vim.opt.fillchars = {
