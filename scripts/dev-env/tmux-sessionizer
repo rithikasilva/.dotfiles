@@ -51,7 +51,7 @@ start_env() {
     local selected
 
     if [[ -z "$match" ]]; then
-        selected=$(cat "$PROJECT_FILE" | fzf --height=40% --reverse --prompt="Select a project: ")
+        selected=$(cat "$PROJECT_FILE" | fzf --style=minimal --no-color --no-bold --height=40% --reverse --prompt="Select a project: ")
     else
         selected=$(grep -i "$match" "$PROJECT_FILE" | head -n 1)
     fi
