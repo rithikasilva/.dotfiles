@@ -13,55 +13,25 @@ return {
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
 
-				local function map(mode, l, r, opts)
-					opts = opts or {}
-					opts.buffer = bufnr
-					vim.keymap.set(mode, l, r, opts)
-				end
-
-				map({ 'n', 'v' }, ']c', function()
-					if vim.wo.diff then
-						return ']c'
-					end
-					vim.schedule(function()
-						gs.next_hunk()
-					end)
-					return '<Ignore>'
-				end, { expr = true, desc = 'Jump to next hunk' })
-
-				map({ 'n', 'v' }, '[c', function()
-					if vim.wo.diff then
-						return '[c'
-					end
-					vim.schedule(function()
-						gs.prev_hunk()
-					end)
-					return '<Ignore>'
-				end, { expr = true, desc = 'Jump to previous hunk' })
-
 				-- normal mode
-				map('n', '<leader>hn', gs.next_hunk, {desc = 'git next hunk'})
-				map('n', '<leader>hp', gs.prev_hunk, {desc = 'git previous hunk'})
+				vim.keymap.set('n', '<leader>hn', gs.next_hunk, {desc = 'git next hunk'})
+				vim.keymap.set('n', '<leader>hp', gs.prev_hunk, {desc = 'git previous hunk'})
 
-				map('n', '<leader>hr', gs.reset_hunk, { desc = 'git reset hunk' })
-				map('n', '<leader>hs', gs.stage_hunk, { desc = 'git stage hunk' })
-				map('n', '<leader>hS', gs.stage_buffer, { desc = 'git Stage buffer' })
-				map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
-				map('n', '<leader>hR', gs.reset_buffer, { desc = 'git Reset buffer' })
+				vim.keymap.set('n', '<leader>hr', gs.reset_hunk, { desc = 'git reset hunk' })
+				vim.keymap.set('n', '<leader>hs', gs.stage_hunk, { desc = 'git stage hunk' })
+				vim.keymap.set('n', '<leader>hS', gs.stage_buffer, { desc = 'git Stage buffer' })
+				vim.keymap.set('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
+				vim.keymap.set('n', '<leader>hR', gs.reset_buffer, { desc = 'git Reset buffer' })
 
-				map('n', '<leader>hP', gs.preview_hunk_inline, { desc = 'preview git hunk' })
-				map('n', '<leader>hb', function()
+				vim.keymap.set('n', '<leader>hP', gs.preview_hunk_inline, { desc = 'preview git hunk' })
+				vim.keymap.set('n', '<leader>hb', function()
 					gs.blame_line { full = false }
 				end, { desc = 'git blame line' })
-				map('n', '<leader>hd', gs.diffthis, { desc = 'git diff against index' })
-				map('n', '<leader>hx', ':diffoff! | wincmd p | q | wincmd p<CR>', { desc = "Close git diff view" })
-				map('n', '<leader>hD', function()
+				vim.keymap.set('n', '<leader>hd', gs.diffthis, { desc = 'git diff against index' })
+				vim.keymap.set('n', '<leader>hx', ':diffoff! | wincmd p | q | wincmd p<CR>', { desc = "Close git diff view" })
+				vim.keymap.set('n', '<leader>hD', function()
 					gs.diffthis '~'
 				end, { desc = 'git diff against last commit' })
-
-
-				-- Text object
-				map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'select git hunk' })
 			end,
 		},
 	},
