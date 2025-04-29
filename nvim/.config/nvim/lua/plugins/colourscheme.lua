@@ -36,4 +36,14 @@ return {
       vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = mocha.subtext0 })
     end,
   },
+  {
+    "vague2k/vague.nvim",
+    config = function()
+      require("vague").setup({
+        colors = {
+          markdownBold = "red",
+        }
+      })
+    end
+  }
 }

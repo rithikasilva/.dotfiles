@@ -16,12 +16,12 @@ $character"""
 
 
 [username]
-format = '[$user](bold rosewater)'
+format = '[$user](rosewater)'
 show_always = true
 
 [hostname]
 ssh_only = false
-format = '[$hostname](bold rosewater)'
+format = '[$hostname](rosewater)'
 disabled = false
 
 [fill]
@@ -33,13 +33,13 @@ error_symbol = "[❯](red)"
 
 [directory]
 truncation_length = 4
-style = "bold lavender"
+style = "lavender"
 
 [python]
 symbol = ""
 
 [git_status]
-style = "bold flamingo"
+style = "flamingo"
 
 [palettes.catppuccin_macchiato]
 rosewater = "#f4dbd6"

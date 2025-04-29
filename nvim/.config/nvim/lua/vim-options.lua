@@ -20,13 +20,6 @@ vim.o.termguicolors = true
 vim.o.tabstop = 4
 -- To center while
 vim.o.scrolloff = 4
-
-
-vim.api.nvim_set_hl(0, "StatusLine", {bg = "none"})
-vim.opt.fillchars = {
-	stl = "─",
-	stlnc = "─",
-}
 vim.opt.cmdheight = 0
 vim.wo.relativenumber = true
 

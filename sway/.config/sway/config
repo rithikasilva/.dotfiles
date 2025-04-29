@@ -118,7 +118,6 @@ bindsym $mod+Shift+m move container to workspace $ws12
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec wlogout
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -193,7 +192,7 @@ set $crust     #11111b
 
 
 # target                 title     bg    text   indicator  border
-client.focused           $lavender $base $text  $rosewater $surface0
+client.focused           $rosewater $base $text  $rosewater $surface0
 client.focused_inactive  $overlay0 $base $text  $rosewater $base
 client.unfocused         $overlay0 $base $text  $rosewater $base
 client.urgent            $peach    $base $peach $overlay0  $peach
@@ -209,14 +208,9 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 # Keyboard Brightness
 bindsym XF86KbdBrightnessUp exec --no-startup-id asusctl -n
 
-
-default_border pixel 1
+default_border pixel 0
 gaps inner 0
 gaps outer 0
-
-# blur disable
-# corner_radius 10
-
 
 exec_always --no-startup-id dunst -conf $HOME/.config/dunst/dunstrc
 output "*" background ~/Documents/Wallpapers/wallpaper fill
@@ -226,4 +220,15 @@ output eDP-2 mode 1920x1200@60Hz position 0,0
 
 # For chooser
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
+
+
+# Opt for this over something like wlogout
+bindsym $mod+Shift+e mode "Logout"
+mode Logout {
+    bindsym Escape mode default
+    bindsym r exec systemctl reboot; mode default
+    bindsym p exec systemctl poweroff; mode default
+    bindsym l exit
+}
 

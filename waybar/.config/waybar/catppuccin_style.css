@@ -1,18 +1,18 @@
 * {
 	font-family: "IosevkaTerm Nerd Font", "Matieral Design Icons Desktop";
-	font-size: 14px;
+	font-size: 13px;
 }
 
 #custom-title {
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 
 window#waybar {
 	border: 0px solid #b4befe;
 	border-radius: 0px 0px 0px 0px;
-	background: #141415;
+	background: #1e1e2e;
 }
 
 window#waybar.hidden {
@@ -27,30 +27,30 @@ window#waybar.hidden {
 
 #network {
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #pulseaudio {
 	margin-right: 15px;
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #battery {
 	margin-right: 10px;
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #workspaces {
 	margin-right: 0;
 	margin-left: 0;
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #workspaces button {
-	color: #cdcdcd;
+	color: #cdd6f4;
 	min-width: 0;
 }
 
@@ -61,12 +61,12 @@ window#waybar.hidden {
 
 #battery.charging,
 #battery.plugged {
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #battery.critical:not(.charging) {
 	background-color: #B5E8E0;
-	color: #cdcdcd;
+	color: #cdd6f4;
 	animation-name: blink;
 	animation-duration: 0.5s;
 	animation-timing-function: linear;
@@ -83,23 +83,23 @@ window#waybar.hidden {
 
 #backlight {
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #clock {
 	margin-right: 15px;
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #memory {
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
 
 #cpu {
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 	border-radius: 10px 0 0 10px;
 }
 
@@ -107,5 +107,5 @@ window#waybar.hidden {
 #custom-gpu_dgpu, #custom-gpu_igpu {
 	margin-right: 15px;
 	transition: none;
-	color: #cdcdcd;
+	color: #cdd6f4;
 }
