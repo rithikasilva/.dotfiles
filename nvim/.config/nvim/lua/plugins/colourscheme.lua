@@ -28,8 +28,6 @@ return {
           },
         },
       })
-      vim.cmd.colorscheme("catppuccin-mocha")
-
       local mocha = require("catppuccin.palettes").get_palette "mocha"
       vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = mocha.subtext0 })
       vim.api.nvim_set_hl(0, 'LineNr', { fg = mocha.subtext0 })
@@ -40,9 +38,6 @@ return {
     "vague2k/vague.nvim",
     config = function()
       require("vague").setup({
-        colors = {
-          markdownBold = "red",
-        }
       })
     end
   }

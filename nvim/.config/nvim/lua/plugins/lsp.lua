@@ -95,7 +95,6 @@ return {
 		end,
 	},
 	{
-		-- Formatter, mostly just use this for black
 		'nvimdev/guard.nvim',
 		dependencies = {
 			'nvimdev/guard-collection'

@@ -9,18 +9,15 @@ return {
 		end,
 	},
 	{
-		-- Shiftwidth and expandtab settings
 		'tpope/vim-sleuth',
 	},
 	{
-		-- Preview markdown when I'm not using Obsidian
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
 	{
-		-- Sometimes it's more convient to use this over tmux or nvim term
 		"voldikss/vim-floaterm",
 		config = function()
 			vim.keymap.set('n', '<C-p>', ':FloatermToggle<CR>', { noremap = true, silent = true })
@@ -28,7 +25,6 @@ return {
 		end,
 	},
 	{
-		-- Convient tmux + nvim flow
 		"christoomey/vim-tmux-navigator",
 		cmd = {
 			"TmuxNavigateLeft",
@@ -46,13 +42,11 @@ return {
 		},
 	},
 	{
-		-- Automatic bracket pairing
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
 		config = true
 	},
 	{
-		-- Dependency for images
 		"vhyrro/luarocks.nvim",
 		priority = 1001,
 		opts = {
@@ -65,7 +59,6 @@ return {
 		dependencies = { "luarocks.nvim" },
 	},
 	{
-		-- Be able to compile and display conviently
 		"lervag/vimtex",
 		lazy = false,
 		init = function()
@@ -94,7 +87,6 @@ return {
 		}
 	},
 	{
-		-- I use emojis in blog posts
 		"allaman/emoji.nvim",
 		version = "1.0.0",
 		ft = "markdown",
@@ -108,5 +100,17 @@ return {
 		config = function(_, opts)
 			require("emoji").setup(opts)
 		end,
+	},
+	{
+		'stevearc/oil.nvim',
+		---@module 'oil'
+		---@type oil.SetupOpts
+		opts = {},
+		dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		config = function ()
+			require("oil").setup()
+			vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+		end,
+		lazy = false,
 	}
 }

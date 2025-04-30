@@ -14,8 +14,8 @@ return {
 				local gs = package.loaded.gitsigns
 
 				-- normal mode
-				vim.keymap.set('n', '<leader>hn', gs.next_hunk, {desc = 'git next hunk'})
-				vim.keymap.set('n', '<leader>hp', gs.prev_hunk, {desc = 'git previous hunk'})
+				vim.keymap.set('n', '<leader>hn', gs.next_hunk, { desc = 'git next hunk' })
+				vim.keymap.set('n', '<leader>hp', gs.prev_hunk, { desc = 'git previous hunk' })
 
 				vim.keymap.set('n', '<leader>hr', gs.reset_hunk, { desc = 'git reset hunk' })
 				vim.keymap.set('n', '<leader>hs', gs.stage_hunk, { desc = 'git stage hunk' })
@@ -28,7 +28,8 @@ return {
 					gs.blame_line { full = false }
 				end, { desc = 'git blame line' })
 				vim.keymap.set('n', '<leader>hd', gs.diffthis, { desc = 'git diff against index' })
-				vim.keymap.set('n', '<leader>hx', ':diffoff! | wincmd p | q | wincmd p<CR>', { desc = "Close git diff view" })
+				vim.keymap.set('n', '<leader>hx', ':diffoff! | wincmd p | q | wincmd p<CR>',
+					{ desc = "Close git diff view" })
 				vim.keymap.set('n', '<leader>hD', function()
 					gs.diffthis '~'
 				end, { desc = 'git diff against last commit' })
