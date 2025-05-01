@@ -10,7 +10,7 @@ return {
 				topdelete = { text = '‾' },
 				changedelete = { text = '~' },
 			},
-			on_attach = function(bufnr)
+			on_attach = function()
 				local gs = package.loaded.gitsigns
 
 				-- normal mode
@@ -28,8 +28,6 @@ return {
 					gs.blame_line { full = false }
 				end, { desc = 'git blame line' })
 				vim.keymap.set('n', '<leader>hd', gs.diffthis, { desc = 'git diff against index' })
-				vim.keymap.set('n', '<leader>hx', ':diffoff! | wincmd p | q | wincmd p<CR>',
-					{ desc = "Close git diff view" })
 				vim.keymap.set('n', '<leader>hD', function()
 					gs.diffthis '~'
 				end, { desc = 'git diff against last commit' })
