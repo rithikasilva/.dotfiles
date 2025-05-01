@@ -25,20 +25,6 @@ return {
 				end
 
 				nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-				nmap('<leader>ca', function()
-					vim.lsp.buf.code_action { context = { only = { 'quickfix', 'refactor', 'source' } } }
-				end, '[C]ode [A]ction')
-
-				nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-				nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-				nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-				nmap('<leader>wl', function()
-					print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-				end, '[W]orkspace [L]ist Folders')
-
-				vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-					vim.lsp.buf.format()
-				end, { desc = 'Format current buffer with LSP' })
 			end
 
 			require('mason').setup()
@@ -73,6 +59,7 @@ return {
 
 			mason_lspconfig.setup {
 				ensure_installed = vim.tbl_keys(servers),
+				automatic_installation = false,
 			}
 
 			mason_lspconfig.setup_handlers {
@@ -95,6 +82,7 @@ return {
 		end,
 	},
 	{
+		-- I want to use formatters that aren't tied to my lsp
 		'nvimdev/guard.nvim',
 		dependencies = {
 			'nvimdev/guard-collection'
@@ -138,11 +126,10 @@ return {
 				stdin = true,
 			})
 
-
-			-- Can't use require for this plugin		
 			vim.g.guard_config = {
+				-- Different places may use a separate format script, so prefer manual
 				fmt_on_save = false,
-				lsp_as_default_formatter = false,
+				lsp_as_default_formatter = true,
 			}
 
 			-- Associated keybinding
