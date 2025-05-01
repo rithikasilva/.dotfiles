@@ -1,4 +1,5 @@
 return {
+	-- Preview and Viewing Plugins
 	{
 		'chomosuke/typst-preview.nvim',
 		lazy = false,
@@ -9,14 +10,39 @@ return {
 		end,
 	},
 	{
-		'tpope/vim-sleuth',
-	},
-	{
 		"iamcco/markdown-preview.nvim",
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function() vim.fn["mkdp#util#install"]() end,
 	},
+	{
+		"lervag/vimtex",
+		lazy = false,
+		init = function()
+			vim.g.vimtex_view_method = "zathura"
+			vim.g.vimtex_view_compiler_method = "latexrun"
+		end
+	},
+	{
+		'cameron-wags/rainbow_csv.nvim',
+		config = true,
+		ft = {
+			'csv',
+			'tsv',
+			'csv_semicolon',
+			'csv_whitespace',
+			'csv_pipe',
+			'rfc_csv',
+			'rfc_semicolon'
+		},
+		cmd = {
+			'RainbowDelim',
+			'RainbowDelimSimple',
+			'RainbowDelimQuoted',
+			'RainbowMultiDelim'
+		}
+	},
+	-- General Utility
 	{
 		"voldikss/vim-floaterm",
 		config = function()
@@ -42,49 +68,26 @@ return {
 		},
 	},
 	{
+		'stevearc/oil.nvim',
+		---@module 'oil'
+		---@type oil.SetupOpts
+		opts = {},
+		dependencies = { { "echasnovski/mini.icons", opts = {} } },
+		config = function()
+			require("oil").setup()
+			vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+		end,
+		lazy = false,
+	},
+	-- In File Nice-to-haves
+	{
+		-- Auto-detect tabs, spaces, etc.. per opened file
+		'tpope/vim-sleuth',
+	},
+	{
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
 		config = true
-	},
-	{
-		"vhyrro/luarocks.nvim",
-		priority = 1001,
-		opts = {
-			rocks = { "magick" },
-		},
-	},
-	{
-		-- Images
-		"3rd/image.nvim",
-		dependencies = { "luarocks.nvim" },
-	},
-	{
-		"lervag/vimtex",
-		lazy = false,
-		init = function()
-			vim.g.vimtex_view_method = "zathura"
-			vim.g.vimtex_view_compiler_method = "latexrun"
-		end
-	},
-	{
-		-- Better CSV preview
-		'cameron-wags/rainbow_csv.nvim',
-		config = true,
-		ft = {
-			'csv',
-			'tsv',
-			'csv_semicolon',
-			'csv_whitespace',
-			'csv_pipe',
-			'rfc_csv',
-			'rfc_semicolon'
-		},
-		cmd = {
-			'RainbowDelim',
-			'RainbowDelimSimple',
-			'RainbowDelimQuoted',
-			'RainbowMultiDelim'
-		}
 	},
 	{
 		"allaman/emoji.nvim",
@@ -101,16 +104,4 @@ return {
 			require("emoji").setup(opts)
 		end,
 	},
-	{
-		'stevearc/oil.nvim',
-		---@module 'oil'
-		---@type oil.SetupOpts
-		opts = {},
-		dependencies = { { "echasnovski/mini.icons", opts = {} } },
-		config = function ()
-			require("oil").setup()
-			vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-		end,
-		lazy = false,
-	}
 }

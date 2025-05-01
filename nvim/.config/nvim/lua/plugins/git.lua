@@ -1,6 +1,5 @@
 return {
 	{
-		-- Signs on the left bar of what is been changed
 		'lewis6991/gitsigns.nvim',
 		opts = {
 			signs = {
