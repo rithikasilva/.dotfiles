@@ -1,10 +1,8 @@
 return {
 	{
-		-- LSP for Completion
 		"hrsh7th/cmp-nvim-lsp"
 	},
 	{
-		-- Preferred custom snippet engine
 		"L3MON4D3/LuaSnip",
 		dependencies = {
 			"saadparwaiz1/cmp_luasnip",
@@ -12,7 +10,6 @@ return {
 		}
 	},
 	{
-		-- Completion
 		"hrsh7th/nvim-cmp",
 		config = function()
 			local cmp = require 'cmp'

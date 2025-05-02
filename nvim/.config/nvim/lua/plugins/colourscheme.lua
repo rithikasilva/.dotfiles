@@ -1,4 +1,3 @@
--- Everything related to colourscheme
 return {
   {
     "catppuccin/nvim",
