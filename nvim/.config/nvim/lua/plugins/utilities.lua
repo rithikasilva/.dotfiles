@@ -79,6 +79,16 @@ return {
 		end,
 		lazy = false,
 	},
+	{
+		-- Normally against modifying navigation, this is worth it
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		opts = {},
+		keys = {
+			{ "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+			{ "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+		},
+	},
 	-- In File Nice-to-haves
 	{
 		-- Auto-detect tabs, spaces, etc.. per opened file
