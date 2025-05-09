@@ -14,6 +14,9 @@ return {
 		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
 		ft = { "markdown" },
 		build = function() vim.fn["mkdp#util#install"]() end,
+		config = function()
+			vim.keymap.set('n', '<leader>mt', ':MarkdownPreviewToggle<CR>', { desc = 'Toggle Markdown Preview' })
+		end,
 	},
 	{
 		"lervag/vimtex",
@@ -85,8 +88,8 @@ return {
 		event = "VeryLazy",
 		opts = {},
 		keys = {
-			{ "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
-			{ "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+			{ "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
+			{ "r", mode = "o",               function() require("flash").remote() end, desc = "Remote Flash" },
 		},
 	},
 	-- In File Nice-to-haves
