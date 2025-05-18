@@ -61,7 +61,7 @@ start_env() {
         exit 1
     fi
 
-    selected_name=$(basename "$selected" | tr '.' '_')
+    selected_name=$(echo "$selected" | sed "s|$HOME/||" | tr '/' '_' | tr '.' '_' | head -c 64)
     tmux_running=$(pgrep tmux)
 
     if [[ -z "$TMUX" ]] && [[ -z "$tmux_running" ]]; then
