@@ -33,4 +33,16 @@ return {
 			end,
 		},
 	},
+	{
+		'akinsho/git-conflict.nvim',
+		version = "*",
+		config = function()
+			require('git-conflict').setup()
+			vim.keymap.set('n', '<leader>gco', ":GitConflictChooseOurs<CR>", {desc = 'Conflict Choose Ours'} )
+			vim.keymap.set('n', '<leader>gct', ":GitConflictChooseTheirs<CR>", {desc = 'Conflict Choose Theirs'} )
+			vim.keymap.set('n', '<leader>gcb', ":GitConflictChooseBoth<CR>", {desc = 'Conflict Choose Both'} )
+			vim.keymap.set('n', '<leader>gcq', ":GitConflictListQf<CR>", {desc = 'Conflict Quickfix'} )
+
+		end,
+	}
 }
