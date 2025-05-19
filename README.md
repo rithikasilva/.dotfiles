@@ -3,7 +3,5 @@ While Ubuntu has generally been my go-to Linux distro for a while now, Fedora ju
 
 *Do not use the `install.py` script!*
 
-![desktop](desktop.png)
-![term](neofetch.png)
 
 
