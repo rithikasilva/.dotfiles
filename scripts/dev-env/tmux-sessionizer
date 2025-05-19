@@ -90,6 +90,9 @@ case "$1" in
     -l)
         list_sessions
         ;;
+    -k)
+        tmux kill-server
+        ;;
     *)
         start_env "$1"
         ;;
