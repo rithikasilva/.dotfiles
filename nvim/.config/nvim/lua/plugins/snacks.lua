@@ -35,6 +35,10 @@ return {
 			},
 			picker = {
 				enabled = true,
+				layout = {
+					preset = "bottom",
+					preview = false,
+				}
 			},
 		},
 	},

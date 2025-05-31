@@ -78,6 +78,7 @@ return {
 					cpp = { "clang_format_custom" },
 					c = { "clang_format_custom" },
 					json = { "clang_format_custom" },
+					scss = { "prettier" },
 				},
 				formatters = {
 					black = {
