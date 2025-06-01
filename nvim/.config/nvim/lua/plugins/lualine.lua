@@ -24,7 +24,7 @@ return {
 						{ 'diff', color = { bg = '#141415', fg = '#cdcdcd' } },
 					},
 					lualine_x = {
-						{ 'filename', color = { bg = '#141415', fg = '#cdcdcd' } },
+						{ 'filename', path = 1, color = { bg = '#141415', fg = '#cdcdcd' } },
 						{ 'progress', color = { bg = '#141415', fg = '#cdcdcd' } },
 					},
 					lualine_y = {},
