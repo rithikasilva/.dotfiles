@@ -122,4 +122,20 @@ return {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {}
 	},
+	{
+		'stevearc/quicker.nvim',
+		event = "FileType qf",
+		---@module "quicker"
+		---@type quicker.SetupOptions
+		opts = {},
+		config = function()
+			vim.keymap.set("n", "<leader>q", function()
+			  require("quicker").toggle()
+			end, {
+			  desc = "Toggle quickfix",
+			})
+			require("quicker").setup({
+			})
+		end,
+	}
 }

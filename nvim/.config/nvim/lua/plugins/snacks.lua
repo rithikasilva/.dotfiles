@@ -11,7 +11,7 @@ return {
 			{ "<leader>sg",       function() Snacks.picker.grep() end,                  desc = "Search Grep" },
 			{ "<leader>sr",       function() Snacks.picker.resume() end,                desc = "Search Resume" },
 			{ "<leader><leader>", function() Snacks.picker.buffers() end,               desc = "Open Buffer" },
-			{ "<leader>z",        function() Snacks.picker.zoxide() end,                desc = "Zoxide Open Project" },
+			{ "<leader>z",        function() Snacks.zen.zoom() end,						desc = "Zoom" },
 			{ "<leader>ss",       function() Snacks.picker.spelling() end,              desc = "Spell Suggest" },
 			{ "gd",               function() Snacks.picker.lsp_definitions() end,       desc = "Goto Definition" },
 			{ "gD",               function() Snacks.picker.lsp_declarations() end,      desc = "Goto Declaration" },
