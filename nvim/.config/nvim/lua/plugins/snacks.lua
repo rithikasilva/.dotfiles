@@ -9,6 +9,7 @@ return {
 			{ "<leader>sf",       function() Snacks.picker.files() end,                 desc = "Search Files" },
 			{ "<leader>sh",       function() Snacks.picker.help() end,                  desc = "Search Help" },
 			{ "<leader>sg",       function() Snacks.picker.grep() end,                  desc = "Search Grep" },
+			{ "<leader>sl",       function() Snacks.picker.lines() end,                 desc = "Search Lines" },
 			{ "<leader>sr",       function() Snacks.picker.resume() end,                desc = "Search Resume" },
 			{ "<leader><leader>", function() Snacks.picker.buffers() end,               desc = "Open Buffer" },
 			{ "<leader>z",        function() Snacks.zen.zoom() end,						desc = "Zoom" },
