@@ -24,7 +24,8 @@ require('lazy').setup({
   require 'plugins.utilities',
   require 'plugins.lualine',
   require 'plugins.which-key',
-  require 'plugins.treesitter'
+  require 'plugins.treesitter',
+  require 'plugins.ai'
 }, {})
 
 require("vim-options")

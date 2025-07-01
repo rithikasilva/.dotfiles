@@ -40,4 +40,12 @@ return {
             i(1, "var"),
         }
     ),
+    s({ trig = "DOC", descr = "Full Doxygen-style block with param" },
+        {
+            t({"/**", " * @brief "}), i(1, "TEXT"),
+            t({"", " * ", " * "}), i(2, "SUMMARY"),
+            t({"", " *", " * @param[] "}), i(3, "PARAM"),
+            t({"", " */"})
+        }
+    )
 }

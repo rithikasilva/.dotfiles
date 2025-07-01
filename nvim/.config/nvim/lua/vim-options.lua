@@ -82,3 +82,14 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increa
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
 
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "cpp",
+  callback = function()
+    vim.bo.expandtab = true       -- Use spaces instead of tabs
+    vim.bo.shiftwidth = 4         -- Indent size
+    vim.bo.tabstop = 4            -- Tab = 4 spaces
+    vim.bo.softtabstop = 4        -- Soft tab size
+    vim.bo.smartindent = true     -- Enable smart indent
+  end,
+})
+
