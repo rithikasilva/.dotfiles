@@ -49,9 +49,17 @@ return {
 		'tpope/vim-fugitive',
 		config = function()
 			vim.keymap.set('n', '<leader>gdt', ":Git difftool<CR>", {desc = 'Git Difftool Quickfix'} )
-			vim.keymap.set('n', '<leader>gmt', ":Git mergetool<CR>", {desc = 'Git Mergetool Quickfix'} )
 			vim.keymap.set('n', '<leader>gs', ":vertical Git<CR>", {desc = 'Git Status View'} )
-			vim.keymap.set('n', '<leader>gds', ":Gdiffsplit<CR>", {desc = 'Git Diff Split'} )
+			-- vim.keymap.set('n', '<leader>gmt', ":Git mergetool<CR>", {desc = 'Git Mergetool Quickfix'} )
+			-- vim.keymap.set('n', '<leader>gds', ":Gdiffsplit<CR>", {desc = 'Git Diff Split'} )
+		end,
+	},
+	{
+		'sindrets/diffview.nvim',
+		config = function()
+			vim.keymap.set('n', '<leader>gdo', ":DiffviewOpen<CR>", {desc = 'Git Diffview Open'} )
+			vim.keymap.set('n', '<leader>gdh', ":DiffviewFileHistory<CR>", {desc = 'Git History Open'} )
+			vim.keymap.set('n', '<leader>gdc', ":DiffviewClose<CR>", {desc = 'Git Diffview Close'} )
 		end,
 	},
 }
