@@ -5,7 +5,6 @@ return {
 		lazy = false,
 		keys = {
 			{ "<C-n>",            function() Snacks.explorer() end,                     desc = "File Tree" },
-			{ "<leader>gg",       function() Snacks.lazygit() end,                      desc = "Lazygit" },
 			{ "<leader>sf",       function() Snacks.picker.files() end,                 desc = "Search Files" },
 			{ "<leader>sh",       function() Snacks.picker.help() end,                  desc = "Search Help" },
 			{ "<leader>sg",       function() Snacks.picker.grep() end,                  desc = "Search Grep" },
@@ -24,11 +23,6 @@ return {
 		},
 		opts = {
 			inputs = { enabled = true },
-			lazygit = {
-				enabled = true,
-				configure = true,
-				os = { editPreset = "nvim-remote" }
-			},
 			indent = { enabled = true },
 			explorer = {
 				enabled = true,
