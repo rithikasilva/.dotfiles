@@ -76,12 +76,13 @@ vim.keymap.set('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = t
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 
 -- Resize Bindings
-vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
-vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
-vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
-vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
+vim.keymap.set("n", "<C-M-h>", "<cmd>vertical resize -3<CR>", { desc = "Narrow Window" })
+vim.keymap.set("n", "<C-M-l>", "<cmd>vertical resize +3<CR>", { desc = "Widen Window" })
+vim.keymap.set("n", "<C-M-k>", "<cmd>resize +3<CR>", { desc = "Taller Window" })
+vim.keymap.set("n", "<C-M-j>", "<cmd>resize -3<CR>", { desc = "Shorter Window" })
 
 
+-- Hacky C++ Tabs
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "cpp",
   callback = function()
