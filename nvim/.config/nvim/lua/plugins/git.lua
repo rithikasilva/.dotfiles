@@ -49,9 +49,7 @@ return {
 		'tpope/vim-fugitive',
 		config = function()
 			vim.keymap.set('n', '<leader>gdt', ":Git difftool<CR>", {desc = 'Git Difftool Quickfix'} )
-			vim.keymap.set('n', '<leader>gs', ":vertical Git<CR>", {desc = 'Git Status View'} )
-			-- vim.keymap.set('n', '<leader>gmt', ":Git mergetool<CR>", {desc = 'Git Mergetool Quickfix'} )
-			-- vim.keymap.set('n', '<leader>gds', ":Gdiffsplit<CR>", {desc = 'Git Diff Split'} )
+			vim.keymap.set('n', '<leader>gs', ":vertical Git<CR>:vertical resize 60<CR>", { desc = 'Git Status View' })
 		end,
 	},
 	{
