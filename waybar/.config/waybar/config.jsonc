@@ -7,7 +7,7 @@
     "margin-bottom": 0,
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["custom/title"],
-    "modules-right": ["custom/gpu_igpu", "custom/gpu_dgpu", "pulseaudio","clock", "battery"],
+    "modules-right": ["custom/gpu_igpu", "custom/gpu_dgpu", "pulseaudio","clock", "battery", "custom/power_mode"],
     "pulseaudio": {
 	    "tooltip": false,
 	    "scroll-step": 5,
@@ -42,9 +42,9 @@
             "warning": 30,
             "critical": 20
         },
-        "format": "{capacity}--",
-        "format-charging": "{capacity}++",
-        "format-plugged": "{capacity}PG",
+        "format": "{capacity}",
+        "format-charging": "{capacity}",
+        "format-plugged": "{capacity}",
 	"tooltip": true,
 	"tooltip-format": "{capacity}% {time} {power}W",
 	"format-time": "{H}h{m}m",
@@ -77,4 +77,10 @@
     "hyprland/workspaces": {
 	"show-special": true
     },
+    "custom/power_mode": {
+	"format": "{}",
+	"tooltip": "Power Mode",
+	"exec": "~/.dotfiles/scripts/hypr-refresh",
+	"interval": 5
+    }
 }

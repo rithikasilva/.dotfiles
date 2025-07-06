@@ -104,7 +104,7 @@ window#waybar.hidden {
 }
 
 
-#custom-gpu_dgpu, #custom-gpu_igpu {
+#custom-gpu_dgpu, #custom-gpu_igpu, #custom-power_mode {
 	margin-right: 15px;
 	transition: none;
 	color: #cdcdcd;
