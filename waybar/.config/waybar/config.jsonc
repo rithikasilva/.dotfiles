@@ -1,42 +1,42 @@
 {
-	"layer": "top",
-	"position": "bottom",
-	"width": 1920,
-	"margin-left": 0,
-	"margin-top": 0,
-	"margin-bottom": 0,
-	"modules-left": ["sway/workspaces"],
-	"modules-center": ["custom/title"],
-	"modules-right": ["custom/gpu_igpu", "custom/gpu_dgpu", "pulseaudio","clock", "battery"],
-	"pulseaudio": {
-		"tooltip": false,
-		"scroll-step": 5,
-		"format": "{icon}",
-		"format-muted": "MUTE",
-		"tooltip": true,
-		"tooltip-format": "{volume}%",
-		"format-icons": {
-			"default": ["󰕿", "󰖀", "󰕾"]
-		}
-	},
-	"custom/title": {
-	    "format": "",
-	},
-	"network": {
-		"tooltip": false,
-		"format-wifi": "  {essid}",
-		"format-ethernet": ""
-	},
-	"backlight": {
-		"tooltip": false,
-		"format": "",
-		"tooltip": true,
-		"tooltip-format": "{}%",
-		"interval":1,
-	},
+    "layer": "top",
+    "position": "top",
+    "width": 1900,
+    "margin-left": 0,
+    "margin-top": 10,
+    "margin-bottom": 0,
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["custom/title"],
+    "modules-right": ["custom/gpu_igpu", "custom/gpu_dgpu", "pulseaudio","clock", "battery"],
+    "pulseaudio": {
+	    "tooltip": false,
+	    "scroll-step": 5,
+	    "format": "{icon}",
+	    "format-muted": "MUTE",
+	    "tooltip": true,
+	    "tooltip-format": "{volume}%",
+	    "format-icons": {
+		    "default": ["󰕿", "󰖀", "󰕾"]
+	    }
+    },
+    "custom/title": {
+	"format": "",
+    },
+    "network": {
+	    "tooltip": false,
+	    "format-wifi": "  {essid}",
+	    "format-ethernet": ""
+    },
+    "backlight": {
+	    "tooltip": false,
+	    "format": "",
+	    "tooltip": true,
+	    "tooltip-format": "{}%",
+	    "interval":1,
+    },
     "battery": {
-		"bat": "BAT0",
-		"adaptor": "AC0",
+	"bat": "BAT0",
+	"adaptor": "AC0",
         "states": {
             "good": 95,
             "warning": 30,
@@ -64,14 +64,17 @@
         "format": " {}%",
         "max-length": 10
     },
-	"custom/gpu_dgpu": {
-			"exec": "sensors | awk '/amdgpu-pci-0300/,/junction/ {if (/junction/) {gsub(/[+°C]/, \"\", $2); print $2}}'",
-			"interval": 2,
-			"format": "{}°C"
-	},
-	"custom/gpu_igpu": {
-			"exec": "sensors | awk '/amdgpu-pci-0700/,/edge/ {if (/edge/) {gsub(/[+°C]/, \"\", $2); print $2}}'",
-			"interval": 2,
-			"format": "{}°C"
-	},
+    "custom/gpu_dgpu": {
+		    "exec": "sensors | awk '/amdgpu-pci-0300/,/junction/ {if (/junction/) {gsub(/[+°C]/, \"\", $2); print $2}}'",
+		    "interval": 2,
+		    "format": "{}°C"
+    },
+    "custom/gpu_igpu": {
+		    "exec": "sensors | awk '/amdgpu-pci-0700/,/edge/ {if (/edge/) {gsub(/[+°C]/, \"\", $2); print $2}}'",
+		    "interval": 2,
+		    "format": "{}°C"
+    },
+    "hyprland/workspaces": {
+	"show-special": true
+    },
 }

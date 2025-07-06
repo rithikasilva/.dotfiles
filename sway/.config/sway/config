@@ -4,6 +4,7 @@ font pango:monospace 8
 
 exec --no-startup-id xss-lock --transfer-sleep-lock -- swaylock --nofork --color 000000 
 bindsym $mod+Ctrl+l exec swaylock --color 000000
+
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
@@ -220,7 +221,6 @@ output eDP-2 mode 1920x1200@60Hz position 0,0
 
 # For chooser
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-
 
 
 # Opt for this over something like wlogout

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+AC_POWER=$(cat /sys/class/power_supply/AC0/online)
+
+if [ "$AC_POWER" -eq 1 ]; then
+  # On AC power: high refresh rate
+  sed -i 's/^monitor=.*/monitor=,1920x1200@144,auto,1.0/' ~/.config/hypr/hyprland.conf
+  sed -i 's/^    enabled = no # Animations Tag/    enabled = yes # Animations Tag/' ~/.config/hypr/hyprland.conf
+  sed -i 's/^    inactive_opacity = 1.0 # Window Opacity/    inactive_opacity = 0.95 # Window Opacity/' ~/.config/hypr/hyprland.conf
+else
+  # On battery: low refresh rate
+  sed -i 's/^monitor=.*/monitor=,1920x1200@60,auto,1.0/' ~/.config/hypr/hyprland.conf
+  sed -i 's/^    enabled = yes # Animations Tag/    enabled = no # Animations Tag/' ~/.config/hypr/hyprland.conf
+  sed -i 's/^    inactive_opacity = 0.95 # Window Opacity/    inactive_opacity = 1.0 # Window Opacity/' ~/.config/hypr/hyprland.conf
+fi
+
+hyprctl reload
+
