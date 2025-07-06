@@ -93,26 +93,3 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.bo.smartindent = true     -- Enable smart indent
   end,
 })
-
--- Highlight groups for Diffview styled to match your palette
-vim.api.nvim_set_hl(0, "DiffAdd", {
-  bg = "#1c251c",     -- dark green tint for additions
-  fg = "NONE",
-})
-
-vim.api.nvim_set_hl(0, "DiffDelete", {
-  bg = "#2a1c1e",     -- dark red tint for deletions
-  fg = "NONE",
-})
-
-vim.api.nvim_set_hl(0, "DiffChange", {
-  bg = "#2a2620",     -- neutral brown/yellow tint for changes
-  fg = "NONE",
-})
-
-vim.api.nvim_set_hl(0, "DiffText", {
-  bg = "#3b3e2a",     -- emphasized delta (yellowish)
-  fg = "NONE",
-})
-
-
