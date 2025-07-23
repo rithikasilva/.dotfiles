@@ -32,3 +32,4 @@ vim.cmd.colorscheme("vague")
 
 -- Some colourscheme overrides happen here
 require("vim-options")
+require("custom-functions")
