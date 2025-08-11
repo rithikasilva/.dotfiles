@@ -1,0 +1,9 @@
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias tmux='tmux -2'
+alias nv='nvim'
+
+alias ts='tmux-sessionizer'
+alias cd='z'
