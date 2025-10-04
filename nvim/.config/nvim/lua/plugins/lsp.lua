@@ -33,18 +33,18 @@ return {
 			capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 			local lspconfig = require("lspconfig")
-			lspconfig.ltex.setup({
-				on_attach = on_attach,
-				capabilities = capabilities,
-				settings = {
-					ltex = {
-						language = "en-CA",
-						dictionary = {
-							["en-CA"] = { "Neovim", "neovim", "Rithika", "Silva" },
-						},
-					},
-				}
-			})
+			-- lspconfig.ltex.setup({
+			-- 	on_attach = on_attach,
+			-- 	capabilities = capabilities,
+			-- 	settings = {
+			-- 		ltex = {
+			-- 			language = "en-CA",
+			-- 			dictionary = {
+			-- 				["en-CA"] = { "Neovim", "neovim", "Rithika", "Silva" },
+			-- 			},
+			-- 		},
+			-- 	}
+			-- })
 
 			lspconfig.lua_ls.setup({
 				on_attach = on_attach,

@@ -56,8 +56,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 
 
 -- Splitting
-vim.keymap.set('n', '<A-\\>', ':vsplit<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<A-->', ':split<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-\\>', ':vsplit<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-->', ':split<CR>', { noremap = true, silent = true })
 
 
 -- Auto center on Ctrl+u and Ctrl+d

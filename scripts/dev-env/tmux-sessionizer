@@ -65,8 +65,9 @@ start_env() {
     tmux_running=$(pgrep tmux)
 
     if [[ -z "$TMUX" ]] && [[ -z "$tmux_running" ]]; then
-        tmux new-session -s "$selected_name" -c "$selected"
+        tmux new-session -ds "$selected_name" -c "$selected"
         hydrate "$selected_name" "$selected"
+        tmux attach-session -t "$selected_name"
         exit 0
     fi
 

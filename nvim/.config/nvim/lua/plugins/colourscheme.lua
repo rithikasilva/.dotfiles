@@ -39,5 +39,8 @@ return {
       require("vague").setup({
       })
     end
+  },
+  {
+    "nyoom-engineering/oxocarbon.nvim"
   }
 }
