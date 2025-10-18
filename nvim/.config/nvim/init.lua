@@ -22,10 +22,7 @@ require('lazy').setup({
   require 'plugins.git',
   require 'plugins.cmp',
   require 'plugins.utilities',
-  require 'plugins.lualine',
-  require 'plugins.which-key',
   require 'plugins.treesitter',
-  require 'plugins.ai'
 }, {})
 
 vim.cmd.colorscheme("vague")

@@ -103,26 +103,6 @@ return {
 		config = true
 	},
 	{
-		"allaman/emoji.nvim",
-		version = "1.0.0",
-		ft = "markdown",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"hrsh7th/nvim-cmp",
-		},
-		opts = {
-			enable_cmp_integration = true,
-		},
-		config = function(_, opts)
-			require("emoji").setup(opts)
-		end,
-	},
-	{
-		"folke/todo-comments.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
-		opts = {}
-	},
-	{
 		'stevearc/quicker.nvim',
 		event = "FileType qf",
 		---@module "quicker"

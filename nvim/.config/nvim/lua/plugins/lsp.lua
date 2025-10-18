@@ -4,7 +4,6 @@ return {
 		dependencies = {
 			'williamboman/mason.nvim',
 			'williamboman/mason-lspconfig.nvim',
-			{ 'j-hui/fidget.nvim', opts = {} },
 			{
 				"folke/lazydev.nvim",
 				ft = "lua",
@@ -33,18 +32,7 @@ return {
 			capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 			local lspconfig = require("lspconfig")
-			-- lspconfig.ltex.setup({
-			-- 	on_attach = on_attach,
-			-- 	capabilities = capabilities,
-			-- 	settings = {
-			-- 		ltex = {
-			-- 			language = "en-CA",
-			-- 			dictionary = {
-			-- 				["en-CA"] = { "Neovim", "neovim", "Rithika", "Silva" },
-			-- 			},
-			-- 		},
-			-- 	}
-			-- })
+
 
 			lspconfig.lua_ls.setup({
 				on_attach = on_attach,
@@ -65,6 +53,11 @@ return {
 			vim.lsp.config("clangd", {
 				on_attach = on_attach,
 				capabilities = capabilities
+			})
+
+			lspconfig.marksman.setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
 			})
 
 			require("mason").setup()
