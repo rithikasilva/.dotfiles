@@ -11,6 +11,9 @@ require('blink.cmp').setup({
   },
   appearance = { nerd_font_variant = 'mono' },
   completion = { documentation = { auto_show = true } },
-  sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
+  sources = {
+    default = { 'lsp', 'path', 'snippets', 'buffer' },
+    per_filetype = { markdown = { inherit_defaults = true } },
+  },
   fuzzy = { implementation = 'prefer_rust_with_warning' },
 })

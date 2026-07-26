@@ -16,6 +16,7 @@ vim.o.tabstop = 4
 vim.o.scrolloff = 4
 vim.opt.cmdheight = 0
 vim.wo.relativenumber = true
+vim.o.conceallevel = 2
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.hl.on_yank() end,
