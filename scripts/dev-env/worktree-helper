@@ -1,0 +1,31 @@
+#!/bin/bash
+# Shared git worktree porcelain parser.
+# Output: path<TAB>branch<TAB>detached (true/false), one record per worktree.
+
+worktree_records() {
+    local repo="${1:-.}"
+
+    git -C "$repo" worktree list --porcelain </dev/null | awk '
+        function emit() {
+            if (path != "") {
+                branch = (branch == "" ? "" : branch)
+                printf "%s\t%s\t%s\n", path, branch, detached
+            }
+        }
+        /^worktree / {
+            emit()
+            path = substr($0, 10)
+            branch = ""
+            detached = "true"
+            next
+        }
+        /^branch / {
+            branch = substr($0, 8)
+            sub(/^refs\/heads\//, "", branch)
+            detached = "false"
+            next
+        }
+        /^$/ { emit(); path = "" }
+        END { emit() }
+    '
+}

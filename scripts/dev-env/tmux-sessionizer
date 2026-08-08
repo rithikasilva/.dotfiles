@@ -1,10 +1,17 @@
 #!/bin/bash
 
 PROJECT_FILE="$HOME/.project_dirs"
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=worktree-helper
+source "$SCRIPT_DIR/worktree-helper"
 
 # Function to add the current directory to the project file
 add_project() {
     local current_dir="$(pwd)"
+    local git_dir
+    if git_dir=$(git rev-parse --git-common-dir 2>/dev/null); then
+        current_dir=$(cd "$(dirname "$git_dir")" && pwd)
+    fi
     touch "$PROJECT_FILE"
 
     if ! grep -Fxq "$current_dir" "$PROJECT_FILE"; then
@@ -29,6 +36,11 @@ has_session() {
     tmux list-sessions | grep -iq "^$1:"
 }
 
+# Function to get the current git branch for a directory, if any
+git_branch() {
+    git -C "$1" branch --show-current </dev/null 2>/dev/null
+}
+
 # Function to hydrate a tmux session with sessionizer
 hydrate() {
     DEFAULT_CONFIG="$HOME/.dotfiles/scripts/dev-env/.tmux-sessionizer"
@@ -50,10 +62,58 @@ start_env() {
 
     local selected
 
+    # Expand each root into the root itself plus its currently registered
+    # worktrees. The helper queries Git on every invocation, so removed
+    # worktrees disappear without editing ~/.project_dirs.
+    project_entries() {
+        local root root_real repo_root path branch detached
+        while IFS= read -r root <&3; do
+            [[ -z "$root" ]] && continue
+            root_real=$(cd "$root" 2>/dev/null && pwd -P) || root_real="$root"
+            branch=$(git_branch "$root")
+            printf '%s\t%s\n' "$root" "$branch"
+
+            # Only enumerate worktrees when this registration is the
+            # physical top-level of its repository, not a path inside/
+            # symlinked into one (e.g. ~/.config/nvim -> this repo) —
+            # otherwise the containing repo's own worktrees leak in here.
+            repo_root=$(git -C "$root" rev-parse --show-toplevel 2>/dev/null) || repo_root=
+            repo_root=$(cd "$repo_root" 2>/dev/null && pwd -P) || repo_root=
+            if [[ -n "$repo_root" && "$root_real" == "$repo_root" ]]; then
+                while IFS=$'\t' read -r path branch detached; do
+                    [[ "$path" == "$root_real" ]] && continue
+                    printf '%s\t%s\n' "$path" "$branch"
+                done < <(worktree_records "$root" 2>/dev/null || true)
+            fi
+        done 3< "$PROJECT_FILE"
+    }
+
     if [[ -z "$match" ]]; then
-        selected=$(cat "$PROJECT_FILE" | fzf --style=minimal --no-color --no-bold --height=40% --reverse --prompt="Select a project: ")
+        local entries width=0 dir branch
+        entries=$(project_entries | awk -F '\t' '!seen[$1]++')
+
+        while IFS=$'\t' read -r dir branch; do
+            if (( ${#dir} > width )); then
+                width=${#dir}
+            fi
+        done <<< "$entries"
+
+        selected=$(
+            while IFS=$'\t' read -r dir branch; do
+                if [[ -n "$branch" ]]; then
+                    printf '%-*s\t\033[33m[%s]\033[0m\n' "$width" "$dir" "$branch"
+                else
+                    printf '%-*s\t\n' "$width" "$dir"
+                fi
+            done <<< "$entries" \
+            | fzf --ansi --height=40% --reverse \
+                  --prompt="Select a project: " \
+                  --delimiter='\t' --with-nth=1,2 --nth=1,2 \
+                  | cut -f1
+        )
+        selected="${selected%"${selected##*[![:space:]]}"}"
     else
-        selected=$(grep -i "$match" "$PROJECT_FILE" | head -n 1)
+        selected=$(project_entries | grep -i "$match" | head -n 1 | cut -f1)
     fi
 
     if [[ -z "$selected" ]]; then

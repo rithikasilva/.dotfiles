@@ -1,0 +1,91 @@
+#!/bin/bash
+# Create a numbered sibling git worktree.
+#
+# Usage:
+#   wt add               pick an existing branch via fzf
+#   wt add <branch>       check out an existing branch
+#   wt add -b <branch>    create and check out a new branch
+
+set -euo pipefail
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=worktree-helper
+source "$SCRIPT_DIR/worktree-helper"
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: wt add               pick an existing branch via fzf
+       wt add <branch>       check out an existing branch
+       wt add -b <new-branch>
+       wt --help
+EOF
+    exit "${1:-1}"
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    usage 0
+fi
+[[ "${1:-}" == "add" ]] || usage
+shift
+
+new_branch=""
+branch=""
+case "${1:-}" in
+    -b)
+        [[ $# -eq 2 ]] || usage
+        new_branch="$2"
+        ;;
+    -h|--help)
+        [[ $# -eq 1 ]] || usage
+        usage 0
+        ;;
+    "")
+        [[ $# -eq 0 ]] || usage
+        ;;
+    *)
+        [[ $# -eq 1 ]] || usage
+        branch="$1"
+        ;;
+esac
+
+git_dir=$(git rev-parse --git-common-dir 2>/dev/null) || {
+    echo "Not inside a git repository." >&2
+    exit 1
+}
+
+if [[ -z "$new_branch" && -z "$branch" ]]; then
+    branch=$(git branch --list --format='%(refname:short)' | fzf --height=40% --reverse --prompt="Select a branch: ")
+    [[ -n "$branch" ]] || { echo "No branch selected." >&2; exit 1; }
+fi
+git_dir=$(cd "$git_dir" && pwd -P)
+main_worktree=$(cd "$(dirname "$git_dir")" && pwd -P)
+root_name=$(basename "$main_worktree")
+parent_dir=$(dirname "$main_worktree")
+
+# Serialize discovery and creation so concurrent invocations cannot choose the
+# same number.
+lock_dir="$git_dir/wt.lock"
+while ! mkdir "$lock_dir" 2>/dev/null; do
+    sleep 0.1
+done
+trap 'rmdir "$lock_dir" 2>/dev/null || true' EXIT
+
+max_n=0
+while IFS=$'\t' read -r existing _branch _detached; do
+    [[ "$existing" == "$parent_dir/${root_name}"_*_worktree ]] || continue
+    suffix="${existing#"$parent_dir/${root_name}_"}"
+    num="${suffix%_worktree}"
+    [[ "$num" =~ ^[0-9]+$ ]] || continue
+    if (( num > max_n )); then
+        max_n=$num
+    fi
+done < <(worktree_records "$main_worktree")
+
+n=$((max_n + 1))
+new_path="$parent_dir/${root_name}_${n}_worktree"
+if [[ -n "$new_branch" ]]; then
+    git worktree add -b "$new_branch" "$new_path"
+else
+    git worktree add "$new_path" "$branch"
+fi
+printf 'Created worktree: %s\n' "$new_path"
