@@ -1,0 +1,222 @@
+#!/bin/bash
+# Fetch ChatGPT/Codex 5h + weekly rate-limit usage for a tmux status bar.
+#
+# Ports the relevant slice of https://github.com/lhl/pi-codex-status
+# (private, undocumented endpoint) to bash + jq: same auth-file search
+# order, same bearer-token request, same statusline shape.
+#
+# Usage:
+#   codex-status statusline   compact "5h:92% 7d:88% ~4d3h" (default)
+#   codex-status json         normalized JSON snapshot
+#   codex-status raw          raw API response
+#
+# Caches the response for --max-age seconds (default 60) so a tmux
+# status-interval refresh doesn't hammer the endpoint.
+
+set -euo pipefail
+
+USAGE_ENDPOINT="https://chatgpt.com/backend-api/wham/usage"
+TOKEN_URL="https://auth.openai.com/oauth/token"
+CLIENT_ID="app_EMoamEEZ73f0CkXaXp7hrann"
+CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/codex-status/usage.json"
+MAX_AGE=60
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: codex-status [statusline|json|raw] [--max-age SECONDS] [--no-cache]
+
+Reads OAuth credentials from (in order): ~/.pi/agent/codex-accounts.json
+(MultiCodex), ~/.pi/agent/auth.json (pi), ~/.codex/auth.json (Codex CLI).
+EOF
+    exit "${1:-1}"
+}
+
+mode="statusline"
+no_cache=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        statusline|json|raw)
+            mode="$1"
+            shift
+            ;;
+        --max-age)
+            [[ $# -ge 2 ]] || usage
+            MAX_AGE="$2"
+            shift 2
+            ;;
+        --no-cache)
+            no_cache=true
+            shift
+            ;;
+        -h|--help)
+            usage 0
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+find_auth() {
+    # Prints: <source> <path> on stdout, one match, first hit wins.
+    local multicodex="$HOME/.pi/agent/codex-accounts.json"
+    local pi_auth="$HOME/.pi/agent/auth.json"
+    local codex_auth="$HOME/.codex/auth.json"
+
+    if [[ -f "$multicodex" ]] && jq -e '.accounts | length > 0' "$multicodex" >/dev/null 2>&1; then
+        printf 'multicodex\t%s\n' "$multicodex"
+        return 0
+    fi
+    if [[ -f "$pi_auth" ]] && jq -e '."openai-codex".access' "$pi_auth" >/dev/null 2>&1; then
+        printf 'pi\t%s\n' "$pi_auth"
+        return 0
+    fi
+    if [[ -f "$codex_auth" ]] && jq -e '.tokens.access_token' "$codex_auth" >/dev/null 2>&1; then
+        printf 'codex\t%s\n' "$codex_auth"
+        return 0
+    fi
+    return 1
+}
+
+# Reads access token + account id for a source into the given nameref vars.
+read_credentials() {
+    local source="$1" path="$2"
+    case "$source" in
+        multicodex)
+            local active
+            active=$(jq -r '.activeEmail // empty' "$path")
+            if [[ -n "$active" ]]; then
+                access_token=$(jq -r --arg e "$active" '.accounts[] | select(.email == $e) | .accessToken // empty' "$path")
+                account_id=$(jq -r --arg e "$active" '.accounts[] | select(.email == $e) | .accountId // empty' "$path")
+            fi
+            if [[ -z "${access_token:-}" ]]; then
+                access_token=$(jq -r '[.accounts[] | select(.needsReauth | not)][0].accessToken // empty' "$path")
+                account_id=$(jq -r '[.accounts[] | select(.needsReauth | not)][0].accountId // empty' "$path")
+            fi
+            ;;
+        pi)
+            access_token=$(jq -r '."openai-codex".access // empty' "$path")
+            account_id=$(jq -r '."openai-codex".accountId // empty' "$path")
+            ;;
+        codex)
+            access_token=$(jq -r '.tokens.access_token // empty' "$path")
+            account_id=$(jq -r '.tokens.account_id // empty' "$path")
+            ;;
+    esac
+}
+
+fetch_usage() {
+    local access_token="$1" account_id="$2"
+    curl -fsS --max-time 15 "$USAGE_ENDPOINT" \
+        -H "authorization: Bearer $access_token" \
+        ${account_id:+-H "chatgpt-account-id: $account_id"} \
+        -H "accept: application/json" \
+        -H "user-agent: dotfiles-codex-status/0.1"
+}
+
+auth_line=$(find_auth) || {
+    echo "No usable Codex OAuth credentials found (checked MultiCodex, pi, Codex CLI)." >&2
+    exit 1
+}
+source_name="${auth_line%%$'\t'*}"
+auth_path="${auth_line#*$'\t'}"
+
+if [[ "$no_cache" == false && -f "$CACHE_FILE" ]]; then
+    cached_age=$(( $(date +%s) - $(stat -f %m "$CACHE_FILE" 2>/dev/null || stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0) ))
+    if (( cached_age < MAX_AGE )); then
+        response=$(cat "$CACHE_FILE")
+    fi
+fi
+
+if [[ -z "${response:-}" ]]; then
+    access_token=""
+    account_id=""
+    read_credentials "$source_name" "$auth_path"
+    [[ -n "$access_token" ]] || {
+        echo "Could not read access token from $auth_path" >&2
+        exit 1
+    }
+
+    if ! response=$(fetch_usage "$access_token" "$account_id" 2>/tmp/codex-status-err.$$); then
+        status=$(grep -o 'HTTP/[0-9.]* [0-9]*' /tmp/codex-status-err.$$ 2>/dev/null | tail -1 | awk '{print $2}')
+        rm -f /tmp/codex-status-err.$$
+        if [[ "$status" == "401" || "$status" == "403" ]]; then
+            refresh_token=$(jq -r '.tokens.refresh_token // ."openai-codex".refresh // empty' "$auth_path" 2>/dev/null || true)
+            if [[ -n "$refresh_token" ]]; then
+                refreshed=$(curl -fsS --max-time 15 -X POST "$TOKEN_URL" \
+                    -H "content-type: application/x-www-form-urlencoded" \
+                    --data-urlencode "grant_type=refresh_token" \
+                    --data-urlencode "refresh_token=$refresh_token" \
+                    --data-urlencode "client_id=$CLIENT_ID") || {
+                    echo "Codex usage request failed and token refresh also failed." >&2
+                    exit 1
+                }
+                access_token=$(jq -r '.access_token // empty' <<<"$refreshed")
+                [[ -n "$access_token" ]] || { echo "Refresh response missing access_token." >&2; exit 1; }
+                response=$(fetch_usage "$access_token" "$account_id") || {
+                    echo "Codex usage request failed even after refresh." >&2
+                    exit 1
+                }
+            else
+                echo "Codex usage request failed (401/403) and no refresh token is available." >&2
+                exit 1
+            fi
+        else
+            rm -f /tmp/codex-status-err.$$
+            echo "Codex usage request failed." >&2
+            exit 1
+        fi
+    fi
+    rm -f /tmp/codex-status-err.$$
+
+    mkdir -p "$(dirname "$CACHE_FILE")"
+    printf '%s' "$response" > "$CACHE_FILE.tmp.$$" && mv "$CACHE_FILE.tmp.$$" "$CACHE_FILE"
+fi
+
+case "$mode" in
+    raw)
+        printf '%s\n' "$response"
+        ;;
+    json)
+        jq '{
+            plan: .plan_type,
+            primary: .rate_limit.primary_window,
+            secondary: .rate_limit.secondary_window,
+            limitReached: .rate_limit.limit_reached
+        }' <<<"$response"
+        ;;
+    statusline)
+        jq -r '
+            def pct(w): if w == null then null else (100 - w.used_percent) end;
+            def fmtdur(s):
+                if s == null then null
+                elif s <= 0 then null
+                else (
+                    (s / 86400 | floor) as $d |
+                    ((s % 86400) / 3600 | floor) as $h |
+                    ((s % 3600) / 60 | floor) as $m |
+                    if $d > 0 then "\($d)d" + (if $h > 0 then "\($h)h" else "" end)
+                    elif $h > 0 then "\($h)h" + (if $m > 0 then "\($m)m" else "" end)
+                    else "\(if $m > 0 then $m else 1 end)m"
+                    end
+                )
+                end;
+            # Label windows by their actual duration rather than assuming
+            # primary=5h/secondary=weekly (upstream pi-codex-status does
+            # assume that; we have limit_window_seconds, so use it).
+            def windowLabel(w):
+                if w == null or w.limit_window_seconds == null then "limit"
+                elif w.limit_window_seconds <= 21600 then "5h"
+                elif w.limit_window_seconds <= 129600 then "1d"
+                else "7d"
+                end;
+            (.rate_limit.primary_window) as $p |
+            (.rate_limit.secondary_window) as $s |
+            [
+                (if $p then "\(windowLabel($p)):\(pct($p) | floor)%" else empty end),
+                (if $s then "\(windowLabel($s)):\(pct($s) | floor)%" else empty end),
+                ((($s // $p).reset_after_seconds) as $r | if fmtdur($r) then "~" + fmtdur($r) else empty end)
+            ] | join(" ")
+        ' <<<"$response"
+        ;;
+esac

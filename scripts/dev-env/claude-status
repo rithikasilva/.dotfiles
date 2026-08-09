@@ -1,0 +1,149 @@
+#!/bin/bash
+# Fetch Claude Code session (5h) + weekly rate-limit usage for a tmux status bar.
+#
+# Reads the OAuth access token Claude Code already stores in macOS Keychain
+# ("Claude Code-credentials") and calls api.anthropic.com/api/oauth/usage,
+# the same endpoint Claude Code's own /usage view uses. Read-only: never
+# refreshes or mints tokens. If the stored token is missing or expired, that
+# just means Claude Code isn't actively logged in right now — fail quietly
+# rather than trying to obtain a new one.
+#
+# Usage:
+#   claude-status statusline   compact "5h:44% 7d:9% ~2h" (default)
+#   claude-status json         normalized JSON snapshot
+#   claude-status raw          raw API response
+
+set -euo pipefail
+
+USAGE_ENDPOINT="https://api.anthropic.com/api/oauth/usage"
+KEYCHAIN_SERVICE="Claude Code-credentials"
+CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/claude-status/usage.json"
+MAX_AGE=60
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: claude-status [statusline|json|raw] [--max-age SECONDS] [--no-cache]
+
+Reads the OAuth access token from the macOS Keychain item
+"Claude Code-credentials" (the same one Claude Code itself uses). Does not
+refresh or request new tokens; an expired/missing token is reported as
+"unavailable", not treated as an error to recover from.
+EOF
+    exit "${1:-1}"
+}
+
+mode="statusline"
+no_cache=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        statusline|json|raw)
+            mode="$1"
+            shift
+            ;;
+        --max-age)
+            [[ $# -ge 2 ]] || usage
+            MAX_AGE="$2"
+            shift 2
+            ;;
+        --no-cache)
+            no_cache=true
+            shift
+            ;;
+        -h|--help)
+            usage 0
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+fail_unavailable() {
+    # Not logged in / no token / expired token: not an error condition to
+    # surface loudly, just nothing to show.
+    case "$mode" in
+        statusline) printf 'Claude: unavailable\n' ;;
+        *) echo "Claude Code usage unavailable: $1" >&2 ;;
+    esac
+    exit 0
+}
+
+if [[ "$(uname)" != "Darwin" ]]; then
+    fail_unavailable "Keychain lookup is macOS-only"
+fi
+
+if [[ "$no_cache" == false && -f "$CACHE_FILE" ]]; then
+    cached_age=$(( $(date +%s) - $(stat -f %m "$CACHE_FILE" 2>/dev/null || echo 0) ))
+    if (( cached_age < MAX_AGE )); then
+        response=$(cat "$CACHE_FILE")
+    fi
+fi
+
+if [[ -z "${response:-}" ]]; then
+    creds_json=$(security find-generic-password -s "$KEYCHAIN_SERVICE" -w 2>/dev/null) || \
+        fail_unavailable "no Keychain item \"$KEYCHAIN_SERVICE\" (Claude Code not logged in on this machine)"
+
+    access_token=$(jq -r '.claudeAiOauth.accessToken // empty' <<<"$creds_json")
+    expires_at_ms=$(jq -r '.claudeAiOauth.expiresAt // empty' <<<"$creds_json")
+    [[ -n "$access_token" ]] || fail_unavailable "Keychain item has no accessToken"
+
+    if [[ -n "$expires_at_ms" ]]; then
+        now_ms=$(( $(date +%s) * 1000 ))
+        if (( expires_at_ms <= now_ms )); then
+            fail_unavailable "stored token is expired (no refresh attempted by design)"
+        fi
+    fi
+
+    if ! response=$(curl -fsS --max-time 15 "$USAGE_ENDPOINT" \
+        -H "authorization: Bearer $access_token" \
+        -H "anthropic-beta: oauth-2025-04-20" \
+        -H "accept: application/json" \
+        -H "user-agent: dotfiles-claude-status/0.1"); then
+        fail_unavailable "usage request failed"
+    fi
+
+    mkdir -p "$(dirname "$CACHE_FILE")"
+    printf '%s' "$response" > "$CACHE_FILE.tmp.$$" && mv "$CACHE_FILE.tmp.$$" "$CACHE_FILE"
+fi
+
+case "$mode" in
+    raw)
+        printf '%s\n' "$response"
+        ;;
+    json)
+        jq '{
+            fiveHour: .five_hour,
+            sevenDay: .seven_day
+        }' <<<"$response"
+        ;;
+    statusline)
+        jq -r '
+            def fmtdur(iso):
+                if iso == null or iso == "" then null
+                else
+                    (now) as $now |
+                    # resets_at is always UTC; normalize to a bare Z suffix
+                    # since jqs strptime with %z is unreliable across builds.
+                    ((iso | sub("[.][0-9]+[+]00:00$|[+]00:00$"; "Z") | strptime("%Y-%m-%dT%H:%M:%SZ") | mktime) - $now) as $s |
+                    if $s <= 0 then null
+                    else (
+                        ($s / 86400 | floor) as $d |
+                        (($s % 86400) / 3600 | floor) as $h |
+                        (($s % 3600) / 60 | floor) as $m |
+                        if $d > 0 then "\($d)d" + (if $h > 0 then "\($h)h" else "" end)
+                        elif $h > 0 then "\($h)h" + (if $m > 0 then "\($m)m" else "" end)
+                        else "\(if $m > 0 then $m else 1 end)m"
+                        end
+                    )
+                    end
+                end;
+            (.five_hour) as $f |
+            (.seven_day) as $w |
+            [
+                (if $f and $f.utilization != null then "5h:\(100 - ($f.utilization | floor))%" else empty end),
+                (if $w and $w.utilization != null then "7d:\(100 - ($w.utilization | floor))%" else empty end),
+                ((($w // $f).resets_at) as $r | if fmtdur($r) then "~" + fmtdur($r) else empty end)
+            ] | join(" ")
+        ' <<<"$response" 2>/dev/null || printf 'Claude: unavailable\n'
+        ;;
+esac
