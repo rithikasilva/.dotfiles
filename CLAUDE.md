@@ -2,6 +2,8 @@
 
 This repository is managed with GNU Stow. Most top-level directories are Stow packages whose contents mirror paths under `$HOME`.
 
+External tool dependencies and how to install them: `INSTALL.md`.
+
 ## Rules
 
 - Edit files in this repository, not their installed paths in `$HOME`.
