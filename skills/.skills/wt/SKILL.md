@@ -45,11 +45,25 @@ its picker. Reserved subagent worktrees named
 `<root>_agent_<id>_worktree` (and any worktree on an `agent/*` branch) are
 deliberately excluded. They are for Herdr workspaces, not tmux sessions.
 
-To remove a worktree, do so manually with Git:
+To remove a **human** worktree, do so manually with Git:
 
 ```sh
 git worktree remove <path>
 git worktree remove --force <path>  # explicitly override dirty-worktree protection
 ```
 
-There is intentionally no `wt remove` or `wt rm` command.
+There is intentionally no `wt remove` or `wt rm` command for human worktrees.
+
+To remove a **subagent** worktree (one named `<root>_agent_<id>_worktree`),
+use the matching cleanup wrapper instead of a hand-run `git worktree
+remove`:
+
+```sh
+wt-for-subagent-cleanup --path <worktree-path>
+```
+
+It refuses anything outside the reserved naming convention, refuses a dirty
+worktree, and — since subagent work is integrated by cherry-pick rather than
+merge — refuses to delete a branch with unmerged commits unless you pass
+`--force-branch` (after confirming its commits were already cherry-picked
+elsewhere).

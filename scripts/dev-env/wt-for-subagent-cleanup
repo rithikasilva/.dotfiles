@@ -1,0 +1,122 @@
+#!/bin/bash
+# Remove a subagent worktree created by wt-for-subagent, plus its branch.
+#
+# Usage:
+#   wt-for-subagent-cleanup --path <path> [--repo <path>]
+
+set -euo pipefail
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=worktree-helper
+source "$SCRIPT_DIR/worktree-helper"
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: wt-for-subagent-cleanup --path <worktree-path> [--repo <path>]
+
+Removes a worktree previously created by wt-for-subagent (a
+<root>_agent_<id>_worktree sibling) and deletes its branch. Refuses to
+touch a worktree whose path is not in the reserved agent naming
+convention, a worktree with uncommitted changes, or one whose branch is
+not fully merged/cherry-picked into any other branch (use --force-branch
+to delete an unmerged branch anyway once its commits have been
+cherry-picked elsewhere).
+EOF
+    exit "${1:-1}"
+}
+
+path=""
+repo=""
+force_branch=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --path)
+            [[ $# -ge 2 && -n "$2" ]] || usage
+            path="$2"
+            shift 2
+            ;;
+        --repo)
+            [[ $# -ge 2 && -n "$2" ]] || usage
+            repo="$2"
+            shift 2
+            ;;
+        --force-branch)
+            force_branch=true
+            shift
+            ;;
+        -h|--help)
+            [[ $# -eq 1 ]] || usage
+            usage 0
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+[[ -n "$path" ]] || usage
+repo="${repo:-.}"
+
+git_dir=$(git -C "$repo" rev-parse --git-common-dir 2>/dev/null) || {
+    echo "Not a Git repository: $repo" >&2
+    exit 1
+}
+git_dir=$(cd "$git_dir" && pwd -P)
+main_worktree=$(cd "$(dirname "$git_dir")" && pwd -P)
+
+path=$(cd "$path" 2>/dev/null && pwd -P) || {
+    echo "Worktree path does not exist: $path" >&2
+    exit 1
+}
+
+case "$(basename "$path")" in
+    *_agent_*_worktree) ;;
+    *)
+        echo "Refusing to remove '$path': not a reserved subagent worktree name (*_agent_*_worktree)." >&2
+        exit 1
+        ;;
+esac
+
+if [[ "$path" == "$main_worktree" ]]; then
+    echo "Refusing to remove the main worktree." >&2
+    exit 1
+fi
+
+branch=""
+found=false
+while IFS=$'\t' read -r existing existing_branch _detached; do
+    [[ "$existing" == "$path" ]] || continue
+    found=true
+    branch="$existing_branch"
+done < <(worktree_records "$main_worktree")
+
+if [[ "$found" == false ]]; then
+    echo "'$path' is not a live worktree of $main_worktree." >&2
+    exit 1
+fi
+
+if [[ -n "$(git -C "$path" status --porcelain 2>&1)" ]]; then
+    echo "Refusing to remove '$path': it has uncommitted changes." >&2
+    exit 1
+fi
+
+if [[ -n "$branch" && "$branch" != agent/* ]]; then
+    echo "Refusing to remove '$path': its branch '$branch' is outside the reserved agent/ namespace." >&2
+    exit 1
+fi
+
+git -C "$main_worktree" worktree remove "$path"
+
+if [[ -n "$branch" ]]; then
+    if [[ "$force_branch" == true ]]; then
+        git -C "$main_worktree" branch -D "$branch"
+    else
+        if ! git -C "$main_worktree" branch -d "$branch" 2>/dev/null; then
+            echo "Worktree removed, but branch '$branch' is not fully merged and was left in place." >&2
+            echo "If its commits were already cherry-picked elsewhere, rerun with --force-branch to delete it." >&2
+            exit 1
+        fi
+    fi
+fi
+
+echo "Removed worktree '$path' and branch '${branch:-<none>}'." >&2
