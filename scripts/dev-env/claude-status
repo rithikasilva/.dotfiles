@@ -18,6 +18,7 @@ set -euo pipefail
 USAGE_ENDPOINT="https://api.anthropic.com/api/oauth/usage"
 KEYCHAIN_SERVICE="Claude Code-credentials"
 CACHE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/claude-status/usage.json"
+LOCK_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/claude-status/usage.lock"
 MAX_AGE=60
 
 usage() {
@@ -76,6 +77,37 @@ if [[ "$no_cache" == false && -f "$CACHE_FILE" ]]; then
     cached_age=$(( $(date +%s) - $(stat -f %m "$CACHE_FILE" 2>/dev/null || echo 0) ))
     if (( cached_age < MAX_AGE )); then
         response=$(cat "$CACHE_FILE")
+    fi
+fi
+
+if [[ -z "${response:-}" ]]; then
+    # Many tmux sessions independently tick their own status-interval and can
+    # all miss the cache within the same window. Serialize the refresh so
+    # only one of them hits the API; the rest block briefly and then just
+    # re-read the cache the winner wrote. `mkdir` is atomic on all POSIX
+    # filesystems, unlike flock(1) which isn't available on macOS.
+    mkdir -p "$(dirname "$LOCK_DIR")"
+    got_lock=false
+    for _ in $(seq 1 200); do
+        if mkdir "$LOCK_DIR" 2>/dev/null; then
+            got_lock=true
+            trap 'rmdir "$LOCK_DIR" 2>/dev/null' EXIT
+            break
+        fi
+        # Break a stale lock left by a crashed holder (curl's own
+        # --max-time caps a healthy hold well under this).
+        lock_age=$(( $(date +%s) - $(stat -f %m "$LOCK_DIR" 2>/dev/null || echo 0) ))
+        if (( lock_age > 20 )); then
+            rmdir "$LOCK_DIR" 2>/dev/null
+        fi
+        sleep 0.1
+    done
+
+    if [[ "$no_cache" == false && -f "$CACHE_FILE" ]]; then
+        cached_age=$(( $(date +%s) - $(stat -f %m "$CACHE_FILE" 2>/dev/null || echo 0) ))
+        if (( cached_age < MAX_AGE )); then
+            response=$(cat "$CACHE_FILE")
+        fi
     fi
 fi
 
