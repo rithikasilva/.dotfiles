@@ -82,6 +82,11 @@ start_env() {
             if [[ -n "$repo_root" && "$root_real" == "$repo_root" ]]; then
                 while IFS=$'\t' read -r path branch detached; do
                     [[ "$path" == "$root_real" ]] && continue
+                    # Subagent worktrees are Herdr-owned and must stay out of
+                    # the human tmux picker. Keep this a naming/branch check
+                    # against the record already returned by worktree_records.
+                    [[ "$path" == *_agent_*_worktree ]] && continue
+                    [[ "$branch" == agent/* ]] && continue
                     printf '%s\t%s\n' "$path" "$branch"
                 done < <(worktree_records "$root" 2>/dev/null || true)
             fi

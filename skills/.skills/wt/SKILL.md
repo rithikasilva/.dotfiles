@@ -1,12 +1,14 @@
 ---
 name: wt
-description: Create numbered git worktrees with live discovery in tmux-sessionizer
+description: Create human numbered git worktrees; subagent worktrees are reserved and hidden from tmux-sessionizer
 ---
 
 # wt
 
-Use `wt` to create a numbered sibling worktree for a branch in this dotfiles
-setup. `wt` does not manage removal or tmux sessions.
+Use `wt` to create a human-oriented numbered sibling worktree for a branch in
+this dotfiles setup. `wt` does not manage removal or tmux sessions. The
+orchestrator-facing `wt-for-subagent` wrapper is a separate, non-interactive
+entry point for subagent worktrees; do not use `wt add` ad hoc for those.
 
 ## Usage
 
@@ -16,7 +18,15 @@ wt add <branch>        # check out an existing branch
 wt add -b <branch>     # create and check out a new branch
 ```
 
-Run it from any worktree of the repository, including the main worktree.
+For an isolated subagent worktree, use:
+
+```sh
+wt-for-subagent --repo <path> --new-branch <branch> [--base <ref>]
+```
+
+This prints one JSON metadata line. Branches without `agent/` are placed in
+that namespace; `agent/foo` is used as-is. Run `wt` from any worktree of the
+repository, including the main worktree.
 Invalid arguments and use outside a Git repository fail with an error.
 
 ## Naming and numbering
@@ -30,7 +40,10 @@ records and uses one more than the largest existing matching number.
 
 `~/.project_dirs` is a registry of root repositories only. `wt` never adds a
 numbered worktree to it. `tmux-sessionizer` expands each root into its live
-worktrees by querying Git, and displays their paths and branches in its picker.
+**human** worktrees by querying Git, and displays their paths and branches in
+its picker. Reserved subagent worktrees named
+`<root>_agent_<id>_worktree` (and any worktree on an `agent/*` branch) are
+deliberately excluded. They are for Herdr workspaces, not tmux sessions.
 
 To remove a worktree, do so manually with Git:
 

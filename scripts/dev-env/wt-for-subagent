@@ -1,0 +1,117 @@
+#!/bin/bash
+# Create a uniquely named, machine-oriented worktree for a subagent.
+#
+# Usage:
+#   wt-for-subagent --repo <path> --new-branch <branch> [--base <ref>]
+
+set -euo pipefail
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=worktree-helper
+source "$SCRIPT_DIR/worktree-helper"
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: wt-for-subagent --repo <path> --new-branch <branch> [--base <ref>]
+       wt-for-subagent --new-branch <branch> [--base <ref>]
+
+Creates a reserved <root>_agent_<id>_worktree sibling and prints JSON metadata.
+Branches without the agent/ prefix are created in the agent/<branch> namespace.
+EOF
+    exit "${1:-1}"
+}
+
+repo=""
+new_branch=""
+base=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --repo)
+            [[ $# -ge 2 && -n "$2" ]] || usage
+            repo="$2"
+            shift 2
+            ;;
+        --new-branch)
+            [[ $# -ge 2 && -n "$2" ]] || usage
+            new_branch="$2"
+            shift 2
+            ;;
+        --base)
+            [[ $# -ge 2 && -n "$2" ]] || usage
+            base="$2"
+            shift 2
+            ;;
+        -h|--help)
+            [[ $# -eq 1 ]] || usage
+            usage 0
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+[[ -n "$new_branch" ]] || usage
+repo="${repo:-.}"
+
+git_dir=$(git -C "$repo" rev-parse --git-common-dir 2>/dev/null) || {
+    echo "Not a Git repository: $repo" >&2
+    exit 1
+}
+git_dir=$(cd "$git_dir" 2>/dev/null && pwd -P) || {
+    echo "Could not resolve Git directory for: $repo" >&2
+    exit 1
+}
+main_worktree=$(cd "$(dirname "$git_dir")" && pwd -P)
+root_name=$(basename "$main_worktree")
+parent_dir=$(dirname "$main_worktree")
+
+if [[ "$new_branch" != agent/* ]]; then
+    new_branch="agent/$new_branch"
+fi
+if [[ -z "$base" ]]; then
+    base=$(git -C "$repo" branch --show-current 2>/dev/null || true)
+    base="${base:-HEAD}"
+fi
+
+# Serialize discovery and creation with wt, so allocation cannot race wt or
+# another wrapper invocation.
+lock_dir="$git_dir/wt.lock"
+while ! mkdir "$lock_dir" 2>/dev/null; do
+    sleep 0.1
+done
+trap 'rmdir "$lock_dir" 2>/dev/null || true' EXIT
+
+# The ID is intentionally outside wt's numeric namespace. Check the live
+# records as well as the filesystem before creating the worktree.
+while :; do
+    id="$(date +%s)-$$-$RANDOM"
+    new_path="$parent_dir/${root_name}_agent_${id}_worktree"
+    collision=false
+    [[ -e "$new_path" ]] && collision=true
+    while IFS=$'\t' read -r existing _branch _detached; do
+        [[ "$existing" == "$new_path" ]] && collision=true
+    done < <(worktree_records "$main_worktree")
+    [[ "$collision" == false ]] && break
+done
+
+if ! git -C "$main_worktree" worktree add -b "$new_branch" "$new_path" "$base" >&2; then
+    echo "Failed to create subagent worktree." >&2
+    exit 1
+fi
+
+json_escape() {
+    local value="$1"
+    value=${value//\\/\\\\}
+    value=${value//\"/\\\"}
+    value=${value//$'\n'/\\n}
+    value=${value//$'\r'/\\r}
+    value=${value//$'\t'/\\t}
+    printf '%s' "$value"
+}
+printf '{"path":"%s","worktree":"%s","branch":"%s","repo":"%s","base":"%s","kind":"subagent"}\n' \
+    "$(json_escape "$new_path")" \
+    "$(json_escape "$(basename "$new_path")")" \
+    "$(json_escape "$new_branch")" \
+    "$(json_escape "$main_worktree")" \
+    "$(json_escape "$base")"
