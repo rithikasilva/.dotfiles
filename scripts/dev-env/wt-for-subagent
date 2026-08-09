@@ -71,6 +71,11 @@ if [[ "$new_branch" != agent/* ]]; then
 fi
 if [[ -z "$base" ]]; then
     base=$(git -C "$repo" branch --show-current 2>/dev/null || true)
+    if [[ -z "$base" ]]; then
+        # A detached checkout has no branch name; resolve HEAD here so the
+        # ref is not interpreted against the primary worktree below.
+        base=$(git -C "$repo" rev-parse HEAD 2>/dev/null || true)
+    fi
     base="${base:-HEAD}"
 fi
 
