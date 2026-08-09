@@ -8,6 +8,9 @@ general-purpose framework meant for others to adopt as-is. A fair amount of
 it (config, scripts, skills) was written with AI coding agents rather than
 by hand — use, fork, or borrow from it at your own judgment.
 
+Changes frequently and without notice — expect things here to move, break,
+or be rewritten between visits.
+
 ### Docs
 
 - `docs/usage-bar.md` — tmux Codex/Claude Code usage bar
