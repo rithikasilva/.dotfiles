@@ -6,4 +6,3 @@ alias tmux='tmux -2'
 alias nv='nvim'
 
 alias ts='tmux-sessionizer'
-alias cd='z'
