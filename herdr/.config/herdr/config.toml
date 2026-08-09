@@ -1,3 +1,8 @@
+[theme]
+# Use the terminal/shell palette and follow the system appearance.
+name = "terminal"
+auto_switch = true
+
 [terminal]
 # Match tmux: splits inherit the current pane's cwd.
 new_cwd = "follow"
