@@ -1,15 +1,14 @@
 ---
 name: herdr-subagents
-description: Start a pi subagent in a herdr pane inside the current project's worktree for analysis/review tasks, and monitor it through herdr. Use only when explicitly asked to run work as a herdr/pi subagent, not as a general substitute for the Agent tool.
+description: Start a pi subagent in a dedicated herdr workspace/worktree for analysis/review/implementation tasks, and monitor it through herdr. Use only when explicitly asked to run work as a herdr/pi subagent, not as a general substitute for the Agent tool.
 ---
 
-# Herdr subagents (pi, same worktree)
+# Herdr subagents (pi, dedicated worktree)
 
 Addendum to the `herdr` skill — read that first for the general pane/agent
 primitives, ID handling, and safety rules. This skill only covers what's
-specific to this dotfiles setup: running `pi` as a subagent, in the same
-worktree as the calling session, for analysis/review work the user wants to
-watch live in herdr.
+specific to this dotfiles setup: running `pi` as a subagent, each in its
+own isolated git worktree, for work the user wants to watch live in herdr.
 
 Same precondition as the base skill: confirm the Herdr server is actually
 running (`herdr status`) before doing anything. No in-pane env var is
@@ -17,80 +16,78 @@ required to issue control commands from outside a managed pane.
 
 ## Worktree and topology rule
 
-One herdr **workspace** per worktree — that part is unchanged. Never a
-different project's worktree, and never a worktree herdr creates itself.
-This dotfiles setup keeps worktree lifecycle separate from herdr; use `wt add`
-when a new worktree is needed, and manual `git worktree remove` when one is
-removed. Herdr only ever attaches to worktrees that already exist. So:
+**Every subagent gets its own dedicated git worktree and its own herdr
+workspace** — never a worktree/workspace shared with another subagent or
+with the orchestrator's own session, and never a worktree herdr creates
+itself. This applies to implementors and investigators alike, for one
+consistent topology: implementors need isolation so concurrent edits can't
+collide, and investigators benefit from a stable snapshot instead of
+watching the orchestrator's own checkout change under them.
 
-- If a workspace already exists with `cwd` == the target worktree path
-  (check `herdr workspace list` / `herdr pane list --workspace <id>`),
-  reuse that workspace.
-- Otherwise create a new workspace pointed at that path — `herdr workspace
-  create --cwd <worktree-path> --no-focus` — not `herdr worktree
-  create`/`open`.
-- The worktree itself must already exist (created with `wt add`
-  beforehand). Do not create one on the subagent's behalf.
+1. Create the worktree with `scripts/dev-env/wt-for-subagent`, not `wt add`
+   (that's the human-facing command — see the `wt` skill):
 
-Within that workspace, every subagent gets its **own tab** — never a pane
-split, never sharing a tab with another subagent. Concurrent subagents in
-the same worktree are concurrent tabs, not concurrent panes; this is what
-keeps the workspace from getting visually polluted as work piles up.
+   ```bash
+   scripts/dev-env/wt-for-subagent --new-branch <short-task-name> [--repo <path>] [--base <ref>]
+   ```
 
-**No reuse across tasks.** Every new task — even in a worktree that
-already has a workspace with idle tabs sitting in it — gets a **new tab
-and a new uniquely named agent**. Do not search for an idle tab/agent to
-hand the next task to. A reused pi session can silently carry forward
-mode/permission state from its previous task, which is exactly the kind
-of surprise this rule avoids.
+   Prints one JSON line: `{"path":...,"worktree":...,"branch":...,"repo":...,"base":...,"kind":"subagent"}`.
+   The worktree is named `<root>_agent_<id>_worktree` — reserved, and
+   excluded from `tmux-sessionizer`'s picker — and the branch lives under
+   `agent/`. Subagent worktrees are Herdr-owned; they must never appear as
+   a tmux session or in the human picker.
+
+2. Launch the subagent into that worktree with `scripts/dev-env/subagent-launch`
+   (see Starting the subagent below) — it creates the herdr workspace/tab
+   and starts the agent in one call, always a workspace scoped to that one
+   worktree.
+
+Do not create a worktree on the subagent's behalf from inside a delegation
+task, and do not hand-roll the workspace-create/tab-create/agent-start
+sequence when `subagent-launch` covers it.
 
 ## Starting the subagent
 
-1. Find or create the workspace for this worktree (see above).
+Use `scripts/dev-env/subagent-launch` — it collapses workspace
+create-or-reuse, tab creation, agent start, and prompt submission into one
+non-interactive command:
 
-2. Create a fresh tab in that workspace for this task:
+```bash
+scripts/dev-env/subagent-launch \
+  --worktree <worktree-path-from-wt-for-subagent> \
+  --name <short-name> \
+  [--persona <persona-name>] \
+  -- <self-contained task prompt...>
+```
 
-   ```bash
-   herdr tab create --workspace <workspace-id> --cwd <worktree-path> --no-focus
-   ```
-
-   Read the new tab's root pane ID from `.result.root_pane.pane_id`.
-
-3. Start `pi` in that pane with a short descriptive name
-   (`[a-z][a-z0-9_-]{0,31}`, unique among live agents — check `herdr agent
-   list` if unsure):
-
-   ```bash
-   herdr agent start <name> --kind pi --pane <pane-id>
-   ```
-
-   To give the subagent a **persona** (a fixed role/system-prompt — see
-   Personas below), append it as a native `pi` argument after `--`:
-
-   ```bash
-   herdr agent start <name> --kind pi --pane <pane-id> -- \
-     --append-system-prompt ~/.pi/agent/personas/<persona>.md
-   ```
-
-   `pi` defaults to YOLO/bypass mode on this machine (see
-   `~/.pi/agent/extensions/modes.ts`), so it will not stall on a bash
-   approval prompt. If a subagent ever reports `working` but never settles,
-   check `herdr agent read <name>` for a stuck approval UI before assuming
-   it's just slow.
-
-4. Submit the task without `--wait`. `pi` has no memory of this
-   conversation, so brief it like a subagent: state the goal, relevant
-   file paths, and what "done" looks like. Include the report-file
-   instruction (see Reporting below) unless the persona already bakes its
-   own report contract in.
-
-   ```bash
-   herdr agent prompt <name> "<self-contained analysis task>"
-   ```
-
-   Do not attach `--wait` to `agent prompt` itself — submit it plain, then
-   wait separately (below) so a stalled/gated agent doesn't surface as an
-   opaque `agent_prompt_stalled` error on the submit call.
+- `--worktree` is required — the path `wt-for-subagent` just printed.
+- `--name` must match `[a-z][a-z0-9_-]{0,31}` and be unique among live
+  agents (check `herdr agent list` if unsure). No reuse across tasks, ever
+  — even an idle tab/agent sitting in a worktree from an earlier task gets
+  a fresh name, never picked back up for a new task. A reused pi session
+  can silently carry forward mode/permission state from its previous task.
+- `--persona <name>` resolves to `~/.pi/agent/personas/<name>.md` (falling
+  back to this repo's `pi/.pi/agent/personas/<name>.md` if not yet
+  stowed) and is passed as `--append-system-prompt`. See Personas below.
+- The prompt goes after `--`. For long/multi-paragraph tasks, use
+  `--prompt-file <file>` or `--prompt-file -` (stdin) instead of fighting
+  shell quoting.
+- `subagent-launch` automatically appends the report-path instruction
+  (`~/.herdr-reports/<worktree-basename>/<name>.md`) to the prompt — do
+  not construct or repeat that path yourself in the task text.
+- It does **not** wait for completion, read output, or close anything —
+  see Monitoring below for that, exactly as before.
+- On success it prints one JSON line to stdout: `worktree`, `workspace`,
+  `tab`, `pane`, `agent`, `persona`, `report`, `workspace_reused`,
+  `prompt_submitted`. On failure it does not roll back whatever it already
+  created (a partially-set-up workspace/tab/agent is left for you to
+  inspect or retry) and reports which stage failed plus every ID it has so
+  far, on stderr.
+- `pi` defaults to YOLO/bypass mode on this machine (see
+  `~/.pi/agent/extensions/modes.ts`), so a launched agent will not stall on
+  a bash approval prompt. If a subagent ever reports `working` but never
+  settles, check `herdr agent read <name>` for a stuck approval UI before
+  assuming it's just slow.
 
 ## Monitoring
 
@@ -113,6 +110,11 @@ sized to the task (minutes, not seconds). Reach for `ScheduleWakeup` instead
 only if the task is expected to run far longer than is reasonable to hold a
 background shell open for (e.g. tens of minutes to hours), or you have no
 other work to interleave and would rather free the background slot.
+
+A settle notification can occasionally fire on an intermediate state change
+rather than true completion — if the report file doesn't exist yet when you
+go to read it, re-check `herdr agent get <name>`; if it's still `working`,
+issue another `herdr agent wait` rather than assuming something broke.
 
 For a quick one-off status check without blocking, use:
 
@@ -139,21 +141,15 @@ enters herdr's scrollback at all. So a subagent's real output is a
 **report file it writes itself**, not (only) what `agent read` shows.
 
 Convention: `~/.herdr-reports/<worktree-name>/<agent-name>.md`, centralized
-outside any worktree so it survives manual worktree removal and never risks
-an accidental git commit. The orchestrator already knows both `<worktree-name>` and
-`<agent-name>` (it chose them), so construct this exact path and state it
-literally in the task prompt:
-
-```
-When finished, write a report to ~/.herdr-reports/<worktree-name>/<agent-name>.md
-covering: what you did, files touched, and anything you couldn't complete
-or want flagged for review. Write this file even if you hit an error.
-```
+outside any worktree so it survives worktree removal and never risks an
+accidental git commit. `subagent-launch` appends this instruction to the
+prompt automatically (see Starting the subagent above) — you don't need to
+construct or state the path yourself.
 
 Personas that have their own stricter job (like investigator) bake this
-report contract directly into the persona file instead — a task prompt
-using such a persona only needs to state the task and the resolved path,
-not repeat the full instruction.
+report contract directly into the persona file instead — `subagent-launch`
+still appends the resolved path, but the persona itself already specifies
+the required sections.
 
 After the subagent settles, **read the report file directly**, not just
 `agent read` — that's the artifact that's meant to last.
@@ -164,8 +160,8 @@ A persona is a fixed system-prompt file that gives a pi subagent a
 constrained role, so the orchestrator doesn't have to hand-write the same
 constraints into every task prompt. Personas live at
 `~/.pi/agent/personas/*.md` (stowed from `pi/.pi/agent/personas/` in this
-repo) and are attached via `--append-system-prompt` at `agent start` time
-(see Starting the subagent above).
+repo) and are attached via `subagent-launch --persona <name>` (see Starting
+the subagent above).
 
 Enforcement is prompt-only for now, by design — no `--tools`/
 `--exclude-tools` restriction backs a persona's constraints. Treat this as
@@ -182,9 +178,10 @@ instance) when the user asks to "investigate" something or otherwise wants
 read-only research delegated to a subagent:
 
 ```bash
-herdr agent start <name> --kind pi --pane <pane-id> -- \
-  --append-system-prompt ~/.pi/agent/personas/investigator.md
-herdr agent prompt <name> "Investigate: <question>. Write your report to ~/.herdr-reports/<worktree-name>/<name>.md"
+worktree_json=$(scripts/dev-env/wt-for-subagent --new-branch investigate-<topic>)
+worktree_path=$(echo "$worktree_json" | jq -r .path)
+scripts/dev-env/subagent-launch --worktree "$worktree_path" --name <short-name> \
+  --persona investigator -- "Investigate: <question>."
 ```
 
 ## Cleanup
@@ -199,11 +196,10 @@ confidence, the plan is to auto-close a tab once its report is written and
 the orchestrator has read it — blocked/errored tabs would still always be
 left open. Not yet implemented; don't do this until this note is updated.)
 
-**Worktree/branch cleanup, once a subagent used its own dedicated worktree
-(created via `wt-for-subagent` — see the `wt` skill), is scripted, not
-manual `git worktree remove`.** After you've closed the tab and no longer
-need the worktree (its commits have been cherry-picked elsewhere, or its
-read-only work is fully consumed), run:
+**Worktree/branch cleanup is scripted, not manual `git worktree remove`.**
+After you've closed the tab and no longer need the worktree (its commits
+have been cherry-picked elsewhere, or its read-only work is fully
+consumed), run:
 
 ```bash
 scripts/dev-env/wt-for-subagent-cleanup --path <worktree-path>
@@ -216,6 +212,21 @@ still has unmerged commits unless you pass `--force-branch` (use that once
 you've confirmed the commits you wanted were already cherry-picked
 elsewhere). Do not hand-run `git worktree remove`/`git branch -D` on a
 subagent worktree; use this script so the safety checks apply every time.
+
+## Cherry-picking implementor work
+
+Subagents never merge and never signal "ready" themselves. Once an
+implementor subagent's task settles (`idle`/`done`), the orchestrator
+inspects its worktree directly — `git -C <worktree-path> log`, review the
+diff/report — and cherry-picks the specific commit(s) it wants onto the
+target branch:
+
+```bash
+git cherry-pick <commit-sha>
+```
+
+Only after that (and after manually closing the tab, per Cleanup above)
+does the worktree get removed with `wt-for-subagent-cleanup`.
 
 ## When not to use this
 

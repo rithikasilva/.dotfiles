@@ -106,13 +106,39 @@ fail_stage() { stage="$1"; echo "subagent-launch failed during $stage." >&2; jso
 call_herdr() {
     local label="$1"; shift
     local out
-    if ! out=$(herdr "$@"); then
+    if ! out=$(herdr "$@" 2>&1); then
+        RESPONSE="$out"
         [[ "$label" == "status" ]] && echo "Herdr server is unavailable." >&2
         return 1
     fi
     RESPONSE="$out"
     [[ "$verbose" == true ]] && printf '[herdr %s] %s\n' "$label" "$RESPONSE" >&2
     return 0
+}
+
+# A tab freshly created by `herdr tab create` is not immediately ready to
+# host an agent: its shell needs a brief moment to become interactive.
+# `herdr agent start`'s own --timeout does not cover this — a pane in this
+# state fails instantly with agent_pane_busy rather than being retried
+# (confirmed by direct testing: --timeout 10000 still failed in ~6ms).
+# Retry a few times with a short sleep instead of failing on the first hit.
+call_herdr_with_pane_retry() {
+    local label="$1"; shift
+    local attempt out
+    for attempt in 1 2 3 4 5; do
+        if out=$(herdr "$@" 2>&1); then
+            RESPONSE="$out"
+            [[ "$verbose" == true ]] && printf '[herdr %s] %s\n' "$label" "$RESPONSE" >&2
+            return 0
+        fi
+        RESPONSE="$out"
+        if [[ "$out" != *agent_pane_busy* ]]; then
+            return 1
+        fi
+        [[ "$verbose" == true ]] && printf '[herdr %s] pane not ready yet (attempt %s), retrying...\n' "$label" "$attempt" >&2
+        sleep 0.5
+    done
+    return 1
 }
 
 stage="status"
@@ -161,9 +187,9 @@ pane=$(jq -r '.result.root_pane.pane_id // empty' <<<"$RESPONSE") || fail_stage 
 
 stage="agent start"
 if [[ -n "$persona_path" ]]; then
-    call_herdr "$stage" agent start "$name" --kind pi --pane "$pane" -- --append-system-prompt "$persona_path" || fail_stage "$stage"
+    call_herdr_with_pane_retry "$stage" agent start "$name" --kind pi --pane "$pane" -- --append-system-prompt "$persona_path" || fail_stage "$stage"
 else
-    call_herdr "$stage" agent start "$name" --kind pi --pane "$pane" || fail_stage "$stage"
+    call_herdr_with_pane_retry "$stage" agent start "$name" --kind pi --pane "$pane" || fail_stage "$stage"
 fi
 
 if [[ "$no_prompt" == false ]]; then
