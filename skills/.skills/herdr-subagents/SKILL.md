@@ -253,6 +253,17 @@ git cherry-pick <commit-sha>
 Only after that (and after manually closing the tab, per Cleanup above)
 does the worktree get removed with `wt-for-subagent-cleanup`.
 
+## Changing which agent gets launched
+
+This skill and `scripts/dev-env/subagent-launch` are written around `pi`
+(`herdr agent start ... --kind pi`), because that's what this machine uses.
+`herdr agent start --kind` also supports `claude`, `codex`, `gemini`, and
+several others — so on a different machine or at work, where the invoked
+CLI differs, change the hardcoded `--kind pi` (and the `~/.pi/agent/personas`
+persona-resolution path, which is pi-specific) in `subagent-launch` to match
+whatever agent binary is actually in use there. There is no runtime flag for
+this today; it's a one-line edit in the script, not a per-invocation option.
+
 ## When not to use this
 
 Default to a herdr/pi subagent (this skill) for delegation in this repo.
