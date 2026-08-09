@@ -1,0 +1,37 @@
+[terminal]
+# Match tmux: splits inherit the current pane's cwd.
+new_cwd = "follow"
+
+[keys]
+# Match tmux prefix (tmux/.tmux.conf sets `set -g prefix C-s`).
+prefix = "ctrl+s"
+
+# tmux: `bind r source-file ~/.tmux.conf` (bare r, not shift+r)
+reload_config = "prefix+r"
+
+# tmux: `unbind q` / `bind-key q kill-session`. Herdr has no true
+# "kill session" (workspaces persist by design) — close_workspace is the
+# closest equivalent: destroys the current workspace and its panes.
+close_workspace = "prefix+q"
+
+# tmux: custom `bind z` that also restyles the status bar when zoomed;
+# herdr's default is already prefix+z, kept explicit here for clarity.
+zoom = "prefix+z"
+
+# tmux: `bind-key h/j/k/l select-pane -L/-D/-U/-R` (vi-style nav)
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# tmux: `unbind -` / `bind-key - split-window -v -c "#{pane_current_path}"`
+# (stacked/down split). Herdr's "horizontal" split = stacked panes.
+split_horizontal = "prefix+minus"
+
+# tmux: `unbind \` / `bind-key \ split-window -h -c "#{pane_current_path}"`
+# (side-by-side split). Herdr's "vertical" split = side-by-side panes.
+# Herdr's default is prefix+v; remapped to backslash to match tmux.
+split_vertical = "prefix+backslash"
+
+[ui]
+agent_panel_sort = "spaces"

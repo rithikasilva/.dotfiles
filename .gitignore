@@ -3,3 +3,14 @@ neofetch/.config/neofetch/ascii.txt
 tmux/.tmux/plugins/*
 !tmux/.tmux/plugins/tpm
 lazygit/.config/lazygit/state.yml
+herdr/.config/herdr/*.log
+herdr/.config/herdr/*.sock
+herdr/.config/herdr/session.json
+herdr/.config/herdr/.plugins.lock
+kitty/.config/kitty/__pycache__/
+
+# pi runtime and secret state
+pi/.pi/agent/auth.json
+pi/.pi/agent/models-store.json
+pi/.pi/agent/sessions/
+pi/.pi/agent/bin/
