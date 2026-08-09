@@ -1,6 +1,6 @@
 ---
 name: herdr-subagents
-description: Start a pi subagent in a dedicated herdr workspace/worktree for analysis/review/implementation tasks, and monitor it through herdr. Use only when explicitly asked to run work as a herdr/pi subagent, not as a general substitute for the Agent tool.
+description: Start a pi subagent in a dedicated herdr workspace/worktree for analysis/review/implementation tasks, and monitor it through herdr. Default to this for subagent delegation in this repo unless the user asks for the plain Agent tool instead. Trigger word "Hagent" (in any user message, e.g. "Hagent this") always means this skill's full flow, overriding whatever default would otherwise apply.
 ---
 
 # Herdr subagents (pi, dedicated worktree)
@@ -10,9 +10,11 @@ primitives, ID handling, and safety rules. This skill only covers what's
 specific to this dotfiles setup: running `pi` as a subagent, each in its
 own isolated git worktree, for work the user wants to watch live in herdr.
 
-Same precondition as the base skill: confirm the Herdr server is actually
-running (`herdr status`) before doing anything. No in-pane env var is
-required to issue control commands from outside a managed pane.
+Unlike the base skill, do not check `herdr status` before doing anything —
+assume the Herdr server is always running on this machine. No in-pane env
+var is required to issue control commands from outside a managed pane. If
+a herdr/subagent-launch command fails, investigate the server state
+reactively at that point rather than checking upfront.
 
 ## Worktree and topology rule
 
@@ -230,6 +232,18 @@ does the worktree get removed with `wt-for-subagent-cleanup`.
 
 ## When not to use this
 
-Default to the `Agent` tool for delegation. Only start a herdr/pi subagent
-when the user explicitly wants the work running as a live, monitorable pane
-(e.g. "run this as a pi subagent in herdr so I can watch it").
+Default to a herdr/pi subagent (this skill) for delegation in this repo.
+Fall back to the plain `Agent` tool only when the user explicitly asks for
+it, or when herdr itself turns out to be unusable (a herdr/subagent-launch
+command actually fails — not in a git repo `wt-for-subagent` can branch
+from, etc.) — in that case say so before falling back rather than silently
+switching.
+
+## Trigger word: "Hagent"
+
+If the user's message contains "Hagent" (e.g. "Hagent this", "use Hagent
+to..."), that is a direct instruction to run this skill's full flow —
+worktree via `wt-for-subagent`, launch via `subagent-launch`, monitor via
+`herdr agent wait`, report file read back — for that task. It overrides the
+plain `Agent` tool as a default and does not require the "explicitly asks
+for herdr" bar above to be met separately; the word itself is that ask.
