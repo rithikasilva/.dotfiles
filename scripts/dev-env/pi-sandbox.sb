@@ -1,0 +1,68 @@
+;; Seatbelt profile for a pi process running in one subagent worktree.
+;; Parameters are supplied by pi-sandboxed: WORKTREE, PI_AGENT, and TMPDIR.
+(version 1)
+(deny default)
+
+;; The worktree is the only project-controlled tree with write access.
+(allow file-read* file-write* (subpath (param "WORKTREE")))
+
+;; Pi's durable configuration, credentials, extensions, and sessions.
+(allow file-read* file-write* (subpath (param "PI_AGENT")))
+;; Dotfiles-managed installations may symlink settings/personas out of ~/.pi.
+;; Keep those source files readable, while retaining write confinement.
+(allow file-read* (subpath (param "PI_CONFIG_SOURCE")))
+;; Trusted launcher helpers are read-only and live beside subagent-launch.
+(allow file-read* (subpath (param "PI_SANDBOX_TOOLS")))
+
+;; Node and pi runtime files, plus programs used by pi's bash tool.
+(allow file-read* process-exec
+    (subpath "/System")
+    (subpath "/usr")
+    (subpath "/bin")
+    (subpath "/sbin")
+    (subpath "/opt/homebrew")
+    (subpath "/Library/Frameworks")
+    (subpath "/Applications")
+    (subpath (param "CARGO_BIN")))
+
+;; Basic host configuration needed by libc/node at startup (read-only).
+(allow file-read*
+    (literal "/etc")
+    (literal "/private/etc")
+    (literal "/private/etc/hosts")
+    (literal "/private/etc/services")
+    (literal "/private/etc/resolv.conf")
+    (subpath "/private/etc/ssl")
+    (literal "/dev/null")
+    (literal "/dev/zero")
+    (literal "/dev/random")
+    (literal "/dev/urandom")
+    (literal "/dev/tty")
+    (literal "/dev/ptmx"))
+
+;; Keep temporary files private to the normal macOS temporary directory.
+(allow file-read* file-write* (subpath (param "TMPDIR")))
+
+;; Node uses shared memory for some runtime operations.
+(allow ipc-posix-shm)
+(allow sysctl-read)
+
+;; Traversing symlinked macOS paths (for example /bin -> /usr/bin) needs
+;; access to the mount roots, but not their contents.
+(allow file-read-metadata file-read-data
+    (literal "/")
+    (literal "/private"))
+(allow file-read-metadata)
+(allow file-ioctl)
+(allow process-fork)
+
+;; DNS is delegated to macOS's resolver daemon over its Unix socket. The
+;; wrapper adds one remote-ip rule per current chatgpt.com address below.
+(allow network-outbound
+    (literal "/private/var/run/mDNSResponder"))
+
+;; No inbound/listening sockets. Outbound network is otherwise denied by the
+;; default policy; pi-sandboxed adds only the provider's resolved IP:443 rules
+;; to a temporary copy of this profile before starting pi.
+(deny network-inbound)
+(deny network-bind)

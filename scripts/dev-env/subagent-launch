@@ -187,6 +187,21 @@ else
     [[ -n "$tab" && -n "$pane" ]] || fail_stage "$stage response parsing"
 fi
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Herdr's built-in pi kind always launches the literal `pi` command. Shadow
+    # it only in this pane so normal agent detection still works while the
+    # command resolves to our Seatbelt wrapper. The directory can be removed
+    # once startup has completed because the wrapper execs sandbox-exec.
+    sandbox_bin=$(mktemp -d "${TMPDIR:-/tmp}/pi-sandbox.XXXXXX") || fail_stage "sandbox setup"
+    cleanup_sandbox_bin() { rm -rf "$sandbox_bin"; }
+    trap cleanup_sandbox_bin EXIT
+    ln -s "$SCRIPT_DIR/pi-sandboxed" "$sandbox_bin/pi" || fail_stage "sandbox setup"
+    sandbox_path=$(printf '%q' "$sandbox_bin")
+    sandbox_worktree=$(printf '%q' "$worktree")
+    stage="sandbox setup"
+    call_herdr "$stage" pane run "$pane" "export PI_SANDBOX_WORKTREE=$sandbox_worktree; export PI_SANDBOX_AGENT_DIR=$(printf '%q' "$HOME/.pi/agent"); export PATH=$sandbox_path:\$PATH" || fail_stage "$stage"
+fi
+
 stage="agent start"
 if [[ -n "$persona_path" ]]; then
     call_herdr_with_pane_retry "$stage" agent start "$name" --kind pi --pane "$pane" -- --append-system-prompt "$persona_path" || fail_stage "$stage"
