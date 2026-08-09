@@ -14,9 +14,9 @@ External tool dependencies and how to install them: `INSTALL.md`.
 
 ## Shared skills
 
-`skills/.skills/` is the canonical source for shared Agent Skills. The `skills/.claude/skills/` entries are Stow-managed symlinks that expose those skills to Claude Code. Keep shared skill content in `skills/.skills/` and do not edit installed copies under `~/.claude/skills/`.
+`skills/.skills/` is the canonical source for shared Agent Skills. The `skills/.claude/skills/` and `skills/.codex/skills/` entries are Stow-managed symlinks that expose those skills to Claude Code and Codex, respectively. Keep shared skill content in `skills/.skills/` and do not edit installed copies under `~/.claude/skills/` or `~/.codex/skills/`.
 
-Claude-only skills may remain outside the shared tree.
+Claude-only or Codex-only skills may remain outside the shared tree.
 
 ## Subagent worktrees
 
