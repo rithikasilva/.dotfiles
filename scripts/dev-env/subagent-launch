@@ -176,14 +176,16 @@ if [[ -z "$workspace" ]]; then
     stage="workspace create"
     call_herdr "$stage" workspace create --cwd "$worktree" --no-focus || fail_stage "$stage"
     workspace=$(jq -r '.result.workspace | if type=="string" then . else (.workspace_id // .id // empty) end' <<<"$RESPONSE") || fail_stage "$stage response parsing"
-    [[ -n "$workspace" ]] || fail_stage "$stage response parsing"
+    tab=$(jq -r '.result.tab.tab_id // .result.tab_id // .result.tab.id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+    pane=$(jq -r '.result.root_pane.pane_id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+    [[ -n "$workspace" && -n "$tab" && -n "$pane" ]] || fail_stage "$stage response parsing"
+else
+    stage="tab create"
+    call_herdr "$stage" tab create --workspace "$workspace" --cwd "$worktree" --no-focus || fail_stage "$stage"
+    tab=$(jq -r '.result.tab.tab_id // .result.tab_id // .result.tab.id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+    pane=$(jq -r '.result.root_pane.pane_id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+    [[ -n "$tab" && -n "$pane" ]] || fail_stage "$stage response parsing"
 fi
-
-stage="tab create"
-call_herdr "$stage" tab create --workspace "$workspace" --cwd "$worktree" --no-focus || fail_stage "$stage"
-tab=$(jq -r '.result.tab.tab_id // .result.tab_id // .result.tab.id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
-pane=$(jq -r '.result.root_pane.pane_id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
-[[ -n "$tab" && -n "$pane" ]] || fail_stage "$stage response parsing"
 
 stage="agent start"
 if [[ -n "$persona_path" ]]; then
