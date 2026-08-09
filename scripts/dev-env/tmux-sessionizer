@@ -62,35 +62,62 @@ start_env() {
 
     local selected
 
-    # Expand each root into the root itself plus its currently registered
-    # worktrees. The helper queries Git on every invocation, so removed
-    # worktrees disappear without editing ~/.project_dirs.
+    # Expand one registered root into the root itself plus its currently
+    # registered worktrees, writing tab-separated path/branch lines to
+    # stdout. Split out of project_entries so each root's Git calls
+    # (branch --show-current, rev-parse, worktree list) can run in its own
+    # background subshell instead of blocking the next root in line.
+    expand_root() {
+        local root="$1"
+        local root_real repo_root path branch detached
+        root_real=$(cd "$root" 2>/dev/null && pwd -P) || root_real="$root"
+        branch=$(git_branch "$root")
+        printf '%s\t%s\n' "$root" "$branch"
+
+        # Only enumerate worktrees when this registration is the
+        # physical top-level of its repository, not a path inside/
+        # symlinked into one (e.g. ~/.config/nvim -> this repo) —
+        # otherwise the containing repo's own worktrees leak in here.
+        repo_root=$(git -C "$root" rev-parse --show-toplevel 2>/dev/null) || repo_root=
+        repo_root=$(cd "$repo_root" 2>/dev/null && pwd -P) || repo_root=
+        if [[ -n "$repo_root" && "$root_real" == "$repo_root" ]]; then
+            while IFS=$'\t' read -r path branch detached; do
+                [[ "$path" == "$root_real" ]] && continue
+                # Subagent worktrees are Herdr-owned and must stay out of
+                # the human tmux picker. Keep this a naming/branch check
+                # against the record already returned by worktree_records.
+                [[ "$path" == *_agent_*_worktree ]] && continue
+                [[ "$branch" == agent/* ]] && continue
+                printf '%s\t%s\n' "$path" "$branch"
+            done < <(worktree_records "$root" 2>/dev/null || true)
+        fi
+    }
+
+    # Expand every registered root in parallel: each root's Git calls are
+    # independent of every other root's, so the previous fully sequential
+    # loop paid ~50ms/root (branch + rev-parse + worktree list) one at a
+    # time — 66 roots meant ~0.6s before fzf even opened. Run one
+    # background subshell per root instead, each writing to its own temp
+    # file, then concatenate in registration order once all finish.
     project_entries() {
-        local root root_real repo_root path branch detached
+        local root tmpdir
+        tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/tmux-sessionizer.XXXXXX") || return 1
+        trap 'rm -rf "$tmpdir"' RETURN
+
+        local i=0 pids=()
         while IFS= read -r root <&3; do
             [[ -z "$root" ]] && continue
-            root_real=$(cd "$root" 2>/dev/null && pwd -P) || root_real="$root"
-            branch=$(git_branch "$root")
-            printf '%s\t%s\n' "$root" "$branch"
-
-            # Only enumerate worktrees when this registration is the
-            # physical top-level of its repository, not a path inside/
-            # symlinked into one (e.g. ~/.config/nvim -> this repo) —
-            # otherwise the containing repo's own worktrees leak in here.
-            repo_root=$(git -C "$root" rev-parse --show-toplevel 2>/dev/null) || repo_root=
-            repo_root=$(cd "$repo_root" 2>/dev/null && pwd -P) || repo_root=
-            if [[ -n "$repo_root" && "$root_real" == "$repo_root" ]]; then
-                while IFS=$'\t' read -r path branch detached; do
-                    [[ "$path" == "$root_real" ]] && continue
-                    # Subagent worktrees are Herdr-owned and must stay out of
-                    # the human tmux picker. Keep this a naming/branch check
-                    # against the record already returned by worktree_records.
-                    [[ "$path" == *_agent_*_worktree ]] && continue
-                    [[ "$branch" == agent/* ]] && continue
-                    printf '%s\t%s\n' "$path" "$branch"
-                done < <(worktree_records "$root" 2>/dev/null || true)
-            fi
+            i=$((i + 1))
+            expand_root "$root" > "$tmpdir/$i" &
+            pids+=($!)
         done 3< "$PROJECT_FILE"
+
+        local pid
+        for pid in "${pids[@]}"; do
+            wait "$pid" 2>/dev/null
+        done
+
+        cat "$tmpdir"/* 2>/dev/null
     }
 
     if [[ -z "$match" ]]; then
