@@ -170,10 +170,11 @@ Enforcement is prompt-only for now, by design — no `--tools`/
 a "start simple, harden later" stance, not a security boundary.
 
 **`investigator`** (`pi/.pi/agent/personas/investigator.md`): read-only
-codebase research. Only searches and reads; never edits, writes, or runs
-mutating commands. Its only side effect is its report file, whose path and
-required sections (Summary / Findings / Open questions) are already
-specified in the persona itself.
+codebase research. Only searches and reads (plus read-only bash like
+`git log`, `git show`, `cat`, `wc`); never edits, writes, or runs mutating
+commands. Its only side effect is its report file, whose path and required
+sections (Summary / Findings / Open questions) are already specified in
+the persona itself.
 
 Default to spawning an investigator (rather than a plain, unpersonaed pi
 instance) when the user asks to "investigate" something or otherwise wants
@@ -184,6 +185,28 @@ worktree_json=$(scripts/dev-env/wt-for-subagent --new-branch investigate-<topic>
 worktree_path=$(echo "$worktree_json" | jq -r .path)
 scripts/dev-env/subagent-launch --worktree "$worktree_path" --name <short-name> \
   --persona investigator -- "Investigate: <question>."
+```
+
+**`implementor`** (`pi/.pi/agent/personas/implementor.md`): given a plan
+or task description, writes the actual code — edits, writes, and runs
+commands freely within its worktree. Runs tests/lints/builds itself and
+reports the real pass/fail result when that's reasonable inside the
+worktree (and sandbox, once sandboxing lands); when it isn't — missing
+network, external services, or infra the worktree/sandbox can't provide —
+it proposes the exact command instead of faking a result. It never merges
+or signals "ready" itself: it commits its work on its own branch (see
+Cherry-picking implementor work below) for the orchestrator to review and
+cherry-pick.
+
+Default to spawning an implementor (rather than a plain, unpersonaed pi
+instance) for delegated coding work — the pattern used throughout this
+session for fixes, features, and doc changes handed off to a subagent:
+
+```bash
+worktree_json=$(scripts/dev-env/wt-for-subagent --new-branch <short-task-name>)
+worktree_path=$(echo "$worktree_json" | jq -r .path)
+scripts/dev-env/subagent-launch --worktree "$worktree_path" --name <short-name> \
+  --persona implementor -- "Implement: <task/plan>."
 ```
 
 ## Cleanup
