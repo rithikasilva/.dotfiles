@@ -15,3 +15,6 @@ pi/.pi/agent/auth.json
 pi/.pi/agent/models-store.json
 pi/.pi/agent/sessions/
 pi/.pi/agent/bin/
+
+# local task tracking, not shared history
+/TODO.md
