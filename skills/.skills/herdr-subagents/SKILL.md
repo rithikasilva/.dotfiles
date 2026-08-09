@@ -85,11 +85,11 @@ scripts/dev-env/subagent-launch \
   created (a partially-set-up workspace/tab/agent is left for you to
   inspect or retry) and reports which stage failed plus every ID it has so
   far, on stderr.
-- `pi` defaults to YOLO/bypass mode on this machine (see
-  `~/.pi/agent/extensions/modes.ts`), so a launched agent will not stall on
-  a bash approval prompt. If a subagent ever reports `working` but never
-  settles, check `herdr agent read <name>` for a stuck approval UI before
-  assuming it's just slow.
+- `pi` has no built-in tool-approval gating (see its own security docs — no
+  sandbox, no per-tool approval prompts by default), so a launched agent
+  will not stall on a bash approval prompt. If a subagent ever reports
+  `working` but never settles, check `herdr agent read <name>` for a stuck
+  approval UI before assuming it's just slow.
 
 ## Monitoring
 
