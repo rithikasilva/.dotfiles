@@ -1,0 +1,180 @@
+#!/bin/bash
+# Launch a new pi subagent in an existing worktree through Herdr.
+#
+# Usage:
+#   subagent-launch --worktree <path> --name <agent-name> [options] -- <prompt...>
+
+set -euo pipefail
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd -P)
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: subagent-launch --worktree <path> --name <agent-name>
+       [--persona <name>] [--prompt-file <file>|-] [--no-prompt]
+       [--human] [--verbose] -- <prompt text...>
+EOF
+    exit "${1:-1}"
+}
+
+worktree=""
+name=""
+persona=""
+prompt_file=""
+no_prompt=false
+human=false
+verbose=false
+prompt_args=()
+separator=false
+while [[ $# -gt 0 ]]; do
+    if [[ "$separator" == true ]]; then
+        prompt_args+=("$1")
+        shift
+        continue
+    fi
+    case "$1" in
+        --worktree) [[ $# -ge 2 && -n "$2" ]] || usage; worktree="$2"; shift 2 ;;
+        --name) [[ $# -ge 2 && -n "$2" ]] || usage; name="$2"; shift 2 ;;
+        --persona) [[ $# -ge 2 && -n "$2" ]] || usage; persona="$2"; shift 2 ;;
+        --prompt-file) [[ $# -ge 2 && -n "$2" ]] || usage; prompt_file="$2"; shift 2 ;;
+        --no-prompt) no_prompt=true; shift ;;
+        --human) human=true; shift ;;
+        --verbose) verbose=true; shift ;;
+        --) separator=true; shift ;;
+        -h|--help) [[ $# -eq 1 ]] || usage; usage 0 ;;
+        *) echo "Unknown argument: $1 (use -- before prompt text)." >&2; usage ;;
+    esac
+done
+
+[[ -n "$worktree" ]] || { echo "--worktree is required." >&2; exit 2; }
+[[ -n "$name" ]] || { echo "--name is required." >&2; exit 2; }
+[[ "$name" =~ ^[a-z][a-z0-9_-]{0,31}$ ]] || { echo "Invalid agent name '$name' (must match [a-z][a-z0-9_-]{0,31})." >&2; exit 2; }
+
+canonical_worktree=$(cd "$worktree" 2>/dev/null && pwd -P) || { echo "Worktree path does not exist: $worktree" >&2; exit 2; }
+worktree="$canonical_worktree"
+[[ -d "$worktree" ]] || { echo "Worktree is not a directory: $worktree" >&2; exit 2; }
+
+persona_path=""
+if [[ -n "$persona" ]]; then
+    [[ "$persona" =~ ^[a-z][a-z0-9_-]{0,31}$ ]] || { echo "Invalid persona name '$persona'." >&2; exit 2; }
+    persona_path="$HOME/.pi/agent/personas/$persona.md"
+    if [[ ! -f "$persona_path" ]]; then
+        persona_path="$REPO_ROOT/pi/.pi/agent/personas/$persona.md"
+    fi
+    [[ -f "$persona_path" ]] || { echo "Persona not found: $persona" >&2; exit 2; }
+    persona_path=$(cd "$(dirname "$persona_path")" && pwd -P)/$(basename "$persona_path")
+fi
+
+if [[ "$no_prompt" == true ]]; then
+    [[ -z "$prompt_file" && ${#prompt_args[@]} -eq 0 ]] || { echo "--no-prompt cannot be combined with a prompt." >&2; exit 2; }
+else
+    [[ -z "$prompt_file" || ${#prompt_args[@]} -eq 0 ]] || { echo "--prompt-file and prompt text are mutually exclusive." >&2; exit 2; }
+    if [[ -n "$prompt_file" ]]; then
+        if [[ "$prompt_file" == "-" ]]; then
+            prompt_text=$(cat)
+        else
+            prompt_text=$(<"$prompt_file") || { echo "Could not read prompt file: $prompt_file" >&2; exit 2; }
+        fi
+    else
+        [[ ${#prompt_args[@]} -gt 0 ]] || { echo "A prompt is required (use --no-prompt to skip it)." >&2; exit 2; }
+        prompt_text="${prompt_args[*]}"
+    fi
+fi
+
+worktree_name=$(basename "$worktree")
+report="$HOME/.herdr-reports/$worktree_name/$name.md"
+if [[ "$no_prompt" == false ]]; then
+    prompt_text+=$'\n\n'
+    prompt_text+="When finished, write your report to $report. The resolved report path is $report. Write it even if you hit an error."
+fi
+
+workspace=""
+tab=""
+pane=""
+workspace_reused=false
+stage="validation"
+
+json_error() {
+    jq -cn --arg stage "$stage" --arg worktree "$worktree" --arg workspace "$workspace" \
+        --arg tab "$tab" --arg pane "$pane" --arg agent "$name" --arg persona "${persona_path:-}" \
+        --arg report "$report" --arg reused "$workspace_reused" \
+        '{error:true,stage:$stage,worktree:$worktree,workspace:($workspace|if .=="" then null else . end),tab:($tab|if .=="" then null else . end),pane:($pane|if .=="" then null else . end),agent:$agent,persona:($persona|if .=="" then null else . end),report:$report,workspace_reused:($reused=="true")}' >&2
+}
+fail_stage() { stage="$1"; echo "subagent-launch failed during $stage." >&2; json_error; exit 1; }
+
+call_herdr() {
+    local label="$1"; shift
+    local out
+    if ! out=$(herdr "$@"); then
+        [[ "$label" == "status" ]] && echo "Herdr server is unavailable." >&2
+        return 1
+    fi
+    RESPONSE="$out"
+    [[ "$verbose" == true ]] && printf '[herdr %s] %s\n' "$label" "$RESPONSE" >&2
+    return 0
+}
+
+stage="status"
+call_herdr status status || fail_stage status
+stage="workspace list"
+call_herdr "workspace list" workspace list || fail_stage "workspace list"
+command -v jq >/dev/null 2>&1 || fail_stage "jq availability"
+
+# workspace list does not expose cwd on current Herdr; inspect each workspace's panes
+# (and accept a future direct workspace cwd field) while retaining exact matching.
+while IFS=$'\t' read -r wid direct_cwd; do
+    [[ -n "$wid" ]] || continue
+    cwd="$direct_cwd"
+    if [[ -z "$cwd" ]]; then
+        stage="pane list for workspace $wid"
+        call_herdr "pane list $wid" pane list --workspace "$wid" || fail_stage "$stage"
+        cwd=$(jq -r --arg path "$worktree" '[.result.panes[]? | .cwd, .foreground_cwd] | map(select(. != null)) | .[0] // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+    fi
+    if [[ -n "$cwd" ]]; then
+        resolved=$(cd "$cwd" 2>/dev/null && pwd -P || true)
+        if [[ "$resolved" == "$worktree" ]]; then
+            if [[ -n "$workspace" ]]; then
+                stage="workspace lookup"
+                echo "Multiple workspaces match canonical cwd $worktree ($workspace and $wid)." >&2
+                json_error
+                exit 1
+            fi
+            workspace="$wid"
+            workspace_reused=true
+        fi
+    fi
+done < <(jq -r '.result.workspaces[]? | [.workspace_id, (.cwd // "")] | @tsv' <<<"$RESPONSE") || fail_stage "workspace list response parsing"
+
+if [[ -z "$workspace" ]]; then
+    stage="workspace create"
+    call_herdr "$stage" workspace create --cwd "$worktree" --no-focus || fail_stage "$stage"
+    workspace=$(jq -r '.result.workspace | if type=="string" then . else (.workspace_id // .id // empty) end' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+    [[ -n "$workspace" ]] || fail_stage "$stage response parsing"
+fi
+
+stage="tab create"
+call_herdr "$stage" tab create --workspace "$workspace" --cwd "$worktree" --no-focus || fail_stage "$stage"
+tab=$(jq -r '.result.tab.tab_id // .result.tab_id // .result.tab.id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+pane=$(jq -r '.result.root_pane.pane_id // empty' <<<"$RESPONSE") || fail_stage "$stage response parsing"
+[[ -n "$tab" && -n "$pane" ]] || fail_stage "$stage response parsing"
+
+stage="agent start"
+if [[ -n "$persona_path" ]]; then
+    call_herdr "$stage" agent start "$name" --kind pi --pane "$pane" -- --append-system-prompt "$persona_path" || fail_stage "$stage"
+else
+    call_herdr "$stage" agent start "$name" --kind pi --pane "$pane" || fail_stage "$stage"
+fi
+
+if [[ "$no_prompt" == false ]]; then
+    stage="prompt submission"
+    call_herdr "$stage" agent prompt "$name" "$prompt_text" || fail_stage "$stage"
+fi
+
+if [[ "$human" == true ]]; then
+    printf 'Launched %s in workspace %s (tab %s, pane %s).\n' "$name" "$workspace" "$tab" "$pane"
+fi
+jq -cn --arg worktree "$worktree" --arg workspace "$workspace" --arg tab "$tab" --arg pane "$pane" \
+    --arg agent "$name" --arg persona "${persona_path:-}" --arg report "$report" \
+    --arg reused "$workspace_reused" --arg submitted "$([[ "$no_prompt" == false ]] && echo true || echo false)" \
+    '{worktree:$worktree,workspace:$workspace,tab:$tab,pane:$pane,agent:$agent,persona:($persona|if .=="" then null else . end),report:$report,workspace_reused:($reused=="true"),prompt_submitted:($submitted=="true")}'
