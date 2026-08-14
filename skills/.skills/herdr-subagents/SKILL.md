@@ -63,11 +63,15 @@ It composes `wt-for-subagent`, `subagent-launch`, `herdr agent wait`, and
 manual-audit by default and leaves the Herdr tab, worktree, and branch in
 place. An optional `--cleanup integrate` or `--cleanup discard` requests
 cleanup only after the report is shown and the operator types the matching
-acknowledgement (`INTEGRATE`/`DISCARD`). Close the created Herdr tab first;
-the command never closes tabs. `integrate` retains the cleanup helper's
-fully-merged branch check, while `discard` uses its explicit force-branch
-path and still refuses uncommitted changes. A timeout or blocked state still
-surfaces any report and does not implicitly clean up.
+acknowledgement (`INTEGRATE`/`DISCARD`). It then closes only the parsed
+workspace created by that invocation with `herdr workspace close
+<workspace_id>` before invoking the worktree cleanup helper. It never targets
+a focused/default workspace. If workspace closure fails, the worktree is
+retained; if worktree cleanup fails after closure, its remaining path is
+reported. `integrate` retains the cleanup helper's fully-merged branch check,
+while `discard` uses its explicit force-branch path and still refuses
+uncommitted changes. A timeout or blocked state still surfaces any report and
+does not implicitly clean up.
 
 For lower-level launch-only control, use `scripts/dev-env/subagent-launch` — it collapses workspace
 create-or-reuse, tab creation, agent start, and prompt submission into one

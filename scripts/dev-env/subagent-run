@@ -18,8 +18,9 @@ Usage: subagent-run --branch <short-task-name> --name <agent-name>
 Creates a reserved worktree, launches the prompt through Herdr, waits for a
 settled state, and prints the persistent report.  Without --cleanup it leaves
 the worktree, Herdr tab, and branch for manual audit.  Cleanup requires typing
-INTEGRATE or DISCARD at the terminal after the report is displayed.  Close the
-created Herdr tab first; this command does not close tabs automatically.
+INTEGRATE or DISCARD at the terminal after the report is displayed.  The
+acknowledged cleanup closes this invocation's Herdr workspace before removing
+the worktree.
 EOF
     exit "${1:-1}"
 }
@@ -83,6 +84,7 @@ agent=$(jq -er '.agent' <<<"$launch_json")
 report=$(jq -er '.report' <<<"$launch_json")
 workspace=$(jq -er '.workspace' <<<"$launch_json")
 tab=$(jq -er '.tab' <<<"$launch_json")
+workspace_reused=$(jq -er '.workspace_reused' <<<"$launch_json")
 printf 'Launched %s in worktree %s (workspace %s, tab %s).\n' "$agent" "$worktree" "$workspace" "$tab"
 
 wait_status=0
@@ -107,7 +109,7 @@ if [[ -z "$cleanup" ]]; then
     exit "$wait_status"
 fi
 
-printf '\nCleanup requested (%s). Close Herdr tab %s first, then type %s to confirm: ' "$cleanup" "$tab" "${cleanup^^}" >&2
+printf '\nCleanup requested (%s). Type %s to confirm workspace %s closure and worktree cleanup: ' "$cleanup" "${cleanup^^}" "$workspace" >&2
 if [[ ! -t 0 || ! -t 1 ]]; then
     echo >&2
     echo "Cleanup requires an interactive terminal acknowledgement; nothing was removed." >&2
@@ -119,7 +121,31 @@ read -r acknowledgement </dev/tty
     exit 1
 }
 
+# Never close a workspace that launch merely reused.  A newly provisioned
+# worktree should not normally hit this case, but retaining this guard keeps
+# cleanup scoped to resources created by this invocation.
+if [[ "$workspace_reused" == true ]]; then
+    echo "Refusing cleanup: workspace $workspace was reused, not created by this invocation; worktree remains at $worktree." >&2
+    exit 1
+fi
+
+close_output=""
+if ! close_output=$(herdr workspace close "$workspace" 2>&1); then
+    echo "Herdr workspace close failed for $workspace; worktree was not removed." >&2
+    [[ -n "$close_output" ]] && printf '%s\n' "$close_output" >&2
+    echo "Remaining worktree: $worktree" >&2
+    exit 1
+fi
+
+echo "Closed Herdr workspace $workspace." >&2
 cleanup_args=(--path "$worktree" --repo "$repo")
 [[ "$cleanup" == discard ]] && cleanup_args+=(--force-branch)
-"$SCRIPT_DIR/wt-for-subagent-cleanup" "${cleanup_args[@]}"
+cleanup_output=""
+if ! cleanup_output=$("$SCRIPT_DIR/wt-for-subagent-cleanup" "${cleanup_args[@]}" 2>&1); then
+    echo "Worktree cleanup failed after workspace $workspace closed; inspect the remaining worktree." >&2
+    [[ -n "$cleanup_output" ]] && printf '%s\n' "$cleanup_output" >&2
+    echo "Remaining worktree: $worktree" >&2
+    exit 1
+fi
+printf '%s\n' "$cleanup_output"
 exit "$wait_status"
