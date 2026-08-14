@@ -23,11 +23,12 @@ invocation, add `--cleanup integrate` or `--cleanup discard`. After the report
 is displayed, the command requires typing `INTEGRATE` or `DISCARD`
 respectively, then closes the parsed workspace with `herdr workspace close
 <workspace_id>` and invokes the cleanup helper. It never closes a focused or
-unrelated workspace. Integration uses the cleanup helper's normal fully-merged
-branch check; discard explicitly permits deletion of an unmerged reserved
-branch, but still refuses uncommitted changes. If workspace closure fails, the
-worktree is retained; if worktree cleanup fails after closure, the remaining
-path is printed for inspection.
+unrelated workspace. Both acknowledged outcomes use the cleanup helper's
+guarded force-branch path: `INTEGRATE` confirms the reported commits were
+cherry-picked (which Git cannot identify as a merge), while `DISCARD`
+intentionally abandons them. The helper still refuses uncommitted changes. If
+workspace closure fails, the worktree is retained; if worktree cleanup fails
+after closure, the remaining path is printed for inspection.
 
 A timed-out or blocked run still surfaces the report (if present) and returns
 the wait status. No cleanup is attempted unless the explicit acknowledgement

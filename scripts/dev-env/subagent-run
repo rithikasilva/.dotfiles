@@ -139,7 +139,10 @@ fi
 
 echo "Closed Herdr workspace $workspace." >&2
 cleanup_args=(--path "$worktree" --repo "$repo")
-[[ "$cleanup" == discard ]] && cleanup_args+=(--force-branch)
+# A typed INTEGRATE acknowledgement confirms the reported commits were
+# cherry-picked. Git cannot identify that relationship as a merge, so use the
+# cleanup helper's explicit guarded force path for both acknowledged outcomes.
+cleanup_args+=(--force-branch)
 cleanup_output=""
 if ! cleanup_output=$("$SCRIPT_DIR/wt-for-subagent-cleanup" "${cleanup_args[@]}" 2>&1); then
     echo "Worktree cleanup failed after workspace $workspace closed; inspect the remaining worktree." >&2
