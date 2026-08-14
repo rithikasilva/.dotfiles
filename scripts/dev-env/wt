@@ -63,12 +63,30 @@ root_name=$(basename "$main_worktree")
 parent_dir=$(dirname "$main_worktree")
 
 # Serialize discovery and creation so concurrent invocations cannot choose the
-# same number.
+# same number. The owner file lets us distinguish a live holder from a lock
+# left behind by a crashed process.
 lock_dir="$git_dir/wt.lock"
-while ! mkdir "$lock_dir" 2>/dev/null; do
+mkdir -p "$(dirname "$lock_dir")"
+got_lock=false
+for _ in $(seq 1 600); do
+    if mkdir "$lock_dir" 2>/dev/null; then
+        printf '%s\n' "$$" > "$lock_dir/owner"
+        trap 'rm -f "$lock_dir/owner"; rmdir "$lock_dir" 2>/dev/null || true' EXIT
+        got_lock=true
+        break
+    fi
+    lock_pid=""
+    [[ -f "$lock_dir/owner" ]] && read -r lock_pid < "$lock_dir/owner" || true
+    if [[ ! "$lock_pid" =~ ^[0-9]+$ ]] || ! kill -0 "$lock_pid" 2>/dev/null; then
+        rm -f "$lock_dir/owner"
+        rmdir "$lock_dir" 2>/dev/null || true
+    fi
     sleep 0.1
 done
-trap 'rmdir "$lock_dir" 2>/dev/null || true' EXIT
+[[ "$got_lock" == true ]] || {
+    echo "Timed out waiting for worktree lock: $lock_dir" >&2
+    exit 1
+}
 
 max_n=0
 while IFS=$'\t' read -r existing _branch _detached; do

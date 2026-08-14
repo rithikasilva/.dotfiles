@@ -76,23 +76,60 @@ git_dir=$(git -C "$repo" rev-parse --git-common-dir 2>/dev/null) || {
 }
 git_dir=$(cd "$git_dir" && pwd -P)
 main_worktree=$(cd "$(dirname "$git_dir")" && pwd -P)
+root_name=$(basename "$main_worktree")
+parent_dir=$(dirname "$main_worktree")
 
+# Serialize cleanup with allocation, and recover locks left by crashed
+# processes using the same owner metadata convention as the creators.
+lock_dir="$git_dir/wt.lock"
+mkdir -p "$(dirname "$lock_dir")"
+got_lock=false
+for _ in $(seq 1 600); do
+    if mkdir "$lock_dir" 2>/dev/null; then
+        printf '%s\n' "$$" > "$lock_dir/owner"
+        trap 'rm -f "$lock_dir/owner"; rmdir "$lock_dir" 2>/dev/null || true' EXIT
+        got_lock=true
+        break
+    fi
+    lock_pid=""
+    [[ -f "$lock_dir/owner" ]] && read -r lock_pid < "$lock_dir/owner" || true
+    if [[ ! "$lock_pid" =~ ^[0-9]+$ ]] || ! kill -0 "$lock_pid" 2>/dev/null; then
+        rm -f "$lock_dir/owner"
+        rmdir "$lock_dir" 2>/dev/null || true
+    fi
+    sleep 0.1
+done
+[[ "$got_lock" == true ]] || {
+    echo "Timed out waiting for worktree lock: $lock_dir" >&2
+    exit 1
+}
+
+# Canonicalize the parent even when recovery is operating on a path that no
+# longer exists.
 if [[ -e "$path" ]]; then
     path=$(cd "$path" 2>/dev/null && pwd -P) || {
         echo "Could not resolve worktree path: $path" >&2
         exit 1
     }
+else
+    path="$(cd "$(dirname "$path")" 2>/dev/null && pwd -P)/$(basename "$path")" || {
+        echo "Could not resolve worktree parent: $path" >&2
+        exit 1
+    }
+fi
+path_parent=$(dirname "$path")
+path_base=$(basename "$path")
+if [[ "$path_parent" != "$parent_dir" ]] || [[ "$path_base" != "${root_name}_agent_"*"_worktree" ]]; then
+    echo "Refusing '$path': not a reserved sibling subagent worktree of $main_worktree." >&2
+    exit 1
+fi
+
+if [[ -e "$path" ]]; then
+    :
 elif [[ -n "$branch_override" && "$force_branch" == true ]]; then
     # `git worktree remove` may have already succeeded before `branch -d`
     # discovers a cherry-picked (rather than merged) branch.  Keep recovery
     # in this guarded wrapper instead of requiring a hand-run `git branch -D`.
-    case "$(basename "$path")" in
-        *_agent_*_worktree) ;;
-        *)
-            echo "Refusing recovery for '$path': not a reserved subagent worktree name." >&2
-            exit 1
-            ;;
-    esac
     [[ "$branch_override" == agent/* ]] || {
         echo "Refusing recovery: branch '$branch_override' is outside the reserved agent/ namespace." >&2
         exit 1
@@ -114,14 +151,6 @@ else
     echo "Worktree path does not exist: $path" >&2
     exit 1
 fi
-
-case "$(basename "$path")" in
-    *_agent_*_worktree) ;;
-    *)
-        echo "Refusing to remove '$path': not a reserved subagent worktree name (*_agent_*_worktree)." >&2
-        exit 1
-        ;;
-esac
 
 if [[ "$path" == "$main_worktree" ]]; then
     echo "Refusing to remove the main worktree." >&2
