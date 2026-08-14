@@ -48,9 +48,28 @@ Do not create a worktree on the subagent's behalf from inside a delegation
 task, and do not hand-roll the workspace-create/tab-create/agent-start
 sequence when `subagent-launch` covers it.
 
-## Starting the subagent
+## End-to-end run command
 
-Use `scripts/dev-env/subagent-launch` — it collapses workspace
+For a complete foreground workflow, use `scripts/dev-env/subagent-run`:
+
+```bash
+scripts/dev-env/subagent-run \
+  --branch <short-task-name> --name <unique-agent-name> \
+  [--persona implementor] -- <self-contained task prompt...>
+```
+
+It composes `wt-for-subagent`, `subagent-launch`, `herdr agent wait`, and
+`wt-for-subagent-cleanup`, then reads the persistent report directly. It is
+manual-audit by default and leaves the Herdr tab, worktree, and branch in
+place. An optional `--cleanup integrate` or `--cleanup discard` requests
+cleanup only after the report is shown and the operator types the matching
+acknowledgement (`INTEGRATE`/`DISCARD`). Close the created Herdr tab first;
+the command never closes tabs. `integrate` retains the cleanup helper's
+fully-merged branch check, while `discard` uses its explicit force-branch
+path and still refuses uncommitted changes. A timeout or blocked state still
+surfaces any report and does not implicitly clean up.
+
+For lower-level launch-only control, use `scripts/dev-env/subagent-launch` — it collapses workspace
 create-or-reuse, tab creation, agent start, and prompt submission into one
 non-interactive command:
 
@@ -154,7 +173,8 @@ still appends the resolved path, but the persona itself already specifies
 the required sections.
 
 After the subagent settles, **read the report file directly**, not just
-`agent read` — that's the artifact that's meant to last.
+`agent read` — that's the artifact that's meant to last. The end-to-end
+`subagent-run` command does this automatically.
 
 ## Personas
 

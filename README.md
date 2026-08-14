@@ -15,6 +15,7 @@ or be rewritten between visits.
 ### Docs
 
 - `docs/usage-bar.md` — tmux Codex/Claude Code usage bar
+- `docs/subagent-workflow.md` — end-to-end Herdr subagent runs
 
 ### Directory tree
 
@@ -25,7 +26,8 @@ or be rewritten between visits.
 ├── INSTALL.md
 ├── README.md
 ├── docs/
-│   └── usage-bar.md
+│   ├── usage-bar.md
+│   └── subagent-workflow.md
 ├── herdr/
 │   └── .config/herdr/
 │       └── config.toml
@@ -63,6 +65,7 @@ or be rewritten between visits.
 │   │   ├── claude-status
 │   │   ├── codex-status
 │   │   ├── subagent-launch
+│   │   ├── subagent-run
 │   │   ├── tmux-sessionizer
 │   │   ├── worktree-helper
 │   │   ├── wt
