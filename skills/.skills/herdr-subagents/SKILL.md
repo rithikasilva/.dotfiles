@@ -212,6 +212,24 @@ scripts/dev-env/subagent-launch --worktree "$worktree_path" --name <short-name> 
   --persona investigator -- "Investigate: <question>."
 ```
 
+**`reviewer`** (`pi/.pi/agent/personas/reviewer.md`): read-only code review
+of a supplied diff, pull request, or branch comparison. It only searches and
+reads code and repository history (plus read-only bash such as `git log`,
+`git show`, `git diff`, `cat`, and `wc`); it never edits, writes, or runs
+mutating commands. Its report contract requires severity-ranked, actionable
+findings with a repository-relative file path, line number, and one-sentence
+description, plus Summary / Findings / Open questions sections.
+
+Default to spawning a reviewer when the user asks for a delegated review of a
+diff, PR, or branch target:
+
+```bash
+worktree_json=$(scripts/dev-env/wt-for-subagent --new-branch review-<topic>)
+worktree_path=$(echo "$worktree_json" | jq -r .path)
+scripts/dev-env/subagent-launch --worktree "$worktree_path" --name <short-name> \
+  --persona reviewer -- "Review the diff between <branch> and main."
+```
+
 **`implementor`** (`pi/.pi/agent/personas/implementor.md`): given a plan
 or task description, writes the actual code — edits, writes, and runs
 commands freely within its worktree. Runs tests/lints/builds itself and

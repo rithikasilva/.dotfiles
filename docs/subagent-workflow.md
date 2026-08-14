@@ -12,6 +12,19 @@ scripts/dev-env/subagent-run \
   -- "Implement the requested shell quoting fix and commit it."
 ```
 
+For a read-only review of a diff, pull request, or branch comparison, select
+the `reviewer` persona and provide the target in the prompt. Reviewer runs
+read-only searches and reads, then reports only concrete defects ranked by
+severity with file paths and line numbers:
+
+```sh
+scripts/dev-env/subagent-run \
+  --branch review-shell-quoting \
+  --name shell-quoting-review \
+  --persona reviewer \
+  -- "Review the diff between feature/shell-quoting and main."
+```
+
 The command creates a reserved sibling worktree and a Herdr workspace, waits
 for the agent to become `idle`, `done`, or `blocked`, and prints the persistent
 report under `~/.herdr-reports/`. The default is manual-audit mode: the Herdr
