@@ -17,11 +17,20 @@ or be rewritten between visits.
 - `docs/usage-bar.md` — tmux Codex/Claude Code usage bar
 - `docs/subagent-workflow.md` — end-to-end Herdr subagent runs
 
+### Neovim
+
+- Uses Neovim's built-in `vim.pack` plugin manager; `vague` is the active theme.
+- LSP is configured for Lua, Python, C/C++, OCaml, and Rust (with Mason); `blink.cmp` provides LSP, path, snippet, and buffer completion.
+- Leader is Space. Snacks provides `<leader>sf` (files), `<leader>sg` (grep), `<leader>sh` (help), `<leader>sl` (lines), `<leader>sr` (resume), and `<leader>ss` (spelling); `<leader><leader>` opens buffers. `<C-n>` opens the file tree, and `<leader>rq` sends ripgrep results to quickfix.
+- Git workflow uses Gitsigns, Fugitive, Git Conflict, and Diffview; hunk commands are under `<leader>h`, and other Git commands under `<leader>g`.
+- Obsidian uses `~/Documents/notes`, with daily notes in `daily`; note commands are under `<leader>n` (today, navigation, search, backlinks, and linking).
+
 ### Directory tree
 
 ```text
 .
 ├── AGENTS.md
+├── .gitignore
 ├── CLAUDE.md
 ├── INSTALL.md
 ├── README.md
@@ -58,7 +67,8 @@ or be rewritten between visits.
 │   └── .pi/agent/
 │       ├── personas/
 │       │   ├── implementor.md
-│       │   └── investigator.md
+│       │   ├── investigator.md
+│       │   └── reviewer.md
 │       └── settings.json
 ├── scripts/
 │   ├── dev-env/
@@ -70,7 +80,8 @@ or be rewritten between visits.
 │   │   ├── worktree-helper
 │   │   ├── wt
 │   │   ├── wt-for-subagent
-│   │   └── wt-for-subagent-cleanup
+│   │   ├── wt-for-subagent-cleanup
+│   │   └── .tmux-sessionizer
 │   └── zsh_aliases
 ├── skills/
 │   ├── .claude/skills/ → ../.skills/
