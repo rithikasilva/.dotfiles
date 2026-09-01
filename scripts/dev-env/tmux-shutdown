@@ -1,0 +1,77 @@
+#!/bin/bash
+# Gracefully shut down all tmux sessions: flush any Neovim panes to disk
+# with :wa before killing the server.
+
+set -euo pipefail
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: tmux-shutdown [-n|--dry-run]
+
+Saves all modified buffers in every Neovim pane across every tmux session
+(via :wa), then kills the tmux server. With -n/--dry-run, lists the
+sessions/panes that would be affected without sending any keys or killing
+anything.
+EOF
+    exit "${1:-1}"
+}
+
+dry_run=false
+case "${1:-}" in
+    -n|--dry-run)
+        dry_run=true
+        ;;
+    -h|--help)
+        usage 0
+        ;;
+    "")
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+if ! tmux list-sessions >/dev/null 2>&1; then
+    echo "No tmux server running; nothing to do."
+    exit 0
+fi
+
+nvim_panes=()
+while IFS=$'\t' read -r pane_id pane_cmd; do
+    [[ "$pane_cmd" == "nvim" ]] || continue
+    nvim_panes+=("$pane_id")
+done < <(tmux list-panes -a -F '#{pane_id}	#{pane_current_command}')
+
+if [[ "$dry_run" == true ]]; then
+    echo "Sessions:"
+    tmux list-sessions
+    echo
+    if [[ ${#nvim_panes[@]} -eq 0 ]]; then
+        echo "No Neovim panes detected."
+    else
+        echo "Neovim panes that would be saved:"
+        for pane_id in "${nvim_panes[@]}"; do
+            echo "  $pane_id"
+        done
+    fi
+    echo
+    echo "Would then run: tmux kill-server"
+    exit 0
+fi
+
+for pane_id in "${nvim_panes[@]}"; do
+    # C-c reliably drops Neovim out of insert/visual/command-line mode;
+    # both the "Escape" key name and a raw ESC byte proved flaky in
+    # testing (Neovim/terminal escape-sequence timing sometimes swallows
+    # a lone ESC, leaving the pane in insert mode and the ":wa" that
+    # follows gets typed as literal text instead of run).
+    tmux send-keys -t "$pane_id" C-c
+    sleep 0.1
+    tmux send-keys -t "$pane_id" ':wa' Enter
+done
+
+if [[ ${#nvim_panes[@]} -gt 0 ]]; then
+    sleep 0.3
+fi
+
+tmux kill-server
