@@ -12,11 +12,6 @@ fork, or borrow from it at your own judgment.
 Changes frequently and without notice — expect things here to move, break,
 or be rewritten between visits.
 
-### Docs
-
-- `docs/usage-bar.md` — tmux Codex/Claude Code usage bar
-- `docs/subagent-workflow.md` — end-to-end Herdr subagent runs
-
 ### Neovim
 
 - Uses Neovim's built-in `vim.pack` plugin manager; `vague` is the active theme.
@@ -34,18 +29,17 @@ or be rewritten between visits.
 ├── CLAUDE.md
 ├── INSTALL.md
 ├── README.md
-├── docs/
-│   ├── usage-bar.md
-│   └── subagent-workflow.md
 ├── herdr/
 │   └── .config/herdr/
 │       └── config.toml
 ├── kitty/
 │   └── .config/kitty/
 │       ├── current-theme.conf
-│       ├── herdr_toggle.py
 │       ├── kitty.conf
 │       └── vague.conf
+├── ghostty/
+│   └── .config/ghostty/
+│       └── config
 ├── nvim/
 │   └── .config/nvim/
 │       ├── .stylua.toml
@@ -65,22 +59,12 @@ or be rewritten between visits.
 │           └── whichkey.lua
 ├── pi/
 │   └── .pi/agent/
-│       ├── personas/
-│       │   ├── implementor.md
-│       │   ├── investigator.md
-│       │   └── reviewer.md
 │       └── settings.json
 ├── scripts/
 │   ├── dev-env/
-│   │   ├── claude-status
-│   │   ├── codex-status
-│   │   ├── subagent-launch
-│   │   ├── subagent-run
 │   │   ├── tmux-sessionizer
 │   │   ├── worktree-helper
 │   │   ├── wt
-│   │   ├── wt-for-subagent
-│   │   ├── wt-for-subagent-cleanup
 │   │   └── .tmux-sessionizer
 │   └── zsh_aliases
 ├── skills/
@@ -89,7 +73,6 @@ or be rewritten between visits.
 │   └── .skills/
 │       ├── commit/
 │       ├── herdr/
-│       ├── herdr-subagents/
 │       ├── tmux-pane/
 │       └── wt/
 ├── starship/
@@ -98,4 +81,3 @@ or be rewritten between visits.
     ├── .tmux.conf
     └── .tmux/plugins/ (TPM)
 ```
-

@@ -18,15 +18,6 @@ External tool dependencies and how to install them: `INSTALL.md`.
 
 Claude-only or Codex-only skills may remain outside the shared tree.
 
-## Subagent worktrees
-
-Subagent worktrees (created via `scripts/dev-env/wt-for-subagent`, named
-`*_agent_*_worktree`, hidden from `tmux-sessionizer`) must be removed with
-`scripts/dev-env/wt-for-subagent-cleanup --path <worktree-path>`, never with
-a hand-run `git worktree remove`/`git branch -D`. The script enforces the
-safety checks (reserved naming, clean tree, cherry-picked-before-delete) —
-see the `wt` and `herdr-subagents` skills for the full workflow.
-
 ## Verification
 
 Useful commands:
