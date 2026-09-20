@@ -1,3 +1,4 @@
+onboarding = false
 [theme]
 # Use the terminal/shell palette and follow the system appearance.
 name = "terminal"
@@ -37,6 +38,14 @@ split_horizontal = "prefix+minus"
 # (side-by-side split). Herdr's "vertical" split = side-by-side panes.
 # Herdr's default is prefix+v; remapped to backslash to match tmux.
 split_vertical = "prefix+backslash"
+
+# tmux: `bind -n C-f display-popup -E -w 80% -h 30% "tmux-sessionizer"`
+[[keys.command]]
+key = "ctrl+f"
+type = "popup"
+command = "~/.dotfiles/scripts/dev-env/herdr-sessionizer"
+width = "80%"
+height = "30%"
 
 [ui]
 agent_panel_sort = "spaces"
