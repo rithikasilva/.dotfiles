@@ -20,11 +20,21 @@ reload_config = "prefix+r"
 # closest equivalent: destroys the current workspace and its panes.
 close_workspace = "prefix+q"
 
+# tmux: default tmux detach is `prefix+d`. Herdr's default detach is
+# prefix+q, already claimed above by close_workspace.
+detach = "prefix+d"
+
 # tmux: custom `bind z` that also restyles the status bar when zoomed;
 # herdr's default is already prefix+z, kept explicit here for clarity.
 zoom = "prefix+z"
 
-# tmux: `bind-key h/j/k/l select-pane -L/-D/-U/-R` (vi-style nav)
+# tmux: `bind-key h/j/k/l select-pane -L/-D/-U/-R` (vi-style nav).
+# Kept prefixed as a plain fallback. Seamless unprefixed ctrl+hjkl
+# (vim-tmux-navigator-like, working whether or not nvim is running in
+# the focused pane) is handled below by our own herdr-navigate script
+# instead of a direct binding here — a direct unprefixed binding would
+# swallow ctrl+h/j/k/l before nvim ever saw it (confirmed: nvim's own
+# <C-h/j/k/l> keymaps never fired while this was bound unprefixed).
 focus_pane_left = "prefix+h"
 focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
@@ -39,6 +49,30 @@ split_horizontal = "prefix+minus"
 # Herdr's default is prefix+v; remapped to backslash to match tmux.
 split_vertical = "prefix+backslash"
 
+# Seamless nvim<->Herdr pane navigation, no third-party Herdr plugin:
+# herdr-navigate checks the focused pane's foreground process and
+# either forwards the raw keystroke into it (nvim handles its own
+# split-then-pane fallback) or moves the Herdr pane directly.
+[[keys.command]]
+key = "ctrl+h"
+type = "shell"
+command = "~/.dotfiles/scripts/dev-env/herdr-navigate left"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "shell"
+command = "~/.dotfiles/scripts/dev-env/herdr-navigate down"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "shell"
+command = "~/.dotfiles/scripts/dev-env/herdr-navigate up"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "shell"
+command = "~/.dotfiles/scripts/dev-env/herdr-navigate right"
+
 # tmux: `bind -n C-f display-popup -E -w 80% -h 30% "tmux-sessionizer"`
 [[keys.command]]
 key = "ctrl+f"
@@ -49,3 +83,7 @@ height = "30%"
 
 [ui]
 agent_panel_sort = "spaces"
+
+# tmux: `bind-key c` has no prompt. prefix+c (new_tab) should behave
+# the same — create immediately with a generated name.
+prompt_new_tab_name = false

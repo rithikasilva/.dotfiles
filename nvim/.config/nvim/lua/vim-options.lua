@@ -32,9 +32,17 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 
--- Splitting
+-- Splitting. Ctrl-'/Ctrl-; are the reliable bindings (plain Alt chords
+-- are unreliably forwarded under Herdr — confirmed: work in tmux,
+-- silently swallowed in Herdr). Alt/Cmd variants kept as extra
+-- mappings to the same commands for terminals/setups where they do
+-- get forwarded (e.g. tmux, or Herdr sessions where cmd+ happens to work).
+vim.keymap.set('n', "<C-'>", ':vsplit<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<C-;>', ':split<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<M-\\>', ':vsplit<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<M-->', ':split<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-\\>', ':vsplit<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<D-->', ':split<CR>', { noremap = true, silent = true })
 
 
 -- Auto center on Ctrl+u and Ctrl+d

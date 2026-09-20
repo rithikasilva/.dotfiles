@@ -1,0 +1,39 @@
+#!/bin/bash
+# Seamless ctrl+hjkl pane navigation for Herdr, matching
+# vim-tmux-navigator's behavior without a third-party Herdr plugin.
+#
+# Bound to unprefixed ctrl+h/j/k/l in herdr/.config/herdr/config.toml.
+# If the focused pane is running nvim, forward the raw keystroke into
+# it so nvim's own fallback keymap (nvim/.config/nvim/plugin/utilities.lua)
+# handles it: move within vim splits, or call `herdr pane focus` itself
+# at a split edge. Otherwise, move the Herdr pane directly.
+
+export PATH="/opt/homebrew/bin:$HOME/.local/bin:$PATH"
+
+set -euo pipefail
+
+direction="$1" # left | down | up | right
+
+case "$direction" in
+    left) key=h ;;
+    down) key=j ;;
+    up) key=k ;;
+    right) key=l ;;
+    *) exit 1 ;;
+esac
+
+pane_id="${HERDR_ACTIVE_PANE_ID:-}"
+if [[ -z "$pane_id" ]]; then
+    exit 0
+fi
+
+is_nvim_foreground() {
+    herdr pane process-info --pane "$pane_id" 2>/dev/null \
+        | jq -e 'any(.result.process_info.foreground_processes[]?.name; . == "nvim")' >/dev/null 2>&1
+}
+
+if is_nvim_foreground; then
+    herdr pane send-keys "$pane_id" "ctrl+$key" >/dev/null
+else
+    herdr pane focus --pane "$pane_id" --direction "$direction" >/dev/null
+fi

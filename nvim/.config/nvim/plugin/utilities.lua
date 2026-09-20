@@ -19,11 +19,24 @@ vim.pack.add({
 vim.keymap.set('n', '<C-p>', ':FloatermToggle<CR>', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-p>', '<C-\\><C-n>:FloatermToggle<CR>', { noremap = true, silent = true })
 
--- vim-tmux-navigator
-vim.keymap.set('n', '<C-h>', '<cmd>TmuxNavigateLeft<CR>')
-vim.keymap.set('n', '<C-j>', '<cmd>TmuxNavigateDown<CR>')
-vim.keymap.set('n', '<C-k>', '<cmd>TmuxNavigateUp<CR>')
-vim.keymap.set('n', '<C-l>', '<cmd>TmuxNavigateRight<CR>')
+-- vim-tmux-navigator (tmux); falls back to herdr pane focus when running
+-- inside a Herdr pane instead of tmux, so we don't need a Herdr plugin.
+local function navigate(vim_cmd, herdr_direction)
+  local winnr_before = vim.fn.winnr()
+  vim.cmd(vim_cmd)
+  if vim.fn.winnr() ~= winnr_before then
+    return
+  end
+  local herdr_pane = vim.env.HERDR_PANE_ID
+  if herdr_pane then
+    vim.fn.system({ 'herdr', 'pane', 'focus', '--pane', herdr_pane, '--direction', herdr_direction })
+  end
+end
+
+vim.keymap.set('n', '<C-h>', function() navigate('TmuxNavigateLeft', 'left') end)
+vim.keymap.set('n', '<C-j>', function() navigate('TmuxNavigateDown', 'down') end)
+vim.keymap.set('n', '<C-k>', function() navigate('TmuxNavigateUp', 'up') end)
+vim.keymap.set('n', '<C-l>', function() navigate('TmuxNavigateRight', 'right') end)
 vim.keymap.set('n', '<C-\\>', '<cmd>TmuxNavigatePrevious<CR>')
 
 -- oil
