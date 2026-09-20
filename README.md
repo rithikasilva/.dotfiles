@@ -1,6 +1,6 @@
 ## My Dotfiles for MacOS
 
-Managed with GNU Stow. See `CLAUDE.md` for the stow workflow and `INSTALL.md`
+Managed with GNU Stow. See `AGENTS.md` for the stow workflow and `INSTALL.md`
 for dependencies.
 
 This is personal tooling, built for my own machines and workflow, not a
@@ -26,7 +26,6 @@ or be rewritten between visits.
 .
 ├── AGENTS.md
 ├── .gitignore
-├── CLAUDE.md
 ├── INSTALL.md
 ├── README.md
 ├── herdr/
