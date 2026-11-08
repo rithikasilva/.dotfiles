@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# Summarize live agent panes across Rex sessions. Rex's native activity
+# sidebar (Ctrl-S A) is best for watching output; this is the at-a-glance
+# answer to "which agents are working or blocked?".
+
+set -euo pipefail
+
+rex_bin() {
+    if command -v rex >/dev/null 2>&1; then
+        command -v rex
+        return
+    fi
+
+    local bundled='/Applications/Rex Beta.app/Contents/Helpers/Rex Server.rex/Contents/MacOS/rex'
+    [[ -x "$bundled" ]] || {
+        echo 'Rex CLI not found. Install Rex or run this from a Rex terminal.' >&2
+        return 1
+    }
+    printf '%s\n' "$bundled"
+}
+
+REX=$(rex_bin)
+
+# JSON objects are emitted one per live agent pane and formatted together at
+# the end. `program_status` is Rex's own app-status protocol, so a finished
+# agent disappears instead of being inferred from stale terminal text.
+while IFS=$'\t' read -r session_id session_label; do
+    while IFS=$'\t' read -r block_id block_label window_id; do
+        status=$("$REX" block call -s "$session_id" -b "$block_id" program_status 2>/dev/null) || continue
+        process=$("$REX" block call -s "$session_id" -b "$block_id" process 2>/dev/null) || continue
+
+        jq -cn \
+            --arg session "$session_label" \
+            --arg window "$window_id" \
+            --arg pane "$block_label" \
+            --argjson status "$status" \
+            --argjson process "$process" \
+            '$status.records[]?
+             | select(.effective_app | test("^(codex|claude|pi)$"; "i"))
+             | select(.owner.pid == $process.foreground.pid)
+             | {session: $session, window: $window, pane: $pane,
+                app: .effective_app, state, updated_at}'
+    done < <(
+        "$REX" block ls -s "$session_id" --json \
+            | jq -r '.blocks[]
+                     | select(.creator_name == "com.superlogical.terminal")
+                     | [.block_id, .label, .window_id] | @tsv'
+    )
+done < <("$REX" ls --json | jq -r '.sessions[] | [.session_id, .label] | @tsv') \
+    | jq -s '
+        if length == 0 then
+          "No active Codex, Claude, or pi agents."
+        else
+          sort_by(.session, .window, .pane)
+          | .[]
+          | "\(.state | ascii_upcase)  \(.app)  \(.session)  [\(.pane)]  \(.updated_at)"
+        end
+      ' -r

@@ -40,13 +40,12 @@ focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
 focus_pane_right = "prefix+l"
 
-# tmux: `unbind -` / `bind-key - split-window -v -c "#{pane_current_path}"`
-# (stacked/down split). Herdr's "horizontal" split = stacked panes.
+# Match Neovim's Cmd/Alt--: stacked panes (a horizontal divider).
 split_horizontal = "prefix+minus"
 
 # tmux: `unbind \` / `bind-key \ split-window -h -c "#{pane_current_path}"`
 # (side-by-side split). Herdr's "vertical" split = side-by-side panes.
-# Herdr's default is prefix+v; remapped to backslash to match tmux.
+# Match Neovim's Cmd/Alt-\: side-by-side panes (a vertical divider).
 split_vertical = "prefix+backslash"
 
 # Seamless nvim<->Herdr pane navigation, no third-party Herdr plugin:

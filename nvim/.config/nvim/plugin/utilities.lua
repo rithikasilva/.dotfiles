@@ -19,17 +19,28 @@ vim.pack.add({
 vim.keymap.set('n', '<C-p>', ':FloatermToggle<CR>', { noremap = true, silent = true })
 vim.keymap.set('t', '<C-p>', '<C-\\><C-n>:FloatermToggle<CR>', { noremap = true, silent = true })
 
--- vim-tmux-navigator (tmux); falls back to herdr pane focus when running
--- inside a Herdr pane instead of tmux, so we don't need a Herdr plugin.
-local function navigate(vim_cmd, herdr_direction)
+-- vim-tmux-navigator (tmux); at a Neovim split edge, fall back to the
+-- enclosing Rex or Herdr pane as appropriate.
+local function navigate(vim_cmd, direction)
   local winnr_before = vim.fn.winnr()
   vim.cmd(vim_cmd)
   if vim.fn.winnr() ~= winnr_before then
     return
   end
+
+  local rex_session = vim.env.REX_SESSION
+  local rex_block = vim.env.REX_BLOCK
+  if rex_session and rex_block then
+    vim.fn.system({
+      'rex', 'api', 'call', '-s', rex_session, 'session.focus_direction',
+      vim.json.encode({ block_id = rex_block, direction = direction }),
+    })
+    return
+  end
+
   local herdr_pane = vim.env.HERDR_PANE_ID
   if herdr_pane then
-    vim.fn.system({ 'herdr', 'pane', 'focus', '--pane', herdr_pane, '--direction', herdr_direction })
+    vim.fn.system({ 'herdr', 'pane', 'focus', '--pane', herdr_pane, '--direction', direction })
   end
 end
 

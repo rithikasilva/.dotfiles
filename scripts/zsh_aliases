@@ -6,3 +6,5 @@ alias tmux='tmux -2'
 alias nv='nvim'
 
 alias ts='tmux-sessionizer'
+alias rs='rex-sessionizer'
+alias ras='rex-agent-status'
