@@ -82,6 +82,14 @@ main() {
         return 1
     fi
 
+    # Expose the project/worktree inventory for the desktop Herdr app's
+    # native project picker. Keep this unformatted so callers can safely
+    # use the tab-separated path/branch fields.
+    if [[ "$match" == "--list" ]]; then
+        project_entries | awk -F '\t' '!seen[$1]++'
+        return
+    fi
+
     local selected
 
     if [[ -z "$match" ]]; then

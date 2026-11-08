@@ -18,3 +18,6 @@ pi/.pi/agent/bin/
 
 # local task tracking, not shared history
 /TODO.md
+
+# Herdr Desktop regenerates this API declaration per mod at runtime.
+herdr-app/.config/herdr-app/mods/*/gpui-kit.d.ts

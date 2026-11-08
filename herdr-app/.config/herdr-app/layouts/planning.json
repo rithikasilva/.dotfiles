@@ -1,0 +1,40 @@
+{
+  "id": "root",
+  "type": "row",
+  "titlebar": "none",
+  "traffic_lights": [12, 17],
+  "background": "canvas",
+  "terminal_padding": [14, 12],
+  "children": [
+    {
+      "id": "sidebar",
+      "type": "column",
+      "size": { "px": 240 },
+      "min": 44,
+      "max": 400,
+      "background": "chrome",
+      "children": [
+        { "id": "brand", "type": "block", "size": { "px": 46 }, "window_drag": true, "content": { "mod": "dotfiles-workspace-chrome" } },
+        { "id": "chats", "type": "block", "content": { "mod": "workbench-chats" } }
+      ]
+    },
+    {
+      "id": "conversation",
+      "type": "column",
+      "children": [
+        { "id": "chat-title", "type": "block", "size": { "px": 42 }, "window_drag": true, "content": { "mod": "dotfiles-tabs" } },
+        { "id": "chat-terminal", "type": "block", "content": { "tab": "active", "pane": { "header": { "content": { "mod": "pane" }, "reveal": "always", "height": 30 }, "background": "background", "border": { "width": 1, "color": "border" }, "focus": { "width": 1, "color": "accent" }, "radius": 10, "gap": 8, "lone": true } } }
+      ]
+    },
+    {
+      "id": "previews",
+      "type": "column",
+      "size": { "px": 420 },
+      "min": 280,
+      "max": 900,
+      "children": [
+        { "id": "tracking-preview", "type": "block", "content": { "mod": "workbench-preview" } }
+      ]
+    }
+  ]
+}
