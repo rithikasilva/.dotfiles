@@ -10,11 +10,12 @@ Prefer `cargo install` when available.
 | zsh | ships with macOS | `dnf/apt install zsh` |
 | neovim | [bob-nvim](https://github.com/MordechaiHadad/bob) | bob-nvim |
 | kitty | `brew install --cask kitty` | distro package |
-| Ghostty | `brew install --cask ghostty` | distro package |
+| Rex | install the Rex Beta app (bundles the local server and `rex` CLI) | server alpha / upstream instructions |
 | starship | `brew install starship` | `dnf/apt install starship` |
 | python3 | `brew install python` | `dnf/apt install python3` |
 | node | `brew install node` | `dnf/apt install nodejs npm` |
 | rust (rustup/cargo) | `rustup` | `rustup` |
+| tree-sitter CLI (compiles nvim parsers) | `cargo install tree-sitter-cli` | same |
 | ripgrep | `cargo install ripgrep` | same |
 | rust-analyzer | `rustup component add rust-analyzer` | same |
 | clippy | `rustup component add clippy` | same |

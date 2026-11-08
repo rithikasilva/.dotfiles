@@ -11,6 +11,8 @@ External tool dependencies and how to install them: `INSTALL.md`.
 - Use `stow --simulate <package>` first when checking for conflicts.
 - Do not use `--adopt` or `--override` automatically; existing files may contain user data.
 - Keep runtime state, credentials, caches, and generated files out of the repository.
+- Do not use `TODO.md` files for task tracking. Keep implementation notes and
+  follow-up work in the relevant issue, plan, or conversation instead.
 
 ## Shared skills
 

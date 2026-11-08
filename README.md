@@ -31,14 +31,20 @@ or be rewritten between visits.
 ├── herdr/
 │   └── .config/herdr/
 │       └── config.toml
+├── herdr-app/
+│   └── .config/herdr-app/
+│       ├── keys.json
+│       ├── layouts/
+│       │   ├── dev.json
+│       │   └── planning.json
+│       ├── mods/ (custom workspace UI modules)
+│       ├── programs.json
+│       └── settings.json
 ├── kitty/
 │   └── .config/kitty/
 │       ├── current-theme.conf
 │       ├── kitty.conf
 │       └── vague.conf
-├── ghostty/
-│   └── .config/ghostty/
-│       └── config
 ├── nvim/
 │   └── .config/nvim/
 │       ├── .stylua.toml
@@ -59,8 +65,12 @@ or be rewritten between visits.
 ├── pi/
 │   └── .pi/agent/
 │       └── settings.json
+├── rex/
+│   └── .config/rex/
+│       └── init.lua
 ├── scripts/
 │   ├── dev-env/
+│   │   ├── rex-sessionizer
 │   │   ├── tmux-sessionizer
 │   │   ├── worktree-helper
 │   │   ├── wt
