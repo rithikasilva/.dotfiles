@@ -6,5 +6,7 @@
   "font_size": 10.0,
   "font_ligatures": false,
   "telemetry": false,
-  "minimum_contrast": 1.0
+  "minimum_contrast": 1.0,
+  "theme": "vague",
+  "appearance": "dark"
 }

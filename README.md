@@ -39,7 +39,8 @@ or be rewritten between visits.
 │       │   └── planning.json
 │       ├── mods/ (custom workspace UI modules)
 │       ├── programs.json
-│       └── settings.json
+│       ├── settings.json
+│       └── themes/vague.json
 ├── kitty/
 │   └── .config/kitty/
 │       ├── current-theme.conf
