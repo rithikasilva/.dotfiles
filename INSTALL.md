@@ -12,6 +12,7 @@ Prefer `cargo install` when available.
 | kitty | `brew install --cask kitty` | distro package |
 | Rex | install the Rex Beta app (bundles the local server and `rex` CLI) | server alpha / upstream instructions |
 | starship | `brew install starship` | `dnf/apt install starship` |
+| pandoc | `brew install pandoc` | `dnf/apt install pandoc` |
 | python3 | `brew install python` | `dnf/apt install python3` |
 | node | `brew install node` | `dnf/apt install nodejs npm` |
 | rust (rustup/cargo) | `rustup` | `rustup` |

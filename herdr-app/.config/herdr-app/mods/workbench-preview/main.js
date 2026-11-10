@@ -1,6 +1,6 @@
-import { View, div } from "gpui-kit";
+import { View, div, svg } from "gpui-kit";
 import { h_flex, v_flex, TextView, InputState, Input } from "gpui-base";
-import { home, readTextFile, watchFolder, theme, focused, exec } from "herdr";
+import { home, readTextFile, watchFolder, theme, focused, exec, appHome } from "herdr";
 
 export default class WorkbenchPreview extends View {
   init(_initial, cx) {
@@ -9,9 +9,12 @@ export default class WorkbenchPreview extends View {
     let saved = [];
     try { const value = JSON.parse(localStorage.getItem("workbench.extra-files") ?? "[]"); if (Array.isArray(value)) saved = value.filter((path) => typeof path === "string" && path.startsWith("/") && /\.(md|markdown|mdx)$/i.test(path)); } catch {}
     this.files = [...new Set([...defaults, ...saved])];
-    this.selected = this.files[0];
+    const lastFile = localStorage.getItem("workbench.selected-file");
+    this.selected = this.files.includes(lastFile) ? lastFile : defaults[1];
     this.text = null;
     this.request = 0;
+    const savedSize = Number(localStorage.getItem("workbench.font-size"));
+    this.fontSize = Number.isFinite(savedSize) && savedSize >= 10 && savedSize <= 22 ? savedSize : 12;
     this.input = InputState.new({ placeholder: "Filter Markdown files…" });
     this.query = "";
     this.matches = [];
@@ -32,6 +35,9 @@ export default class WorkbenchPreview extends View {
   select(path, cx) {
     if (path === this.selected) return;
     this.selected = path;
+    localStorage.setItem("workbench.selected-file", path);
+    this.copied = false;
+    this.copyError = null;
     this.error = null;
     this.load(cx);
     this.watch(cx);
@@ -94,6 +100,35 @@ export default class WorkbenchPreview extends View {
       cx.notify();
     });
   }
+  changeFontSize(amount, cx) {
+    this.fontSize = Math.max(10, Math.min(22, this.fontSize + amount));
+    localStorage.setItem("workbench.font-size", String(this.fontSize));
+    cx.notify();
+  }
+  copyFormatted(cx) {
+    if (this.copying || this.text === null || this.textFile !== this.selected) return;
+    const path = this.selected;
+    this.copying = true;
+    this.copyError = null;
+    this.copied = false;
+    cx.notify();
+    cx.spawn(async (cx) => {
+      try {
+        const result = await exec("python3", [`${appHome()}/mods/workbench-preview/copy-rich.py`, path]);
+        if (this.selected === path) {
+          if (result.code !== 0) this.copyError = result.stderr.trim() || "Couldn't copy formatted text.";
+          else {
+            this.copied = true;
+            cx.timer.after(2500, (cx) => { this.copied = false; cx.notify(); });
+          }
+        }
+      } catch {
+        if (this.selected === path) this.copyError = "Couldn't run the formatted copy helper.";
+      }
+      this.copying = false;
+      cx.notify();
+    });
+  }
   render(cx) {
     const t = theme();
     const terms = this.query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -110,8 +145,22 @@ export default class WorkbenchPreview extends View {
             .when(index >= 3, (el) => el.child(div().id(`close-file-${index}`).px(3).text_color(t.dim).hover((s) => s.text_color(t.foreground))
               .on_mouse_down("left", (_event, cx) => cx.stop_propagation())
               .on_click((_event, cx) => { cx.stop_propagation(); this.closePath(path, cx); }).child("×"))))))
-        .child(div().id("open-markdown").size(28).flex_none().flex().items_center().justify_center().rounded(6).cursor_pointer().text_color(t.muted)
-          .hover((s) => s.bg(t.hover).text_color(t.foreground)).on_click((_event, cx) => this.openPicker(cx)).child("+")))
+        .child(h_flex().id("preview-toolbar").flex_none().items_center().gap(2)
+          .child(div().id("font-smaller").size(28).flex().items_center().justify_center().rounded(6).cursor_pointer().text_color(t.muted)
+            .tooltip("Smaller text").hover((s) => s.bg(t.hover).text_color(t.foreground))
+            .on_click((_event, cx) => this.changeFontSize(-1, cx)).child(svg("mods/workbench-preview/zoom-out.svg").size(15)))
+          .child(div().id("font-larger").size(28).flex().items_center().justify_center().rounded(6).cursor_pointer().text_color(t.muted)
+            .tooltip("Larger text").hover((s) => s.bg(t.hover).text_color(t.foreground))
+            .on_click((_event, cx) => this.changeFontSize(1, cx)).child(svg("mods/workbench-preview/zoom-in.svg").size(15)))
+          .child(div().w(1).h(16).mx(2).bg(t.border))
+          .child(div().id("copy-formatted").size(28).flex().items_center().justify_center().rounded(6).cursor_pointer().text_color(this.copied ? t.done : t.muted)
+            .tooltip(this.copied ? "Copied" : "Copy formatted text").hover((s) => s.bg(t.hover).text_color(t.foreground))
+            .on_click((_event, cx) => this.copyFormatted(cx))
+            .child(svg(this.copied ? "mods/workspace-chrome/check.svg" : "mods/workbench-preview/copy.svg").size(15)))
+          .child(div().id("open-markdown").size(28).flex().items_center().justify_center().rounded(6).cursor_pointer().text_color(t.muted)
+            .tooltip("Open Markdown file").hover((s) => s.bg(t.hover).text_color(t.foreground))
+            .on_click((_event, cx) => this.openPicker(cx)).child(svg("mods/workbench-preview/file-plus.svg").size(15)))))
+      .when(Boolean(this.copyError), (el) => el.child(div().px(12).py(6).text_size(12).text_color(t.blocked).child(this.copyError)))
       .when(this.opening, (el) => el.child(v_flex().px(10).py(8).gap(6).border_b(1).border_color(t.border)
         .child(h_flex().items_center().child(div().flex_1().font_semibold().text_size(12).child("Markdown"))
           .child(div().text_size(11).text_color(t.dim).child("Tracking and current folder")))
@@ -133,7 +182,7 @@ export default class WorkbenchPreview extends View {
           .when(!this.matches.length, (item) => item.child(div().p(8).text_size(12).text_color(t.dim).child(this.pathError || (this.pickerLoading ? "Loading…" : "No Markdown files match.")))))))
       .child(this.error ? div().p(14).text_color(t.dim).child(this.error)
         : this.text === null ? div().p(14).text_color(t.dim).child("Loading…")
-        : div().flex_1().min_h(0).px(20).py(14).text_size(14)
+        : div().flex_1().min_h(0).px(20).py(14).text_size(this.fontSize)
           .child(TextView.markdown(`tracking-markdown-${this.textFile}`, this.text).scrollable(true).selectable(true).size_full()));
   }
 }

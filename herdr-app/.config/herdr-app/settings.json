@@ -1,12 +1,11 @@
 {
-  "zoom": 1.0,
+  "zoom": 1,
   "sounds": {
     "enabled": true
   },
-  "font_size": 10.0,
+  "font_size": 10,
   "font_ligatures": false,
-  "telemetry": false,
-  "minimum_contrast": 1.0,
-  "theme": "vague",
-  "appearance": "dark"
+  "minimum_contrast": 1,
+  "appearance": "dark",
+  "theme": "vague"
 }

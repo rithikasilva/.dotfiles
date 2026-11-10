@@ -20,6 +20,12 @@ or be rewritten between visits.
 - Git workflow uses Gitsigns, Fugitive, Git Conflict, and Diffview; hunk commands are under `<leader>h`, and other Git commands under `<leader>g`.
 - Obsidian uses `~/Documents/notes`, with daily notes in `daily`; note commands are under `<leader>n` (today, navigation, search, backlinks, and linking).
 
+### Herdr planning
+
+The planning file toolbar can copy the selected Markdown document as formatted
+text for Outlook. On macOS it uses Pandoc (`brew install pandoc`) to put rich
+text, HTML, and plain text on the clipboard.
+
 ### Directory tree
 
 ```text
