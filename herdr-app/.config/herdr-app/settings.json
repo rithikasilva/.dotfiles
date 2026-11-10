@@ -1,10 +1,10 @@
 {
-  "zoom": 0.9,
+  "zoom": 1.0,
   "sounds": {
     "enabled": true
   },
-  "font_size": 11,
+  "font_size": 10.0,
   "font_ligatures": false,
-  "minimum_contrast": 1,
-  "telemetry": false
+  "telemetry": false,
+  "minimum_contrast": 1.0
 }
